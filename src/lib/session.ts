@@ -34,7 +34,7 @@ export async function createSession(payload: User) {
   const cookieStore = await cookies();
   cookieStore.set("session", session, {
     httpOnly: true,
-    secure: true,
+    secure: false, // TODO: make it true in production
     expires,
     sameSite: "lax",
     path: "/",
