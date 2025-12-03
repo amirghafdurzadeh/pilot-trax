@@ -1,16 +1,353 @@
-import { BookOpenTextIcon, CompassIcon, CrosshairIcon } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  BookOpenTextIcon,
+  CrosshairIcon,
+  UserIcon,
+  ZapIcon,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
-export default function Home() {
+interface PlanCardProps {
+  title: string;
+  description: string;
+  features: string[];
+  price: string;
+  priceLabel: string;
+  buttonText: string;
+  buttonVariant?: "primary" | "secondary" | "disabled";
+  featured?: boolean;
+}
+
+function PlanCard({
+  title,
+  description,
+  features,
+  price,
+  priceLabel,
+  buttonText,
+  buttonVariant = "primary",
+  featured = false,
+}: PlanCardProps) {
+  const baseStyles = "p-6 rounded-2xl shadow flex flex-col";
+  const variantStyles = featured
+    ? "bg-blue-600 text-white shadow-xl"
+    : "bg-white dark:bg-neutral-800";
+
+  const buttonStyles = {
+    primary: "px-4 py-2 bg-blue-600 text-white rounded-md shadow font-semibold",
+    secondary:
+      "px-4 py-2 bg-white text-blue-600 rounded-md shadow font-semibold",
+    disabled:
+      "px-4 py-2 bg-neutral-700 text-white rounded-md shadow font-semibold",
+  };
+
+  return (
+    <div className={`${baseStyles} ${variantStyles}`}>
+      <h4 className="font-bold text-xl">{title}</h4>
+      <p
+        className={`mt-2 text-sm leading-relaxed ${
+          featured ? "opacity-90" : "text-neutral-600 dark:text-neutral-300"
+        }`}
+      >
+        {description}
+      </p>
+
+      <ul
+        className={`mt-4 space-y-2 text-sm ${
+          featured ? "opacity-95" : "text-neutral-600 dark:text-neutral-300"
+        }`}
+      >
+        {features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-3">
+            <span
+              className={
+                featured ? "text-white mt-0.5" : "text-green-600 mt-0.5"
+              }
+            >
+              ✓
+            </span>
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-auto pt-6 flex items-center justify-between">
+        <div>
+          <div className="text-2xl font-extrabold">{price}</div>
+          <div
+            className={`text-xs ${
+              featured ? "opacity-90" : "text-neutral-500 dark:text-neutral-400"
+            }`}
+          >
+            {priceLabel}
+          </div>
+        </div>
+        {buttonVariant === "disabled" ? (
+          <button className={buttonStyles.disabled} disabled>
+            {buttonText}
+          </button>
+        ) : (
+          <Link href="#signup" className={buttonStyles[buttonVariant]}>
+            {buttonText}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const features = [
+  {
+    title: "توضیح سوال",
+    text: "هر سوال با تحلیل کامل گزینه‌ها و دلایل درست/نادرست بودن آن‌ها همراه است.",
+    icon: BookOpenTextIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    title: "ارزیابی شخصی رنگی",
+    text: "انتخاب سبز/زرد/قرمز باعث می‌شود سیستم سطح یادگیری شما را بشناسد.",
+    icon: CrosshairIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    title: "برنامه مرور هوشمند",
+    text: "تمرکز بر سوالات بحرانی برای صرفه‌جویی در زمان و افزایش شانس قبولی.",
+    icon: ZapIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+];
+
+type Feature = {
+  title: string;
+  text: string;
+  icon: React.ComponentType<any>;
+  gradient: string;
+};
+
+function FeatureCard({ feature }: { feature: Feature }) {
+  const Icon = feature.icon;
+  return (
+    <article className="group p-8 bg-linear-to-br from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-500">
+      <div
+        className={`w-14 h-14 rounded-xl bg-linear-to-br ${feature.gradient} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}
+      >
+        <Icon />
+      </div>
+      <h3 className="font-bold text-lg">{feature.title}</h3>
+      <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
+        {feature.text}
+      </p>
+    </article>
+  );
+}
+
+interface StepCardProps {
+  icon: React.ComponentType<any>;
+  number: number;
+  title: string;
+  duration: string;
+  description: string;
+  gradient: string;
+}
+
+function StepCard({
+  icon: Icon,
+  number,
+  title,
+  duration,
+  description,
+  gradient,
+}: StepCardProps) {
+  return (
+    <div className="flex flex-col gap-3 items-start p-5 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition">
+      <div className="flex gap-3 items-center">
+        <div
+          className={`w-12 h-12 rounded-lg flex items-center justify-center bg-linear-to-br ${gradient} text-white text-2xl shrink-0`}
+        >
+          <Icon className="size-6" />
+        </div>
+        <div className="flex flex-col items-start gap-0.5">
+          <h5 className="text-neutral-700 dark:text-neutral-200 font-bold">
+            {number}. {title}
+          </h5>
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            ({duration})
+          </span>
+        </div>
+      </div>
+      <div>
+        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed text-justify">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const steps = [
+  {
+    icon: BookOpenTextIcon,
+    number: 1,
+    title: "شبیه‌ساز با سوالات واقعی",
+    duration: "۵–۱۵ دقیقه",
+    description:
+      "تست‌زدن در محیطی شبیه آزمون اصلی با توضیحات مرحله‌به‌مرحله برای هر گزینه تا فهم دقیق‌تر مفاهیم.",
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    icon: CrosshairIcon,
+    number: 2,
+    title: "ارزیابی رنگی شخصی",
+    duration: "سبز/زرد/قرمز",
+    description:
+      "با تگ‌گذاری ساده، سیستم نقاط قوت و ضعف را شناسایی می‌کند و خروجی بصری برای تمرکز روی مباحث حساس ارائه می‌دهد.",
+    gradient: "from-emerald-500 to-emerald-400",
+  },
+  {
+    icon: ZapIcon,
+    number: 3,
+    title: "برنامه مرور هوشمند",
+    duration: "هفته‌ای با تمرکز پویا",
+    description:
+      "الگوریتم ما با توجه به ارزیابی شما، جلسات مرور اولویت‌بندی‌شده می‌سازد تا بیشترین پیشرفت در کوتاه‌ترین زمان حاصل شود.",
+    gradient: "from-amber-500 to-amber-400",
+  },
+  {
+    icon: UserIcon,
+    number: 4,
+    title: "دنبال‌کردن پیشرفت و گزارش‌ها",
+    duration: "آنالیز و پیشنهاد",
+    description:
+      "گزارش‌های تحلیلی، نمودار پیشرفت و پیشنهاد‌های عملی به شما نشان می‌دهند کجا بیشترین زمان را قرار دهید تا نتیجه قطعی حاصل شود.",
+    gradient: "from-indigo-600 to-indigo-400",
+  },
+];
+
+interface HighlightCardProps {
+  title: string;
+  subtitle: string;
+  gradient: string;
+}
+
+function HighlightCard({ title, subtitle, gradient }: HighlightCardProps) {
+  return (
+    <div
+      className={`p-3 rounded-xl bg-linear-to-br ${gradient} text-white shadow-md`}
+    >
+      <div className="text-xs font-semibold">{title}</div>
+      <div className="mt-1 text-sm">{subtitle}</div>
+    </div>
+  );
+}
+
+const highlights = [
+  {
+    title: "سوالات واقعی",
+    subtitle: "بوکلت‌های امتحانی",
+    gradient: "from-blue-600 to-blue-500",
+  },
+  {
+    title: "تحلیل دقیق",
+    subtitle: "دلایل درست/نادرست",
+    gradient: "from-emerald-500 to-emerald-400",
+  },
+  {
+    title: "مرور هوشمند",
+    subtitle: "برنامه هدفمند",
+    gradient: "from-amber-500 to-amber-400",
+  },
+];
+
+const plans = [
+  {
+    title: "رایگان",
+    description:
+      "مناسب برای مبتدیان و کسانی که می‌خواهند با پلتفرم آشنا شوند. امکانات پایه برای ارزیابی اولیه و تست آشنایی.",
+    features: [
+      "دسترسی محدود به سوالات منتخب",
+      "شبیه‌ساز تست (نسخه دمو)",
+      "مشاهده نمونه توضیحات برای چند سوال",
+      "پروفایل و ذخیره پیشرفت پایه",
+    ],
+    price: "رایگان",
+    priceLabel: "بدون هزینه",
+    buttonText: "شروع رایگان",
+    buttonVariant: "primary" as const,
+    featured: false,
+  },
+  {
+    title: "استاندارد",
+    description:
+      "مناسب برای دانشجویانی که نیاز به دسترسی کامل به بانک سوال و مرور هوشمند دارند. تعادل قیمت و امکانات برای مطالعه جدی.",
+    features: [
+      "دسترسی کامل به بانک سوالات",
+      "توضیحات نامحدود برای سوالات",
+      "برنامه مرور هوشمند",
+      "گزارش‌گیری پایه از عملکرد",
+      "اولویت پشتیبانی معمولی",
+    ],
+    price: "۴۹,۰۰۰ تومان",
+    priceLabel: "در ماه",
+    buttonText: "خرید استاندارد",
+    buttonVariant: "secondary" as const,
+    featured: true,
+  },
+  {
+    title: "حرفه‌ای",
+    description:
+      "مناسب برای حرفه‌ای‌ها و مراکزی که نیاز به گزارش‌های پیشرفته، دوره‌های آفلاین و پشتیبانی اولویت‌دار دارند.",
+    features: [
+      "همه امکانات استاندارد + امکانات پیشرفته",
+      "گزارش‌گیری تحلیلی و خروجی گزارش",
+      "دوره‌ها و جزوات آفلاین برای دانلود",
+      "اولویت پشتیبانی و راهنمایی اختصاصی",
+    ],
+    price: "۱۹۹,۰۰۰ تومان",
+    priceLabel: "در ماه",
+    buttonText: "به زودی",
+    buttonVariant: "disabled" as const,
+    featured: false,
+  },
+];
+
+const faqs = [
+  {
+    question: "آیا سوالات واقعی و بروز هستند؟",
+    answer:
+      "بله، سوالات از بوکلت‌های واقعی جمع‌آوری شده و به‌طور مداوم بروزرسانی می‌شوند.",
+  },
+  {
+    question: "چطور مرور هوشمند کار می‌کند؟",
+    answer:
+      "با انتخاب وضعیت سبز/زرد/قرمز، سیستم برنامه مرور مخصوص شما را می‌سازد تا روی نقاط ضعف تمرکز کنید.",
+  },
+  {
+    question: "آیا امکان تست رایگان وجود دارد؟",
+    answer:
+      "بله، پس از ثبت‌نام یک تست رایگان برای آشنایی با عملکرد پلتفرم دریافت می‌کنید.",
+  },
+];
+
+export default function Page() {
   return (
     <main className="w-full bg-linear-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-950">
       <div className="mx-auto min-h-screen">
         {/* Header */}
-        <header className="max-w-7xl mx-auto px-6 md:px-8 py-6 flex items-center justify-between">
+        <header className="max-w-7xl mx-auto px-6 md:px-8 py-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-extrabold shadow-xl shadow-blue-500/30">
-              PT
-            </div>
+            <Image
+              alt="Pilot Trax - پایلت ترکس"
+              src="/logo.svg"
+              width={48}
+              height={48}
+              className="w-12 h-12 drop-shadow-xl drop-shadow-blue-600/30"
+            />
             <div>
               <h1 className="text-lg font-extrabold tracking-tight">
                 پایلت ترکس
@@ -21,27 +358,35 @@ export default function Home() {
             </div>
           </div>
 
-          <nav className="hidden md:flex gap-6 items-center text-sm font-medium">
-            <Link href="#features" className="hover:text-blue-600 transition">
-              ویژگی‌ها
-            </Link>
-            <Link href="#how" className="hover:text-blue-600 transition">
-              روش کار
-            </Link>
-            <Link href="#pricing" className="hover:text-blue-600 transition">
-              پلن‌ها
-            </Link>
+          <nav className="flex gap-4 items-center text-sm font-medium">
+            <div className="hidden md:flex gap-6 items-center">
+              <Link href="#features" className="hover:text-blue-600 transition">
+                ویژگی‌ها
+              </Link>
+              <Link href="#how" className="hover:text-blue-600 transition">
+                روش کار
+              </Link>
+              <Link href="#pricing" className="hover:text-blue-600 transition">
+                پلن‌ها
+              </Link>
+              <Link
+                href="#contact"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow"
+              >
+                شروع رایگان
+              </Link>
+            </div>
             <Link
-              href="#contact"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:opacity-95 transition"
+              href="#"
+              className="p-2 text-white border-white hover:text-blue-600 hover:border-blue-600 border rounded-full transition shadow-lg shadow-blue-600/30"
             >
-              شروع رایگان
+              <UserIcon className="size-5" />
             </Link>
           </nav>
         </header>
 
         {/* Hero */}
-        <section className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-12 pb-20">
+        <section className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center pt-12 pb-12">
           <div>
             <h2 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
               آماده‌سازی آزمون‌های خلبانی با
@@ -62,7 +407,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link
                 href="#signup"
-                className="px-8 py-3 bg-blue-600 text-white rounded-xl text-lg font-semibold shadow-lg hover:scale-105 transition-transform"
+                className="px-8 py-3 bg-blue-600 text-white rounded-xl text-lg font-semibold shadow-lg"
               >
                 شروع رایگان
               </Link>
@@ -106,83 +451,102 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section
-          id="features"
-          className="max-w-7xl mx-auto px-6 md:px-8 mt-10 grid grid-cols-1 md:grid-cols-3 gap-6"
-        >
-          {[
-            {
-              title: "توضیح سوال",
-              text: "هر سوال با تحلیل کامل گزینه‌ها و دلایل درست/نادرست بودن آن‌ها همراه است.",
-            },
-            {
-              title: "ارزیابی شخصی رنگی",
-              text: "انتخاب سبز/زرد/قرمز باعث می‌شود سیستم سطح یادگیری شما را بشناسد.",
-            },
-            {
-              title: "برنامه مرور هوشمند",
-              text: "تمرکز بر سوالات بحرانی برای صرفه‌جویی در زمان و افزایش شانس قبولی.",
-            },
-          ].map((f, i) => (
-            <article
-              key={i}
-              className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition"
-            >
-              <h3 className="font-bold text-lg">{f.title}</h3>
-              <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
-                {f.text}
-              </p>
-            </article>
-          ))}
+        <section id="features" className="max-w-7xl mx-auto px-6 md:px-8 mt-12">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold">
+              ویژگی‌های منحصر به فرد
+            </h2>
+            <p className="mt-2 text-neutral-600 dark:text-neutral-300">
+              تجربه یادگیری بهتر با ابزارهای هوشمند و طراحی مدرن
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((f, i) => (
+              <FeatureCard key={i} feature={f} />
+            ))}
+          </div>
         </section>
 
         {/* How It Works */}
         <section
           id="how"
-          className="mt-20 px-6 md:px-8 max-w-7xl mx-auto text-neutral-900"
+          className="mt-24 px-6 md:px-8 max-w-7xl mx-auto text-neutral-900"
         >
-          <article className="p-6 bg-linear-to-r from-amber-600 to-amber-400 rounded-2xl">
-            <h3 className="text-2xl font-extrabold">
-              پایلت ترکس چگونه کار می‌کند؟
-            </h3>
-            <ol className="md:ms-8 ms-5 mt-6 space-y-4 list-decimal text-base font-medium">
-              <li>دوره و آزمون مورد نظر خود را انتخاب کنید.</li>
-              <li>برای هر سوال، توضیح یا وضعیت رنگی را ثبت کنید.</li>
-              <li>
-                سیستم، برنامه مرور هوشمند و کارنامه شخصی شما را تولید می‌کند.
-              </li>
-            </ol>
-          </article>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {/* Left: Visual / Highlight */}
+            <div className="flex flex-col gap-12">
+              <article className="p-8 rounded-3xl bg-linear-to-br from-white/70 to-neutral-50 dark:from-neutral-900/60 dark:to-neutral-950/60 border border-neutral-100 dark:border-neutral-800 shadow-xl">
+                <h3 className="text-neutral-900 dark:text-neutral-200 text-2xl md:text-3xl font-extrabold mb-4">
+                  پایلت ترکس چگونه کار می‌کند؟ — سریع، هوشمند و هدفمند
+                </h3>
+                <p className="text-neutral-600 dark:text-neutral-300 mb-6 leading-relaxed">
+                  ترکیبی از سوالات واقعی، توضیحات تحلیلی و برنامه مرور
+                  شخصی‌سازی‌شده برای رسیدن به بیشترین بازدهی در کمترین زمان. هر
+                  مرحله طوری طراحی شده که یادگیری شما را سیستماتیک و قابل
+                  اندازه‌گیری کند.
+                </p>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                  {highlights.map((highlight, i) => (
+                    <HighlightCard key={i} {...highlight} />
+                  ))}
+                </div>
+
+                <div className="mt-6 flex items-center gap-4">
+                  <Link
+                    href="#signup"
+                    className="px-5 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-lg"
+                  >
+                    شروع رایگان
+                  </Link>
+                  <Link
+                    href="#pricing"
+                    className="px-5 py-3 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                  >
+                    مشاهده پلن‌ها
+                  </Link>
+                </div>
+
+                <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
+                  تضمین کیفیت: بروزرسانی مستمر سوالات و پشتیبانی آموزشی برای
+                  بهبود نمره شما.
+                </p>
+              </article>
+              <Image
+                alt="Pilot Trax - پایلت ترکس"
+                src="/logo-full.svg"
+                width={500}
+                height={300}
+                className="mx-auto w-64 lg:w-96 drop-shadow-xl drop-shadow-blue-600/30"
+              />
+            </div>
+
+            {/* Right: Steps */}
+            <div className="space-y-4">
+              <article className="p-6 bg-linear-to-br from-amber-600 to-amber-400 rounded-2xl shadow-lg text-white">
+                <h4 className="font-extrabold text-lg">مراحل سریع و واضح</h4>
+                <p className="mt-2 text-sm opacity-95">
+                  هر قدم همراه با نکات عملی و انتظارات زمانی تا رسیدن به هدف.
+                </p>
+              </article>
+
+              <div className="grid gap-4">
+                {steps.map((step) => (
+                  <StepCard key={step.number} {...step} />
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Pricing */}
         <section id="pricing" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
           <h3 className="text-3xl font-extrabold">پلن‌ها</h3>
-
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {/* Free */}
-            <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow">
-              <h4 className="font-bold text-xl">رایگان</h4>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm leading-relaxed">
-                دسترسی محدود به سوالات + امکان تست و مشاهده چند توضیح.
-              </p>
-            </div>
-
-            {/* Standard */}
-            <div className="p-6 bg-blue-600 text-white rounded-2xl shadow-xl">
-              <h4 className="font-bold text-xl">استاندارد</h4>
-              <p className="mt-2 opacity-90 text-sm leading-relaxed">
-                دسترسی کامل به بانک سوال + توضیحات نامحدود + مرور هوشمند.
-              </p>
-            </div>
-
-            {/* Pro */}
-            <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow">
-              <h4 className="font-bold text-xl">حرفه‌ای</h4>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm leading-relaxed">
-                امکانات پیشرفته + گزارش‌گیری + دوره‌های آفلاین و جزوات.
-              </p>
-            </div>
+            {plans.map((plan, i) => (
+              <PlanCard key={i} {...plan} />
+            ))}
           </div>
         </section>
 
@@ -193,64 +557,74 @@ export default function Home() {
         >
           <h3 className="text-3xl font-extrabold mb-8">اعتماد دانشجویان</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition">
-              <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                «با پایلت ترکس تونستم ظرف دو ماه برای آزمون سازمان آماده بشم.
-                توضیح سوالات عالی بود.»
-              </p>
-              <h4 className="mt-4 font-bold">— رضا .م، دانشجوی خلبانی</h4>
-            </div>
-            <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition">
-              <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                «سیستم مرور رنگی دقیقاً چیزی بود که لازم داشتم. باعث شد سریع
-                نقاط ضعفم رو پیدا کنم.»
-              </p>
-              <h4 className="mt-4 font-bold">— سارا .ک، دانشجوی دیسپچ</h4>
-            </div>
-            <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition">
-              <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-                «بانک سوالات کامل و واقعی بود. تجربه تست‌زدن دقیقاً مثل آزمون
-                اصلی بود.»
-              </p>
-              <h4 className="mt-4 font-bold">— آرین .د، مهندسی هوافضا</h4>
-            </div>
+            {[
+              {
+                name: "رضا .م",
+                role: "دانشجوی خلبانی",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+                testimonial: "«با پایلت ترکس تونستم ظرف دو ماه برای آزمون سازمان آماده بشم. توضیح سوالات عالی بود و هر گزینه به تفصیل توضیح داده شده بود.»",
+                rating: 5,
+              },
+              {
+                name: "سارا .ک",
+                role: "دانشجوی دیسپچ",
+                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+                testimonial: "«سیستم مرور رنگی دقیقاً چیزی بود که لازم داشتم. باعث شد سریع نقاط ضعفم رو پیدا کنم و فقط روی مباحث حساس تمرکز کنم.»",
+                rating: 5,
+              },
+              {
+                name: "آرین .د",
+                role: "مهندسی هوافضا",
+                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+                testimonial: "«بانک سوالات کامل و واقعی بود. تجربه تست‌زدن دقیقاً مثل آزمون اصلی بود و من با اعتماد به امتحان رفتم.»",
+                rating: 5,
+              },
+            ].map((testimonial, i) => (
+              <div
+                key={i}
+                className="p-6 bg-linear-to-br from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-500"
+              >
+                <div className="flex items-center gap-4 mb-4">
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                  />
+                  <div>
+                    <h4 className="font-bold text-neutral-900 dark:text-white">{testimonial.name}</h4>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex gap-1 mb-3">
+                  {[...Array(testimonial.rating)].map((_, j) => (
+                    <span key={j} className="text-yellow-500">★</span>
+                  ))}
+                </div>
+                <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed italic">
+                  {testimonial.testimonial}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* FAQ */}
         <section id="faq" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
           <h3 className="text-3xl font-extrabold mb-8">سوالات متداول</h3>
-          <div className="space-y-6">
-            <div className="p-5 bg-white dark:bg-neutral-800 rounded-xl shadow">
-              <h4 className="font-bold text-lg">
-                آیا سوالات واقعی و بروز هستند؟
-              </h4>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm">
-                بله، سوالات از بوکلت‌های واقعی جمع‌آوری شده و به‌طور مداوم
-                بروزرسانی می‌شوند.
-              </p>
-            </div>
-
-            <div className="p-5 bg-white dark:bg-neutral-800 rounded-xl shadow">
-              <h4 className="font-bold text-lg">
-                چطور مرور هوشمند کار می‌کند؟
-              </h4>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm">
-                با انتخاب وضعیت سبز/زرد/قرمز، سیستم برنامه مرور مخصوص شما را
-                می‌سازد تا روی نقاط ضعف تمرکز کنید.
-              </p>
-            </div>
-
-            <div className="p-5 bg-white dark:bg-neutral-800 rounded-xl shadow">
-              <h4 className="font-bold text-lg">
-                آیا امکان تست رایگان وجود دارد؟
-              </h4>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm">
-                بله، پس از ثبت‌نام یک تست رایگان برای آشنایی با عملکرد پلتفرم
-                دریافت می‌کنید.
-              </p>
-            </div>
-          </div>
+          <Accordion type="single" collapsible>
+            {faqs.map((faq, index) => (
+              <AccordionItem key={index} value={"item-" + index}>
+                <AccordionTrigger>
+                  <h4 className="font-bold text-lg">{faq.question}</h4>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm">
+                    {faq.answer}
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </section>
 
         {/* Contact */}
@@ -263,16 +637,19 @@ export default function Home() {
             <p className="mt-2 text-neutral-600 dark:text-neutral-300">
               همین حالا ثبت‌نام کنید و اولین تست رایگان خود را شروع کنید.
             </p>
-            <form className="mt-4 grid gap-3">
+            <div className="mt-4 flex gap-3">
+              <Link
+                href="#"
+                className="px-4 py-2 bg-blue-600 text-white rounded-md whitespace-nowrap"
+              >
+                شروع رایگان
+              </Link>
               <input
                 type="tel"
                 placeholder="09123456789"
                 className="w-full px-3 py-2 border rounded-md"
               />
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md">
-                ثبت‌نام و شروع
-              </button>
-            </form>
+            </div>
           </div>
 
           <div className="p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow">
