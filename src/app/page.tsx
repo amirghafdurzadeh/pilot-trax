@@ -1,4 +1,11 @@
 import {
+  FeatureCard,
+  HighlightCard,
+  PlanCard,
+  StepCard,
+  TestimonialCard,
+} from "@/components/home";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -12,95 +19,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface PlanCardProps {
-  title: string;
-  description: string;
-  features: string[];
-  price: string;
-  priceLabel: string;
-  buttonText: string;
-  buttonVariant?: "primary" | "secondary" | "disabled";
-  featured?: boolean;
-}
-
-function PlanCard({
-  title,
-  description,
-  features,
-  price,
-  priceLabel,
-  buttonText,
-  buttonVariant = "primary",
-  featured = false,
-}: PlanCardProps) {
-  const baseStyles = "p-6 rounded-2xl shadow flex flex-col";
-  const variantStyles = featured
-    ? "bg-blue-600 text-white shadow-xl"
-    : "bg-white dark:bg-neutral-800";
-
-  const buttonStyles = {
-    primary: "px-4 py-2 bg-blue-600 text-white rounded-md shadow font-semibold",
-    secondary:
-      "px-4 py-2 bg-white text-blue-600 rounded-md shadow font-semibold",
-    disabled:
-      "px-4 py-2 bg-neutral-700 text-white rounded-md shadow font-semibold",
-  };
-
-  return (
-    <div className={`${baseStyles} ${variantStyles}`}>
-      <h4 className="font-bold text-xl">{title}</h4>
-      <p
-        className={`mt-2 text-sm leading-relaxed ${
-          featured ? "opacity-90" : "text-neutral-600 dark:text-neutral-300"
-        }`}
-      >
-        {description}
-      </p>
-
-      <ul
-        className={`mt-4 space-y-2 text-sm ${
-          featured ? "opacity-95" : "text-neutral-600 dark:text-neutral-300"
-        }`}
-      >
-        {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <span
-              className={
-                featured ? "text-white mt-0.5" : "text-green-600 mt-0.5"
-              }
-            >
-              ✓
-            </span>
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-auto pt-6 flex items-center justify-between">
-        <div>
-          <div className="text-2xl font-extrabold">{price}</div>
-          <div
-            className={`text-xs ${
-              featured ? "opacity-90" : "text-neutral-500 dark:text-neutral-400"
-            }`}
-          >
-            {priceLabel}
-          </div>
-        </div>
-        {buttonVariant === "disabled" ? (
-          <button className={buttonStyles.disabled} disabled>
-            {buttonText}
-          </button>
-        ) : (
-          <Link href="#signup" className={buttonStyles[buttonVariant]}>
-            {buttonText}
-          </Link>
-        )}
-      </div>
-    </div>
-  );
-}
 
 const features = [
   {
@@ -122,73 +40,6 @@ const features = [
     gradient: "from-blue-500 to-blue-700",
   },
 ];
-
-type Feature = {
-  title: string;
-  text: string;
-  icon: React.ComponentType<any>;
-  gradient: string;
-};
-
-function FeatureCard({ feature }: { feature: Feature }) {
-  const Icon = feature.icon;
-  return (
-    <article className="group p-8 bg-linear-to-br from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-500">
-      <div
-        className={`w-14 h-14 rounded-xl bg-linear-to-br ${feature.gradient} flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}
-      >
-        <Icon />
-      </div>
-      <h3 className="font-bold text-lg">{feature.title}</h3>
-      <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed">
-        {feature.text}
-      </p>
-    </article>
-  );
-}
-
-interface StepCardProps {
-  icon: React.ComponentType<any>;
-  number: number;
-  title: string;
-  duration: string;
-  description: string;
-  gradient: string;
-}
-
-function StepCard({
-  icon: Icon,
-  number,
-  title,
-  duration,
-  description,
-  gradient,
-}: StepCardProps) {
-  return (
-    <div className="flex flex-col gap-3 items-start p-5 bg-white dark:bg-neutral-800 rounded-2xl shadow hover:shadow-xl transition">
-      <div className="flex gap-3 items-center">
-        <div
-          className={`w-12 h-12 rounded-lg flex items-center justify-center bg-linear-to-br ${gradient} text-white text-2xl shrink-0`}
-        >
-          <Icon className="size-6" />
-        </div>
-        <div className="flex flex-col items-start gap-0.5">
-          <h5 className="text-neutral-700 dark:text-neutral-200 font-bold">
-            {number}. {title}
-          </h5>
-          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            ({duration})
-          </span>
-        </div>
-      </div>
-      <div>
-        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed text-justify">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
 
 const steps = [
   {
@@ -228,23 +79,6 @@ const steps = [
     gradient: "from-indigo-600 to-indigo-400",
   },
 ];
-
-interface HighlightCardProps {
-  title: string;
-  subtitle: string;
-  gradient: string;
-}
-
-function HighlightCard({ title, subtitle, gradient }: HighlightCardProps) {
-  return (
-    <div
-      className={`p-3 rounded-xl bg-linear-to-br ${gradient} text-white shadow-md`}
-    >
-      <div className="text-xs font-semibold">{title}</div>
-      <div className="mt-1 text-sm">{subtitle}</div>
-    </div>
-  );
-}
 
 const highlights = [
   {
@@ -332,15 +166,69 @@ const faqs = [
     answer:
       "بله، پس از ثبت‌نام یک تست رایگان برای آشنایی با عملکرد پلتفرم دریافت می‌کنید.",
   },
+  {
+    question: "آیا می‌توانم پیشرفتم را پیگیری کنم؟",
+    answer:
+      "بله، گزارش‌های تفصیلی و نمودارهای پیشرفت به شما کمک می‌کند تا عملکرد خود را بررسی کنید.",
+  },
+  {
+    question: "چه پشتیبانی آموزشی وجود دارد؟",
+    answer:
+      "تیم پشتیبانی ما آماده پاسخ به سؤالات و راهنمایی برای بهتر استفاده از پلتفرم است.",
+  },
+  {
+    question: "آیا برای مهاجر‌ها مناسب است؟",
+    answer: "بله، منبع‌های ما برای هم داخل کشور و هم مهاجرین طراحی شده است.",
+  },
+  {
+    question: "آیا می‌توانم اشتراک را لغو کنم؟",
+    answer:
+      "بله، می‌توانید هر زمان اشتراک خود را لغو کنید بدون هیچ پنالتی اضافی.",
+  },
+  {
+    question: "چقدر زمان برای نتیجه گیری نیاز است؟",
+    answer:
+      "به میزان تلاش و سطح اولیه شما بستگی دارد، اما بیشتر دانشجویان در ۲-۳ ماه نتایج قابل‌توجهی می‌بینند.",
+  },
+];
+
+const testimonials = [
+  {
+    name: "رضا .م",
+    role: "دانشجوی خلبانی",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    testimonial:
+      "«با پایلت ترکس تونستم ظرف دو ماه برای آزمون سازمان آماده بشم. توضیح سوالات عالی بود و هر گزینه به تفصیل توضیح داده شده بود.»",
+    rating: 5,
+  },
+  {
+    name: "سارا .ک",
+    role: "دانشجوی دیسپچ",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+    testimonial:
+      "«سیستم مرور رنگی دقیقاً چیزی بود که لازم داشتم. باعث شد سریع نقاط ضعفم رو پیدا کنم و فقط روی مباحث حساس تمرکز کنم.»",
+    rating: 5,
+  },
+  {
+    name: "آرین .د",
+    role: "مهندسی هوافضا",
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    testimonial:
+      "«بانک سوالات کامل و واقعی بود. تجربه تست‌زدن دقیقاً مثل آزمون اصلی بود و من با اعتماد به امتحان رفتم.»",
+    rating: 5,
+  },
 ];
 
 export default function Page() {
   return (
-    <main className="w-full bg-linear-to-b from-white to-neutral-50 dark:from-neutral-900 dark:to-neutral-950">
+    <main className="w-full">
       <div className="mx-auto min-h-screen">
         {/* Header */}
         <header className="max-w-7xl mx-auto px-6 md:px-8 py-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-4">
             <Image
               alt="Pilot Trax - پایلت ترکس"
               src="/logo.svg"
@@ -356,7 +244,7 @@ export default function Page() {
                 منبع اصلی آماده‌سازی آزمون‌های خلبانی و هوانوردی
               </p>
             </div>
-          </div>
+          </Link>
 
           <nav className="flex gap-4 items-center text-sm font-medium">
             <div className="hidden md:flex gap-6 items-center">
@@ -377,7 +265,7 @@ export default function Page() {
               </Link>
             </div>
             <Link
-              href="#"
+              href="/login"
               className="p-2 text-white border-white hover:text-blue-600 hover:border-blue-600 border rounded-full transition shadow-lg shadow-blue-600/30"
             >
               <UserIcon className="size-5" />
@@ -391,22 +279,19 @@ export default function Page() {
             <h2 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
               آماده‌سازی آزمون‌های خلبانی با
               <br />
-              <span className="text-blue-600">
-                {" "}
-                رویکردی هوشمندانه و هدفمند{" "}
-              </span>
+              <span className="text-blue-600">رویکردی هوشمندانه و هدفمند</span>
             </h2>
 
             <p className="mt-6 text-neutral-600 dark:text-neutral-300 text-lg leading-relaxed max-w-xl">
               سوالات واقعی بوکلت‌ها را با <strong>توضیح دقیق</strong>،
-              <strong> ارزیابی شخصی</strong> و{" "}
+              <strong> ارزیابی شخصی</strong> و
               <strong> برنامه‌ریزی مرور هوشمند </strong> تجربه کنید. همه‌چیز
               برای قبولی حتمی در آزمون‌های مدرسه و سازمان در یک پلتفرم.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link
-                href="#signup"
+                href="#contact"
                 className="px-8 py-3 bg-blue-600 text-white rounded-xl text-lg font-semibold shadow-lg"
               >
                 شروع رایگان
@@ -462,8 +347,8 @@ export default function Page() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((f, i) => (
-              <FeatureCard key={i} feature={f} />
+            {features.map((feature, index) => (
+              <FeatureCard key={index} feature={feature} />
             ))}
           </div>
         </section>
@@ -488,14 +373,14 @@ export default function Page() {
                 </p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                  {highlights.map((highlight, i) => (
-                    <HighlightCard key={i} {...highlight} />
+                  {highlights.map((highlight, index) => (
+                    <HighlightCard key={index} highlight={highlight} />
                   ))}
                 </div>
 
                 <div className="mt-6 flex items-center gap-4">
                   <Link
-                    href="#signup"
+                    href="#contact"
                     className="px-5 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-lg"
                   >
                     شروع رایگان
@@ -544,8 +429,8 @@ export default function Page() {
         <section id="pricing" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
           <h3 className="text-3xl font-extrabold">پلن‌ها</h3>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {plans.map((plan, i) => (
-              <PlanCard key={i} {...plan} />
+            {plans.map((plan, index) => (
+              <PlanCard key={index} {...plan} />
             ))}
           </div>
         </section>
@@ -557,53 +442,8 @@ export default function Page() {
         >
           <h3 className="text-3xl font-extrabold mb-8">اعتماد دانشجویان</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "رضا .م",
-                role: "دانشجوی خلبانی",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-                testimonial: "«با پایلت ترکس تونستم ظرف دو ماه برای آزمون سازمان آماده بشم. توضیح سوالات عالی بود و هر گزینه به تفصیل توضیح داده شده بود.»",
-                rating: 5,
-              },
-              {
-                name: "سارا .ک",
-                role: "دانشجوی دیسپچ",
-                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-                testimonial: "«سیستم مرور رنگی دقیقاً چیزی بود که لازم داشتم. باعث شد سریع نقاط ضعفم رو پیدا کنم و فقط روی مباحث حساس تمرکز کنم.»",
-                rating: 5,
-              },
-              {
-                name: "آرین .د",
-                role: "مهندسی هوافضا",
-                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-                testimonial: "«بانک سوالات کامل و واقعی بود. تجربه تست‌زدن دقیقاً مثل آزمون اصلی بود و من با اعتماد به امتحان رفتم.»",
-                rating: 5,
-              },
-            ].map((testimonial, i) => (
-              <div
-                key={i}
-                className="p-6 bg-linear-to-br from-white to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-neutral-100 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-500"
-              >
-                <div className="flex items-center gap-4 mb-4">
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
-                  />
-                  <div>
-                    <h4 className="font-bold text-neutral-900 dark:text-white">{testimonial.name}</h4>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">{testimonial.role}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1 mb-3">
-                  {[...Array(testimonial.rating)].map((_, j) => (
-                    <span key={j} className="text-yellow-500">★</span>
-                  ))}
-                </div>
-                <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-relaxed italic">
-                  {testimonial.testimonial}
-                </p>
-              </div>
+            {testimonials.map((testimonial, index) => (
+              <TestimonialCard key={index} testimonial={testimonial} />
             ))}
           </div>
         </section>
@@ -639,7 +479,7 @@ export default function Page() {
             </p>
             <div className="mt-4 flex gap-3">
               <Link
-                href="#"
+                href="#contact"
                 className="px-4 py-2 bg-blue-600 text-white rounded-md whitespace-nowrap"
               >
                 شروع رایگان
@@ -673,7 +513,7 @@ export default function Page() {
               <Link href="#" className="hover:text-blue-600 transition">
                 قوانین و مقررات
               </Link>
-              <Link href="#" className="hover:text-blue-600 transition">
+              <Link href="#faq" className="hover:text-blue-600 transition">
                 سوالات متداول
               </Link>
             </div>

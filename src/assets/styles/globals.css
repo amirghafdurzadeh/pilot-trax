@@ -18,6 +18,7 @@ body {
 *,
 *::after,
 *::before {
+  scroll-margin-top: 2rem;
   box-sizing: border-box;
 }
 
