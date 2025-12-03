@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Vazirmatn} from "next/font/google";
 
 import "@/assets/styles/globals.css";
 import { Providers } from "@/components/core/providers";
 
-const roboto = Roboto({
+const vazirmatn = Vazirmatn({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
+  subsets: ["arabic"],
 });
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ type Props = Readonly<{
 
 export default function Layout(props: Props) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${roboto.className} antialiased`}>
+    <html dir="rtl" lang="fa" suppressHydrationWarning>
+      <body className={`${vazirmatn.className}`}>
         <Providers>{props.children}</Providers>
       </body>
     </html>
