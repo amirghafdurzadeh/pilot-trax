@@ -4,10 +4,10 @@ import z from "zod";
 import prisma from "@/lib/prisma";
 
 const otpSendSchema = z.object({
-  phone: z.string().regex(/^09\d{9}$/, "Phone number is invalid."),
+  phone: z.string().regex(/^09\d{9}$/, "شماره موبایل نامعتبر است."),
 });
 
-export async function otpSendAction(_: any, formData: FormData) {
+export async function otpSend(_: any, formData: FormData) {
   const validatedFields = otpSendSchema.safeParse({
     phone: formData.get("phone"),
   });

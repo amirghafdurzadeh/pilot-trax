@@ -5,11 +5,11 @@ import prisma from "@/lib/prisma";
 import { createSession } from "@/lib/session";
 
 const otpLoginSchema = z.object({
-  phone: z.string().regex(/^09\d{9}$/, "Phone number is invalid."),
-  otp: z.string().regex(/^\d{6}$/, "Code is invalid."),
+  phone: z.string().regex(/^09\d{9}$/, "شماره موبایل نامعتبر است."),
+  otp: z.string().regex(/^\d{6}$/, "کد وارد شده نامعتبر است."),
 });
 
-export async function otpLoginAction(_: any, formData: FormData) {
+export async function otpLogin(_: any, formData: FormData) {
   const validatedFields = otpLoginSchema.safeParse({
     phone: formData.get("phone"),
     otp: formData.get("otp"),
@@ -56,7 +56,7 @@ export async function otpLoginAction(_: any, formData: FormData) {
       errors: {
         fieldErrors: {},
         formErrors: [
-          "Login failed. Please verify your login information and try again.",
+          "ورود ناموفق بود. لطفا اطلاعات خود را بررسی کنید و دوباره تلاش کنید.",
         ],
       },
     };
@@ -68,7 +68,7 @@ export async function otpLoginAction(_: any, formData: FormData) {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: ["Something went wrong, please try again later.", error],
+        formErrors: ["مشکلی پیش آمد، لطفا بعدا تلاش کنید.", error],
       },
     };
   }

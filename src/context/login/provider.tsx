@@ -9,7 +9,14 @@ export function LoginProvider(props: { children?: React.ReactNode }) {
 
   return (
     <LoginContext.Provider
-      value={{ step, setStep, phone, setPhone, otpExpiredAt, setOtpExpiredAt }}
+      value={{
+        step,
+        setStep,
+        phone,
+        setPhone,
+        otpExpiredAt,
+        setOtpExpiredAt,
+      }}
     >
       {props.children}
     </LoginContext.Provider>

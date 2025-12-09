@@ -1,5 +1,6 @@
 "use client";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { SquarePenIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   startTransition,
@@ -10,7 +11,7 @@ import {
   useState,
 } from "react";
 
-import { otpLoginAction, otpSendAction } from "@/actions/auth";
+import { otpLogin, otpSend } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,19 +29,18 @@ import {
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
-import { SquarePenIcon } from "lucide-react";
 
 export function LoginOTPForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
   const { phone, setStep, otpExpiredAt, setOtpExpiredAt } = useLogin();
-  const [otpLoginState, otpLogin, otpLoginPending] = useActionState(
-    otpLoginAction,
+  const [otpLoginState, otpLoginAction, otpLoginPending] = useActionState(
+    otpLogin,
     null
   );
-  const [otpSendState, otpSend, otpSendPending] = useActionState(
-    otpSendAction,
+  const [otpSendState, otpSendAction, otpSendPending] = useActionState(
+    otpSend,
     null
   );
   const [otp, setOtp] = useState("");
@@ -50,7 +50,7 @@ export function LoginOTPForm() {
     const formData = new FormData();
     formData.set("phone", phone);
     startTransition(() => {
-      otpSend(formData);
+      otpSendAction(formData);
     });
   }, []);
 
@@ -75,15 +75,14 @@ export function LoginOTPForm() {
 
   useEffect(() => {
     if (!otpLoginState?.success) return;
-    const r = searchParams.get("r");
-    router.replace(r || "/");
+    const redirect = searchParams.get("redirect");
+    router.replace(redirect || "/");
   }, [otpLoginState, searchParams]);
 
   useEffect(() => {
     if (!otpSendState?.success) return;
     startTransition(() => {
       setOtpExpiredAt(otpSendState.data!.expiredAt.toString());
-      setStep("otp");
     });
   }, [otpSendState]);
 
@@ -96,15 +95,15 @@ export function LoginOTPForm() {
   return (
     <Card className="max-w-xs w-full m-auto">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>ورود</CardTitle>
         <CardDescription>
-          Enter the verification code sent to your phone.
+          کد تایید ارسال شده به شماره موبایل خود را وارد کنید.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <div className="flex items-center">
           <div className="flex flex-col gap-1">
-            <span className="text-sm">Phone</span>
+            <span className="text-sm">شماره موبایل</span>
             <span className="text-sm text-muted-foreground">{phone}</span>
           </div>
           <Button
@@ -114,12 +113,12 @@ export function LoginOTPForm() {
             onClick={() => setStep("phone")}
           >
             <SquarePenIcon className="size-3" />
-            Edit
+            ویرایش
           </Button>
         </div>
-        <form id="loginForm" action={otpLogin} ref={formRef}>
+        <form id="loginForm" action={otpLoginAction} ref={formRef}>
           <Field>
-            <FieldLabel htmlFor="otp">Code</FieldLabel>
+            <FieldLabel htmlFor="otp">کد تایید</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
               <InputOTP
                 id="otp"
@@ -157,7 +156,7 @@ export function LoginOTPForm() {
               {String(otpRemaining % 60).padStart(2, "0")}
             </span>
           )}
-          Resend
+          ارسال مجدد
         </Button>
         <Button
           variant="default"
@@ -166,7 +165,7 @@ export function LoginOTPForm() {
           disabled={otpLoginPending || otpSendPending}
         >
           {otpLoginPending && <Spinner />}
-          Login
+          ورود
         </Button>
       </CardFooter>
     </Card>

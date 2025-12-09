@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+
 export function HeroContent() {
   return (
     <div>
@@ -17,18 +19,17 @@ export function HeroContent() {
       </p>
 
       <div className="mt-8 flex flex-col sm:flex-row gap-4">
-        <Link
-          href="#contact"
-          className="px-8 py-3 bg-blue-600 text-white rounded-xl text-lg font-semibold shadow-lg"
+        <Button asChild size="xl" className="text-lg font-semibold shadow-lg">
+          <Link href="#contact">شروع رایگان</Link>
+        </Button>
+        <Button
+          asChild
+          variant="outline"
+          size="xl"
+          className="text-lg font-normal"
         >
-          شروع رایگان
-        </Link>
-        <Link
-          href="#how"
-          className="px-8 py-3 border border-neutral-300 dark:border-neutral-600 rounded-xl text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-        >
-          مشاهده دموی محصول
-        </Link>
+          <Link href="#how">مشاهده دموی محصول</Link>
+        </Button>
       </div>
 
       <p className="mt-5 text-xs text-neutral-400">

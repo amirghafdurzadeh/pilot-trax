@@ -1,2 +1,3 @@
-export { otpLoginAction } from "./otp-login";
-export { otpSendAction } from "./otp-send";
+export { authentication } from "./authentication";
+export { otpLogin } from "./otp-login";
+export { otpSend } from "./otp-send";

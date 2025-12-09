@@ -2,7 +2,7 @@
 import { useSearchParams } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
 
-import { otpSendAction } from "@/actions/auth";
+import { otpSend } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,8 +20,8 @@ import { useLogin } from "@/context/login";
 export function LoginPhoneForm() {
   const searchParams = useSearchParams();
   const { setStep, phone, setPhone, setOtpExpiredAt } = useLogin();
-  const [otpSendState, otpSend, otpSendPending] = useActionState(
-    otpSendAction,
+  const [otpSendState, otpSendAction, otpSendPending] = useActionState(
+    otpSend,
     null
   );
 
@@ -42,13 +42,15 @@ export function LoginPhoneForm() {
   return (
     <Card className="max-w-xs w-full m-auto">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription>Enter your phone number to login.</CardDescription>
+        <CardTitle>ورود</CardTitle>
+        <CardDescription>
+          برای ورود شماره موبایل خود را وارد کنید.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="loginForm" action={otpSend}>
+        <form id="loginForm" action={otpSendAction}>
           <Field>
-            <FieldLabel htmlFor="phone">Phone</FieldLabel>
+            <FieldLabel htmlFor="phone">شماره موبایل</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
               <Input
                 id="phone"
@@ -75,7 +77,7 @@ export function LoginPhoneForm() {
           disabled={otpSendPending}
         >
           {otpSendPending && <Spinner />}
-          Login
+          ورود
         </Button>
       </CardFooter>
     </Card>

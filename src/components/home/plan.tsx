@@ -1,5 +1,16 @@
-import { cn } from "@/lib/utils";
+import { CheckIcon } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface PlanCardProps {
   title: string;
@@ -12,72 +23,76 @@ interface PlanCardProps {
   featured?: boolean;
 }
 
-const buttonStyles = {
-  primary: "px-4 py-2 bg-blue-600 text-white rounded-md shadow font-semibold",
-  secondary: "px-4 py-2 bg-white text-blue-600 rounded-md shadow font-semibold",
-  disabled:
-    "px-4 py-2 bg-neutral-700 text-white rounded-md shadow font-semibold",
-};
-
 export function PlanCard(props: PlanCardProps) {
-  const Button = props.buttonVariant === "disabled" ? "button" : Link;
+  const isFeatured = props.featured;
 
   return (
-    <div
-      className={cn("p-6 rounded-2xl shadow flex flex-col", {
-        "bg-blue-600 text-white shadow-xl": props.featured,
-        "bg-white dark:bg-neutral-800": !props.featured,
+    <Card
+      className={cn("flex flex-col shadow-md", {
+        "bg-blue-600 text-white shadow-xl border-blue-600": isFeatured,
+        "bg-white dark:bg-neutral-800": !isFeatured,
       })}
     >
-      <h4 className="font-bold text-xl">{props.title}</h4>
-      <p
-        className={cn("mt-2 text-sm leading-relaxed", {
-          "opacity-90": props.featured,
-          "text-neutral-600 dark:text-neutral-300": !props.featured,
-        })}
-      >
-        {props.description}
-      </p>
-      <ul
-        className={cn("mt-4 space-y-2 text-sm", {
-          "opacity-95": props.featured,
-          "text-neutral-600 dark:text-neutral-300": !props.featured,
-        })}
-      >
-        {props.features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <span
-              className={cn({
-                "text-white mt-0.5": props.featured,
-                "text-green-600 mt-0.5": !props.featured,
-              })}
-            >
-              ✓
-            </span>
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="mt-auto pt-6 flex items-center justify-between">
+      <CardHeader>
+        <CardTitle className="font-bold text-xl">{props.title}</CardTitle>
+        <CardDescription
+          className={cn("mt-2 text-sm leading-relaxed", {
+            "text-white/90": isFeatured,
+            "text-neutral-600 dark:text-neutral-300": !isFeatured,
+          })}
+        >
+          {props.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex-1">
+        <ul
+          className={cn("space-y-2 text-sm", {
+            "text-white/95": isFeatured,
+            "text-neutral-600 dark:text-neutral-300": !isFeatured,
+          })}
+        >
+          {props.features.map((feature, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <CheckIcon
+                className={cn("size-4 mt-0.5 shrink-0", {
+                  "text-white": isFeatured,
+                  "text-green-600": !isFeatured,
+                })}
+              />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between pt-6 mt-auto">
         <div>
           <div className="text-2xl font-extrabold">{props.price}</div>
           <div
             className={cn("text-xs", {
-              "opacity-90": props.featured,
-              "text-neutral-500 dark:text-neutral-400": !props.featured,
+              "text-white/90": isFeatured,
+              "text-neutral-500 dark:text-neutral-400": !isFeatured,
             })}
           >
             {props.priceLabel}
           </div>
         </div>
-        <Button
-          href={"#signup"}
-          className={buttonStyles[props.buttonVariant || "primary"]}
-        >
-          {props.buttonText}
-        </Button>
-      </div>
-    </div>
+        {props.buttonVariant === "disabled" ? (
+          <Button disabled variant="secondary">
+            {props.buttonText}
+          </Button>
+        ) : (
+          <Button
+            asChild
+            variant={isFeatured ? "secondary" : "default"}
+            className={cn("font-semibold", {
+              "bg-white text-blue-600 hover:bg-white/90": isFeatured,
+            })}
+          >
+            <Link href="#signup">{props.buttonText}</Link>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
   );
 }
 
