@@ -120,23 +120,26 @@ export function LoginOTPForm() {
         <form id="loginForm" action={otpLogin} ref={formRef}>
           <Field>
             <FieldLabel htmlFor="otp">Code</FieldLabel>
-            <InputOTP
-              id="otp"
-              name="otp"
-              maxLength={6}
-              pattern={REGEXP_ONLY_DIGITS}
-              value={otp}
-              onChange={(value) => setOtp(value)}
-            >
-              <InputOTPGroup className="w-full">
-                <InputOTPSlot index={0} className="flex-1" />
-                <InputOTPSlot index={1} className="flex-1" />
-                <InputOTPSlot index={2} className="flex-1" />
-                <InputOTPSlot index={3} className="flex-1" />
-                <InputOTPSlot index={4} className="flex-1" />
-                <InputOTPSlot index={5} className="flex-1" />
-              </InputOTPGroup>
-            </InputOTP>
+            <div className="flex w-full" style={{ direction: "ltr" }}>
+              <InputOTP
+                id="otp"
+                name="otp"
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS}
+                value={otp}
+                onChange={(value) => setOtp(value)}
+                containerClassName="w-full"
+              >
+                <InputOTPGroup className="w-full">
+                  <InputOTPSlot index={0} className="flex-1" />
+                  <InputOTPSlot index={1} className="flex-1" />
+                  <InputOTPSlot index={2} className="flex-1" />
+                  <InputOTPSlot index={3} className="flex-1" />
+                  <InputOTPSlot index={4} className="flex-1" />
+                  <InputOTPSlot index={5} className="flex-1" />
+                </InputOTPGroup>
+              </InputOTP>
+            </div>
           </Field>
           <input type="hidden" name="phone" value={phone} />
         </form>

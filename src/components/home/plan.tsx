@@ -80,3 +80,20 @@ export function PlanCard(props: PlanCardProps) {
     </div>
   );
 }
+
+interface PlansProps {
+  plans: PlanCardProps[];
+}
+
+export function Plans(props: PlansProps) {
+  return (
+    <section id="pricing" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
+      <h3 className="text-3xl font-extrabold">پلن‌ها</h3>
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {props.plans.map((plan, index) => (
+          <PlanCard key={index} {...plan} />
+        ))}
+      </div>
+    </section>
+  );
+}

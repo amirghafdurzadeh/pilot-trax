@@ -41,3 +41,23 @@ export function TestimonialCard(props: TestimonialCardProps) {
     </div>
   );
 }
+
+interface TestimonialsProps {
+  testimonials: Testimonial[];
+}
+
+export function Testimonials(props: TestimonialsProps) {
+  return (
+    <section
+      id="testimonials"
+      className="max-w-7xl mx-auto px-6 md:px-8 mt-20"
+    >
+      <h3 className="text-3xl font-extrabold mb-8">اعتماد دانشجویان</h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {props.testimonials.map((testimonial, index) => (
+          <TestimonialCard key={index} testimonial={testimonial} />
+        ))}
+      </div>
+    </section>
+  );
+}

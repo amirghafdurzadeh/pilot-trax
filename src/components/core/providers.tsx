@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/context/auth";
+import { LoginProvider } from "@/context/login";
 import { ThemeProvider } from "./theme-provider";
 
 type Props = Readonly<{
@@ -14,7 +15,7 @@ export function Providers(props: Props) {
         enableSystem
         disableTransitionOnChange
       >
-        {props.children}
+        <LoginProvider>{props.children}</LoginProvider>
       </ThemeProvider>
     </AuthProvider>
   );

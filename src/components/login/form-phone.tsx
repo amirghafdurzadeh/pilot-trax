@@ -1,4 +1,5 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
 
 import { otpSendAction } from "@/actions/auth";
@@ -17,11 +18,18 @@ import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
 
 export function LoginPhoneForm() {
+  const searchParams = useSearchParams();
   const { setStep, phone, setPhone, setOtpExpiredAt } = useLogin();
   const [otpSendState, otpSend, otpSendPending] = useActionState(
     otpSendAction,
     null
   );
+
+  useEffect(() => {
+    const phone = searchParams.get("phone");
+    if (!phone) return;
+    setPhone(phone);
+  }, [searchParams]);
 
   useEffect(() => {
     if (!otpSendState?.success) return;
@@ -41,14 +49,16 @@ export function LoginPhoneForm() {
         <form id="loginForm" action={otpSend}>
           <Field>
             <FieldLabel htmlFor="phone">Phone</FieldLabel>
-            <Input
-              id="phone"
-              name="phone"
-              type="number"
-              placeholder="09123456789"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+            <div className="flex w-full" style={{ direction: "ltr" }}>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="09123456789"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
             {otpSendState?.errors?.fieldErrors.phone && (
               <FieldError>
                 {otpSendState.errors.fieldErrors.phone[0]}
