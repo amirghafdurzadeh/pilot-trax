@@ -1,5 +1,5 @@
-import { getQuestions, getLessonsForFilter } from "@/actions/questions";
-import QuestionsPageClient from "./client";
+import { getLessonsForFilter, getQuestions } from "@/actions/questions";
+import QuestionsPageClient from "@/components/admin/client-questions";
 
 export default async function QuestionsPage() {
   const [questionsResult, lessons] = await Promise.all([

@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "@tiptap/extension-image";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Mathematics } from "@tiptap/extension-mathematics";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { BoldIcon, ImageIcon, ItalicIcon } from "lucide-react";
-import { useEffect } from "react";
+import { BoldIcon, ImageIcon, ItalicIcon, SigmaIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import "katex/dist/katex.min.css";
 
 interface RichTextEditorProps {
   value: string;
@@ -17,6 +19,45 @@ interface RichTextEditorProps {
   minHeight?: string;
 }
 
+function createMathExtension(editorRef: React.MutableRefObject<Editor | null>) {
+  return Mathematics.configure({
+    inlineOptions: {
+      onClick: (node, pos) => {
+        const currentEditor = editorRef.current;
+        if (!currentEditor) return;
+        const latex = prompt("فرمول LaTeX را وارد کنید:", node.attrs.latex);
+        if (latex !== null) {
+          currentEditor
+            .chain()
+            .setNodeSelection(pos)
+            .updateInlineMath({ latex })
+            .focus()
+            .run();
+        }
+      },
+    },
+    blockOptions: {
+      onClick: (node, pos) => {
+        const currentEditor = editorRef.current;
+        if (!currentEditor) return;
+        const latex = prompt("فرمول LaTeX را وارد کنید:", node.attrs.latex);
+        if (latex !== null) {
+          currentEditor
+            .chain()
+            .setNodeSelection(pos)
+            .updateBlockMath({ latex })
+            .focus()
+            .run();
+        }
+      },
+    },
+    katexOptions: {
+      throwOnError: false,
+      displayMode: false,
+    },
+  });
+}
+
 export function RichTextEditor({
   value,
   onChange,
@@ -24,6 +65,8 @@ export function RichTextEditor({
   className,
   minHeight = "80px",
 }: RichTextEditorProps) {
+  const editorRef = useRef<Editor | null>(null);
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -33,6 +76,7 @@ export function RichTextEditor({
           class: "max-w-full h-auto rounded",
         },
       }),
+      createMathExtension(editorRef),
     ],
     content: value,
     onUpdate: ({ editor }) => {
@@ -42,12 +86,17 @@ export function RichTextEditor({
       attributes: {
         class: cn(
           "p-3 outline-none min-h-[80px] prose prose-sm max-w-none dark:prose-invert",
-          "[&_img]:max-w-full [&_img]:h-auto [&_img]:rounded"
+          "[&_img]:max-w-full [&_img]:h-auto [&_img]:rounded",
+          "[&_.tiptap-mathematics-render]:bg-muted [&_.tiptap-mathematics-render]:px-1 [&_.tiptap-mathematics-render]:py-0.5 [&_.tiptap-mathematics-render]:rounded [&_.tiptap-mathematics-render]:cursor-pointer [&_.tiptap-mathematics-render]:inline-block"
         ),
         style: `min-height: ${minHeight}`,
       },
     },
   });
+
+  useEffect(() => {
+    editorRef.current = editor;
+  }, [editor]);
 
   // Sync external value changes
   useEffect(() => {
@@ -60,6 +109,13 @@ export function RichTextEditor({
     const url = prompt("آدرس تصویر را وارد کنید:");
     if (url && editor) {
       editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
+  const handleInsertMath = () => {
+    const latex = prompt("فرمول LaTeX را وارد کنید:", "x^2 + y^2 = z^2");
+    if (latex && editor) {
+      editor.chain().focus().insertInlineMath({ latex }).run();
     }
   };
 
@@ -76,7 +132,6 @@ export function RichTextEditor({
         className
       )}
     >
-      {/* Toolbar */}
       <div className="flex items-center gap-1 p-1 border-b bg-muted/30">
         <Button
           type="button"
@@ -105,9 +160,19 @@ export function RichTextEditor({
           size="icon"
           className="h-7 w-7"
           onClick={handleInsertImage}
-          title="Insert Image"
+          title="درج تصویر"
         >
           <ImageIcon className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={handleInsertMath}
+          title="درج فرمول LaTeX"
+        >
+          <SigmaIcon className="h-4 w-4" />
         </Button>
       </div>
 

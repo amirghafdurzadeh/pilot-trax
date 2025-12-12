@@ -483,12 +483,6 @@ export default function QuestionsPageClient({
         )}
 
         {nextCursor && !isLoading && <div ref={loadMoreRef} className="h-10" />}
-
-        {!nextCursor && questions.length > 0 && !isLoading && (
-          <div className="text-center py-8 text-muted-foreground text-sm">
-            همه سوالات نمایش داده شده‌اند
-          </div>
-        )}
       </AppContent>
 
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
