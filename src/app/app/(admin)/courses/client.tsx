@@ -9,6 +9,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { deleteCourseAction, saveCourse } from "@/actions/courses";
 import { AppContent } from "@/components/core/app-content";
@@ -104,22 +105,22 @@ function LessonTreeItem({
   return (
     <div className="flex flex-col gap-2 border-s ps-3">
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6 shrink-0"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {lesson.children.length > 0 ? (
-            isExpanded ? (
+        {lesson.children.length > 0 ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 shrink-0"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? (
               <ChevronDownIcon className="h-4 w-4" />
             ) : (
               <ChevronLeftIcon className="h-4 w-4" />
-            )
-          ) : (
-            <div className="w-4 h-4" />
-          )}
-        </Button>
+            )}
+          </Button>
+        ) : (
+          <div className="shrink-0 w-6 h-6" />
+        )}
         <Input
           value={lesson.title}
           onChange={handleTitleChange}
@@ -203,7 +204,12 @@ export default function CoursesPageClient({
 
   const executeDelete = async () => {
     if (courseToDelete) {
-      await deleteCourseAction(courseToDelete);
+      const result = await deleteCourseAction(courseToDelete);
+      if (result.success) {
+        toast.success("دوره با موفقیت حذف شد");
+      } else {
+        toast.error("خطا در حذف دوره");
+      }
       setCourseToDelete(null);
     }
   };
@@ -212,7 +218,7 @@ export default function CoursesPageClient({
     if (!editingCourse) return;
 
     if (!editingCourse.title.trim()) {
-      alert("عنوان الزامی است");
+      toast.error("عنوان الزامی است");
       return;
     }
 
@@ -222,8 +228,9 @@ export default function CoursesPageClient({
 
     if (result.success) {
       setIsSheetOpen(false);
+      toast.success("دوره با موفقیت ذخیره شد");
     } else {
-      alert("خطا در ذخیره سازی");
+      toast.error("خطا در ذخیره سازی: " + (result.error || "Unknown error"));
     }
   };
 
@@ -344,7 +351,6 @@ export default function CoursesPageClient({
           <div className="flex-1 overflow-y-auto p-4">
             {editingCourse && (
               <div className="flex flex-col gap-6">
-                {/* Basic Info */}
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label>عنوان</Label>

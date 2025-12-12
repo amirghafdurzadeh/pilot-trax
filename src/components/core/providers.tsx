@@ -1,5 +1,7 @@
 "use client";
 import { Direction } from "radix-ui";
+
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/auth";
 import { ThemeProvider } from "./theme-provider";
 
@@ -18,6 +20,7 @@ export function Providers(props: Props) {
           disableTransitionOnChange
         >
           {props.children}
+          <Toaster />
         </ThemeProvider>
       </AuthProvider>
     </Direction.Provider>

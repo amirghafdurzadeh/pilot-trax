@@ -6,19 +6,18 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 
-export function AppSearch({
-  value,
-  onChange,
-}: {
+type Props = Readonly<{
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
+}>;
+
+export function AppSearch(props: Props) {
   return (
     <InputGroup>
       <InputGroupInput
         placeholder="جستجو..."
-        value={value}
-        onChange={onChange}
+        value={props.value}
+        onChange={props.onChange}
       />
       <InputGroupAddon>
         <SearchIcon />
