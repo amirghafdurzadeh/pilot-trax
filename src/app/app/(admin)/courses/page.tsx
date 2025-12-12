@@ -50,8 +50,6 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 
-// --- Types ---
-
 type Lesson = {
   id: string;
   title: string;
@@ -65,8 +63,6 @@ type Course = {
   questions: number;
   lessons: Lesson[];
 };
-
-// --- Mock Data ---
 
 const INITIAL_COURSES: Course[] = Array.from({ length: 4 }).map((_, i) => ({
   id: `course-${i}`,
@@ -90,8 +86,6 @@ const INITIAL_COURSES: Course[] = Array.from({ length: 4 }).map((_, i) => ({
     },
   ],
 }));
-
-// --- Components ---
 
 function LessonTreeItem({
   lesson,
@@ -192,7 +186,6 @@ function LessonTreeItem({
 export default function Page() {
   const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
 
-  // Sheet State
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
@@ -243,7 +236,6 @@ export default function Page() {
     setIsSheetOpen(false);
   };
 
-  // Lesson Handlers in Edit Mode
   const addRootLesson = () => {
     if (!editingCourse) return;
     const newLesson: Lesson = {
@@ -391,7 +383,6 @@ export default function Page() {
 
                 <Separator />
 
-                {/* Lesson Tree */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-base font-semibold">
