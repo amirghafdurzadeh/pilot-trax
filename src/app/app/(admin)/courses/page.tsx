@@ -1,45 +1,18 @@
 "use client";
 
-import * as React from "react";
 import {
-  EllipsisVerticalIcon,
-  PlusIcon,
-  Trash2Icon,
-  PencilIcon,
-  ChevronRightIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
+  EllipsisVerticalIcon,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon,
 } from "lucide-react";
+import { useState } from "react";
 
-import { AppSearch } from "@/components/core/app-search";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import { AppHeader } from "@/components/core/app-header";
 import { AppContent } from "@/components/core/app-content";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetFooter,
-  SheetClose,
-} from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { AppHeader } from "@/components/core/app-header";
+import { AppSearch } from "@/components/core/app-search";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,6 +23,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 
 // --- Types ---
 
@@ -103,7 +102,7 @@ function LessonTreeItem({
   onChange: (updated: Lesson) => void;
   onDelete: () => void;
 }) {
-  const [isExpanded, setIsExpanded] = React.useState(true);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...lesson, title: e.target.value });
@@ -191,14 +190,12 @@ function LessonTreeItem({
 }
 
 export default function Page() {
-  const [courses, setCourses] = React.useState<Course[]>(INITIAL_COURSES);
+  const [courses, setCourses] = useState<Course[]>(INITIAL_COURSES);
 
   // Sheet State
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
-  const [editingCourse, setEditingCourse] = React.useState<Course | null>(null);
-  const [courseToDelete, setCourseToDelete] = React.useState<string | null>(
-    null
-  );
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
 
   const handleAddNew = () => {
     setEditingCourse({
