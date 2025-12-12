@@ -277,7 +277,7 @@ export default function Page() {
   return (
     <>
       <AppHeader>
-        <div className="flex items-center gap-4 flex-1">
+        <div className="flex items-center gap-2 flex-1">
           <AppSearch />
           <div className="flex-1" />
           <Button onClick={handleAddNew} className="gap-2">
