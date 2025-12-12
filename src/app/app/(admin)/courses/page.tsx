@@ -40,6 +40,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // --- Types ---
 
@@ -186,6 +196,9 @@ export default function Page() {
   // Sheet State
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const [editingCourse, setEditingCourse] = React.useState<Course | null>(null);
+  const [courseToDelete, setCourseToDelete] = React.useState<string | null>(
+    null
+  );
 
   const handleAddNew = () => {
     setEditingCourse({
@@ -204,8 +217,13 @@ export default function Page() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("آیا از حذف این دوره اطمینان دارید؟")) {
-      setCourses((prev) => prev.filter((c) => c.id !== id));
+    setCourseToDelete(id);
+  };
+
+  const executeDelete = () => {
+    if (courseToDelete) {
+      setCourses((prev) => prev.filter((c) => c.id !== courseToDelete));
+      setCourseToDelete(null);
     }
   };
 
@@ -289,14 +307,14 @@ export default function Page() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => handleEdit(course)}>
-                      <PencilIcon className="w-4 h-4 ml-2" />
+                      <PencilIcon className="w-4 h-4" />
                       ویرایش
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive focus:text-destructive"
                       onClick={() => handleDelete(course.id)}
                     >
-                      <Trash2Icon className="w-4 h-4 ml-2" />
+                      <Trash2Icon className="w-4 h-4 text-inherit" />
                       حذف
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -417,6 +435,32 @@ export default function Page() {
           </SheetFooter>
         </SheetContent>
       </Sheet>
+
+      <AlertDialog
+        open={!!courseToDelete}
+        onOpenChange={(open) => !open && setCourseToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              آیا از حذف این دوره اطمینان دارید؟
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این دوره حذف
+              خواهد شد.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              حذف
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
