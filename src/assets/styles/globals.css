@@ -4,15 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 html {
+  width: 100%;
   scroll-behavior: smooth;
   user-select: none;
 }
 
 body {
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   display: flex;
-  overflow-x: hidden !important;
 }
 
 *,

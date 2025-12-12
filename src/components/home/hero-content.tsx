@@ -19,13 +19,13 @@ export function HeroContent() {
       </p>
 
       <div className="mt-8 flex flex-col sm:flex-row gap-4">
-        <Button asChild size="xl" className="text-lg font-semibold shadow-lg">
+        <Button asChild size="lg" className="text-lg font-semibold shadow-lg">
           <Link href="#contact">شروع رایگان</Link>
         </Button>
         <Button
           asChild
           variant="outline"
-          size="xl"
+          size="lg"
           className="text-lg font-normal"
         >
           <Link href="#how">مشاهده دموی محصول</Link>

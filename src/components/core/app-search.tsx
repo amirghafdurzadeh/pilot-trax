@@ -9,7 +9,7 @@ import {
 export function AppSearch() {
   return (
     <InputGroup>
-      <InputGroupInput placeholder="Search..." />
+      <InputGroupInput placeholder="جستجو..." />
       <InputGroupAddon>
         <SearchIcon />
       </InputGroupAddon>

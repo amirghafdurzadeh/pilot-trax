@@ -76,7 +76,7 @@ export function LoginOTPForm() {
   useEffect(() => {
     if (!otpLoginState?.success) return;
     const redirect = searchParams.get("redirect");
-    router.replace(redirect || "/");
+    router.replace(redirect || "/app");
   }, [otpLoginState, searchParams]);
 
   useEffect(() => {

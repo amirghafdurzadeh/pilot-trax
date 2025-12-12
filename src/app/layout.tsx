@@ -44,7 +44,7 @@ type Props = Readonly<{
 export default function Layout(props: Props) {
   return (
     <html dir="rtl" lang="fa" suppressHydrationWarning>
-      <body className={`${vazirmatn.className}`}>
+      <body className={vazirmatn.className}>
         <Providers>{props.children}</Providers>
       </body>
     </html>
