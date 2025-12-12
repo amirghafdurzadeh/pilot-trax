@@ -75,6 +75,12 @@ model Question {
 
   answers Answer[]
 
+  lessonId String @map("lesson_id")
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   @@map("questions")
 }
 
@@ -84,7 +90,10 @@ model Answer {
   isCorrect Boolean @default(false)
 
   questionId String   @map("question_id")
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("answers")
 }
@@ -114,6 +123,8 @@ model Lesson {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  questions Question[]
 
   @@map("lessons")
 }

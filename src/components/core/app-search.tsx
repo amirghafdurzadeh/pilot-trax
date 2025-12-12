@@ -9,13 +9,14 @@ import {
 type Props = Readonly<{
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
 }>;
 
 export function AppSearch(props: Props) {
   return (
     <InputGroup>
       <InputGroupInput
-        placeholder="جستجو..."
+        placeholder={props.placeholder}
         value={props.value}
         onChange={props.onChange}
       />

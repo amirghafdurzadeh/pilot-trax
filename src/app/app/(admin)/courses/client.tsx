@@ -268,6 +268,7 @@ export default function CoursesPageClient({
           <AppSearch
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="جستجوی دوره"
           />
           <div className="flex-1" />
           <Button onClick={handleAddNew} className="gap-2">

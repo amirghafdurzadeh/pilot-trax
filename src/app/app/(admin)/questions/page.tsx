@@ -1,14 +1,17 @@
-import { AppContent } from "@/components/core/app-content";
-import { AppHeader } from "@/components/core/app-header";
-import { AppSearch } from "@/components/core/app-search";
+import { getQuestions, getLessonsForFilter } from "@/actions/questions";
+import QuestionsPageClient from "./client";
 
-export default function Page() {
+export default async function QuestionsPage() {
+  const [questionsResult, lessons] = await Promise.all([
+    getQuestions({}),
+    getLessonsForFilter(),
+  ]);
+
   return (
-    <>
-      <AppHeader>
-        <AppSearch />
-      </AppHeader>
-      <AppContent></AppContent>
-    </>
+    <QuestionsPageClient
+      initialQuestions={questionsResult.questions}
+      initialNextCursor={questionsResult.nextCursor}
+      initialLessons={lessons}
+    />
   );
 }
