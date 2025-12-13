@@ -7,6 +7,7 @@ import StarterKit from "@tiptap/starter-kit";
 import "katex/dist/katex.min.css";
 import { BoldIcon, ImageIcon, ItalicIcon, SigmaIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import FileInput from "@/components/ui/file-input";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
@@ -84,6 +86,9 @@ export function RichTextEditor({
   const editorRef = useRef<Editor | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogValue, setDialogValue] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const dialogModeRef = useRef<"image" | "math-inline" | "math-block" | null>(
     null
   );
@@ -125,6 +130,14 @@ export function RichTextEditor({
   useEffect(() => {
     editorRef.current = editor;
   }, [editor]);
+
+  // revoke object URL when preview changes/cleanup
+  useEffect(() => {
+    const url = previewUrl;
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [previewUrl]);
 
   // Sync external value changes
   useEffect(() => {
@@ -235,31 +248,87 @@ export function RichTextEditor({
           </DialogHeader>
 
           <div className="py-2">
-            <Input
-              value={dialogValue}
-              onChange={(e) => setDialogValue(e.target.value)}
-              placeholder={
-                dialogModeRef.current === "image"
-                  ? "https://example.com/image.png"
-                  : "x^2 + y^2 = z^2"
-              }
-            />
+            {dialogModeRef.current === "image" ? (
+              <div className="space-y-2">
+                <div>
+                  <FileInput
+                    accept="image/*"
+                    onFileChange={(f) => {
+                      setSelectedFile(f ?? null);
+                      if (f) setPreviewUrl(URL.createObjectURL(f));
+                      else setPreviewUrl(null);
+                    }}
+                    buttonLabel="انتخاب فایل"
+                  />
+                </div>
+
+                {previewUrl && (
+                  <div className="pt-2">
+                    <img src={previewUrl} alt="preview" className="max-w-full h-auto rounded" />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Input
+                value={dialogValue}
+                onChange={(e) => setDialogValue(e.target.value)}
+                placeholder={"x^2 + y^2 = z^2"}
+              />
+            )}
           </div>
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">لغو</Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  // cleanup
+                  setSelectedFile(null);
+                  setPreviewUrl(null);
+                }}
+              >
+                لغو
+              </Button>
             </DialogClose>
             <Button
-              onClick={() => {
+              disabled={isUploading}
+              onClick={async () => {
                 try {
-                  applyCallbackRef.current(dialogValue);
+                  if (dialogModeRef.current === "image") {
+                    // require a selected file (no URL option)
+                    if (!selectedFile) {
+                      toast.error("لطفا یک فایل تصویر انتخاب کنید");
+                      return;
+                    }
+
+                    setIsUploading(true);
+                    const form = new FormData();
+                    form.append("file", selectedFile);
+                    const res = await fetch("/api/uploads", {
+                      method: "POST",
+                      body: form,
+                    });
+                    const data = await res.json();
+                    setIsUploading(false);
+                    if (res.ok && data.url) {
+                      applyCallbackRef.current(data.url);
+                    } else {
+                      toast.error("خطا در آپلود تصویر");
+                      return;
+                    }
+                  } else {
+                    applyCallbackRef.current(dialogValue);
+                  }
                 } finally {
+                  // cleanup & close
+                  setIsUploading(false);
+                  setSelectedFile(null);
+                  setPreviewUrl(null);
                   setDialogOpen(false);
                 }
               }}
             >
-              درج
+              {isUploading ? "در حال آپلود..." : "درج"}
             </Button>
           </DialogFooter>
         </DialogContent>
