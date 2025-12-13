@@ -77,6 +77,7 @@ export function AppSidebar() {
                       isActive={isActive}
                       tooltip={item.title}
                       onClick={() => handleClick(item.href)}
+                      className="cursor-pointer"
                     >
                       <item.icon />
                       <span>{item.title}</span>

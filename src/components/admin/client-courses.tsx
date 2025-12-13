@@ -26,7 +26,7 @@ import {
   PlusIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 import { deleteCourseAction, saveCourse } from "@/actions/courses";
@@ -90,12 +90,14 @@ function SortableLessonItem({
   lesson,
   onChange,
   onDelete,
+  collapseSignal,
 }: {
   lesson: Lesson;
   onChange: (updated: Lesson) => void;
   onDelete: () => void;
+  collapseSignal?: number;
 }) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const {
     attributes,
@@ -156,6 +158,13 @@ function SortableLessonItem({
       onChange({ ...lesson, children: newChildren });
     }
   };
+  // react to collapseSignal changes using effect to avoid setting state during render
+  useEffect(() => {
+    if (typeof collapseSignal !== "undefined") {
+      setIsExpanded(false);
+    }
+  }, [collapseSignal]);
+
 
   return (
     <div
@@ -231,6 +240,7 @@ function SortableLessonItem({
                 <SortableLessonItem
                   key={child.id}
                   lesson={child}
+                  collapseSignal={collapseSignal}
                   onChange={(updated) => handleUpdateChild(idx, updated)}
                   onDelete={() => handleDeleteChild(idx)}
                 />
@@ -262,6 +272,7 @@ export default function CoursesPageClient({
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [collapseAllSignal, setCollapseAllSignal] = useState(0);
 
   const handleAddNew = () => {
     setEditingCourse({
@@ -499,10 +510,20 @@ export default function CoursesPageClient({
                     <Label className="text-base font-semibold">
                       ساختار دروس
                     </Label>
-                    <Button size="sm" variant="outline" onClick={addRootLesson}>
-                      <PlusIcon className="w-4 h-4 ml-2" />
-                      افزودن ماژول
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      <Button size="sm" variant="outline" onClick={addRootLesson}>
+                        <PlusIcon className="w-4 h-4 ml-2" />
+                        افزودن ماژول
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setCollapseAllSignal((s) => s + 1)}
+                        title="جمع‌کردن همه"
+                      >
+                        بستن همه
+                      </Button>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -525,6 +546,7 @@ export default function CoursesPageClient({
                               <SortableLessonItem
                                 key={lesson.id}
                                 lesson={lesson}
+                                collapseSignal={collapseAllSignal}
                                 onChange={(updated) =>
                                   updateRootLesson(idx, updated)
                                 }
