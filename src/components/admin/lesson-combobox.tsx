@@ -24,6 +24,8 @@ export type LessonOption = {
   title: string;
   courseName: string;
   depth: number;
+  order?: number;
+  parentId?: string | null;
 };
 
 interface LessonComboboxProps {
@@ -53,13 +55,66 @@ export function LessonCombobox({
 
   // Group lessons by course
   const lessonsByCourse = React.useMemo(() => {
-    return lessons.reduce((acc, lesson) => {
+    const grouped = lessons.reduce((acc, lesson) => {
       if (!acc[lesson.courseName]) {
         acc[lesson.courseName] = [];
       }
       acc[lesson.courseName].push(lesson);
       return acc;
     }, {} as Record<string, LessonOption[]>);
+
+    // For each course, build a parent-child tree using parentId and then
+    // produce a depth-first flattened list that respects `order` fields.
+    Object.keys(grouped).forEach((courseName) => {
+      const items = grouped[courseName];
+
+      // Build map of nodes
+      const nodeMap = new Map<string, (LessonOption & { children: any[] })>();
+      items.forEach((it) => nodeMap.set(it.id, { ...it, children: [] } as any));
+
+      const roots: (LessonOption & { children: any[] })[] = [];
+
+      items.forEach((it) => {
+        const node = nodeMap.get(it.id)!;
+        const parentId = (it as any).parentId;
+        if (parentId && nodeMap.has(parentId)) {
+          nodeMap.get(parentId)!.children.push(node);
+        } else {
+          roots.push(node);
+        }
+      });
+
+      const sortNodes = (nodes: any[]) => {
+        nodes.sort((a, b) => {
+          const ao = a.order ?? 0;
+          const bo = b.order ?? 0;
+          if (ao !== bo) return ao - bo;
+          return a.title.localeCompare(b.title);
+        });
+        nodes.forEach((n) => n.children && sortNodes(n.children));
+      };
+
+      sortNodes(roots);
+
+      const flattened: LessonOption[] = [];
+      const dfs = (n: any, depth: number) => {
+        flattened.push({
+          id: n.id,
+          title: n.title,
+          courseName: n.courseName,
+          depth,
+          order: n.order,
+          parentId: n.parentId ?? null,
+        });
+        (n.children || []).forEach((c: any) => dfs(c, depth + 1));
+      };
+
+      roots.forEach((r) => dfs(r, 0));
+
+      grouped[courseName] = flattened;
+    });
+
+    return grouped;
   }, [lessons]);
 
   // Get selected lesson label

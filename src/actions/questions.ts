@@ -33,6 +33,8 @@ export type LessonOption = {
   title: string;
   courseName: string;
   depth: number;
+  order?: number;
+  parentId?: string | null;
 };
 
 export async function getLessonsForFilter(): Promise<LessonOption[]> {
@@ -43,7 +45,12 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
           select: { title: true },
         },
       },
-      orderBy: [{ course: { title: "asc" } }, { title: "asc" }],
+      // order by course title then lesson.order then lesson title
+      orderBy: [
+        { course: { title: "asc" } },
+        { order: "asc" },
+        { title: "asc" },
+      ],
     });
 
     const lessonMap = new Map<string, { parentId: string | null }>();
@@ -62,6 +69,8 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
       title: lesson.title,
       courseName: lesson.course.title,
       depth: getDepth(lesson.id),
+      order: lesson.order,
+      parentId: lesson.parentId ?? null,
     }));
   } catch (error) {
     console.error("Failed to get lessons for filter", error);
