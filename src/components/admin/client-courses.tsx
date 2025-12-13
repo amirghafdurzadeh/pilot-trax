@@ -1,8 +1,26 @@
 "use client";
 
 import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   ChevronDownIcon,
   ChevronLeftIcon,
+  ChevronsUpDownIcon,
   EllipsisVerticalIcon,
   PencilIcon,
   PlusIcon,
@@ -51,10 +69,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 type Lesson = {
   id: string;
   title: string;
+  order: number;
   children: Lesson[];
 };
 
@@ -66,7 +86,7 @@ type Course = {
   lessons: Lesson[];
 };
 
-function LessonTreeItem({
+function SortableLessonItem({
   lesson,
   onChange,
   onDelete,
@@ -77,6 +97,27 @@ function LessonTreeItem({
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: lesson.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...lesson, title: e.target.value });
   };
@@ -85,6 +126,7 @@ function LessonTreeItem({
     const newChild: Lesson = {
       id: crypto.randomUUID(),
       title: "درس جدید",
+      order: lesson.children.length,
       children: [],
     };
     onChange({ ...lesson, children: [...lesson.children, newChild] });
@@ -102,9 +144,37 @@ function LessonTreeItem({
     onChange({ ...lesson, children: newChildren });
   };
 
+  const handleChildDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = lesson.children.findIndex((c) => c.id === active.id);
+    const newIndex = lesson.children.findIndex((c) => c.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newChildren = arrayMove(lesson.children, oldIndex, newIndex);
+      onChange({ ...lesson, children: newChildren });
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-2 border-s ps-3">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "flex flex-col gap-2 border-s ps-3",
+        isDragging && "opacity-50"
+      )}
+    >
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none"
+          {...attributes}
+          {...listeners}
+        >
+          <ChevronsUpDownIcon className="h-4 w-4" />
+        </button>
         {lesson.children.length > 0 ? (
           <Button
             variant="ghost"
@@ -147,16 +217,27 @@ function LessonTreeItem({
         </Button>
       </div>
       {isExpanded && lesson.children.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {lesson.children.map((child, idx) => (
-            <LessonTreeItem
-              key={child.id}
-              lesson={child}
-              onChange={(updated) => handleUpdateChild(idx, updated)}
-              onDelete={() => handleDeleteChild(idx)}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleChildDragEnd}
+        >
+          <SortableContext
+            items={lesson.children.map((c) => c.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="flex flex-col gap-2">
+              {lesson.children.map((child, idx) => (
+                <SortableLessonItem
+                  key={child.id}
+                  lesson={child}
+                  onChange={(updated) => handleUpdateChild(idx, updated)}
+                  onDelete={() => handleDeleteChild(idx)}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
@@ -194,7 +275,10 @@ export default function CoursesPageClient({
   };
 
   const handleEdit = (course: Course) => {
-    setEditingCourse({ ...course });
+    setEditingCourse({
+      ...course,
+      lessons: [...course.lessons].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+    });
     setIsSheetOpen(true);
   };
 
@@ -239,6 +323,7 @@ export default function CoursesPageClient({
     const newLesson: Lesson = {
       id: crypto.randomUUID(),
       title: "ماژول جدید",
+      order: editingCourse.lessons.length,
       children: [],
     };
     setEditingCourse({
@@ -259,6 +344,29 @@ export default function CoursesPageClient({
     const newLessons = [...editingCourse.lessons];
     newLessons.splice(index, 1);
     setEditingCourse({ ...editingCourse, lessons: newLessons });
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleRootLessonDragEnd = (event: DragEndEvent) => {
+    if (!editingCourse) return;
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = editingCourse.lessons.findIndex((l) => l.id === active.id);
+    const newIndex = editingCourse.lessons.findIndex((l) => l.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      let newLessons = arrayMove(editingCourse.lessons, oldIndex, newIndex);
+      // Update order fields to reflect new positions
+      newLessons = newLessons.map((l, idx) => ({ ...l, order: idx }));
+      setEditingCourse({ ...editingCourse, lessons: newLessons });
+    }
   };
 
   return (
@@ -401,14 +509,29 @@ export default function CoursesPageClient({
                         هنوز درسی اضافه نشده است.
                       </div>
                     ) : (
-                      editingCourse.lessons.map((lesson, idx) => (
-                        <LessonTreeItem
-                          key={lesson.id}
-                          lesson={lesson}
-                          onChange={(updated) => updateRootLesson(idx, updated)}
-                          onDelete={() => deleteRootLesson(idx)}
-                        />
-                      ))
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleRootLessonDragEnd}
+                      >
+                        <SortableContext
+                          items={editingCourse.lessons.map((l) => l.id)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="flex flex-col gap-2">
+                            {editingCourse.lessons.map((lesson, idx) => (
+                              <SortableLessonItem
+                                key={lesson.id}
+                                lesson={lesson}
+                                onChange={(updated) =>
+                                  updateRootLesson(idx, updated)
+                                }
+                                onDelete={() => deleteRootLesson(idx)}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>

@@ -113,6 +113,7 @@ model Course {
 model Lesson {
   id    String @id @default(uuid())
   title String
+  order Int    @default(0)
 
   courseId String @map("course_id")
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)

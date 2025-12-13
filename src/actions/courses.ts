@@ -4,9 +4,18 @@ import { revalidatePath } from "next/cache";
 
 import prisma from "@/lib/prisma";
 
+type LessonFlat = {
+  id: string;
+  title: string;
+  order: number;
+  parentId: string | null;
+  courseId: string;
+};
+
 type LessonNode = {
   id: string;
   title: string;
+  order: number;
   children: LessonNode[];
 };
 
@@ -27,6 +36,7 @@ export async function getCourses() {
 
     const allLessons = await prisma.lesson.findMany({
       where: { courseId: { in: courseIds } },
+      orderBy: { order: "asc" },
     });
 
     const coursesWithLessons = courses.map((course: any) => {
@@ -37,9 +47,11 @@ export async function getCourses() {
       const buildTree = (parentId: string | null): LessonNode[] => {
         return courseLessons
           .filter((l: any) => l.parentId === parentId)
+          .sort((a: any, b: any) => a.order - b.order)
           .map((l: any) => ({
             id: l.id,
             title: l.title,
+            order: l.order,
             children: buildTree(l.id),
           }));
       };
@@ -86,17 +98,13 @@ export async function saveCourse(course: CourseInput) {
         {
           id: string;
           title: string;
+          order: number;
           parentId: string | null;
           courseId: string;
         }
       >();
 
-      let layers: {
-        id: string;
-        title: string;
-        parentId: string | null;
-        courseId: string;
-      }[][] = [];
+      let layers: LessonFlat[][] = [];
 
       const processLayer = (
         nodes: LessonNode[],
@@ -105,10 +113,12 @@ export async function saveCourse(course: CourseInput) {
       ) => {
         if (!layers[depth]) layers[depth] = [];
 
-        for (const node of nodes) {
+        for (let i = 0; i < nodes.length; i++) {
+          const node = nodes[i];
           const lessonData = {
             id: node.id,
             title: node.title,
+            order: i,
             parentId: parentId,
             courseId: course.id!,
           };
@@ -134,8 +144,8 @@ export async function saveCourse(course: CourseInput) {
       }
 
       for (const layer of layers) {
-        const toCreate = [];
-        const toUpdate = [];
+        const toCreate: LessonFlat[] = [];
+        const toUpdate: LessonFlat[] = [];
 
         for (const node of layer) {
           if (existingIds.has(node.id)) {
@@ -159,6 +169,7 @@ export async function saveCourse(course: CourseInput) {
                 data: {
                   title: node.title,
                   parentId: node.parentId,
+                  order: node.order,
                 },
               })
             )
