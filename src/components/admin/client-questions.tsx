@@ -2,6 +2,7 @@
 
 import {
   CheckCircle2Icon,
+  ChevronsUpDownIcon,
   CircleIcon,
   EllipsisVerticalIcon,
   FilterIcon,
@@ -11,6 +12,23 @@ import {
   XIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 
@@ -118,6 +136,59 @@ function AnswerItem({
         placeholder="متن پاسخ..."
         minHeight="60px"
       />
+    </div>
+  );
+}
+
+function SortableAnswerItem({
+  answer,
+  onChange,
+  onDelete,
+  onToggleCorrect,
+}: {
+  answer: AnswerInput;
+  onChange: (updated: AnswerInput) => void;
+  onDelete: () => void;
+  onToggleCorrect: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: answer.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  } as React.CSSProperties;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={isDragging ? "opacity-50" : ""}
+    >
+      <div className="flex items-start gap-2">
+        <button
+          type="button"
+          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none h-8 w-8"
+          {...attributes}
+          {...listeners}
+        >
+          <ChevronsUpDownIcon className="h-4 w-4" />
+        </button>
+        <div className="flex-1">
+          <AnswerItem
+            answer={answer}
+            onChange={onChange}
+            onDelete={onDelete}
+            onToggleCorrect={onToggleCorrect}
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -373,6 +444,7 @@ export default function QuestionsPageClient({
       id: crypto.randomUUID(),
       title: "",
       isCorrect: false,
+      order: editingQuestion.answers.length,
     };
     setEditingQuestion({
       ...editingQuestion,
@@ -402,6 +474,31 @@ export default function QuestionsPageClient({
       isCorrect: !newAnswers[index].isCorrect,
     };
     setEditingQuestion({ ...editingQuestion, answers: newAnswers });
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleAnswerDragEnd = (event: DragEndEvent) => {
+    if (!editingQuestion) return;
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = editingQuestion.answers.findIndex(
+      (a) => a.id === active.id
+    );
+    const newIndex = editingQuestion.answers.findIndex((a) => a.id === over.id);
+
+    if (oldIndex !== -1 && newIndex !== -1) {
+      let newAnswers = arrayMove(editingQuestion.answers, oldIndex, newIndex);
+      // update order fields
+      newAnswers = newAnswers.map((a, idx) => ({ ...a, order: idx }));
+      setEditingQuestion({ ...editingQuestion, answers: newAnswers });
+    }
   };
 
   const clearFilters = () => {
@@ -547,15 +644,30 @@ export default function QuestionsPageClient({
                         هنوز پاسخی اضافه نشده است.
                       </div>
                     ) : (
-                      editingQuestion.answers.map((answer, idx) => (
-                        <AnswerItem
-                          key={answer.id}
-                          answer={answer}
-                          onChange={(updated) => updateAnswer(idx, updated)}
-                          onDelete={() => deleteAnswer(idx)}
-                          onToggleCorrect={() => toggleAnswerCorrect(idx)}
-                        />
-                      ))
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleAnswerDragEnd}
+                      >
+                        <SortableContext
+                          items={editingQuestion.answers.map((a) => a.id)}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="flex flex-col gap-3">
+                            {editingQuestion.answers.map((answer, idx) => (
+                              <SortableAnswerItem
+                                key={answer.id}
+                                answer={answer}
+                                onChange={(updated) =>
+                                  updateAnswer(idx, updated)
+                                }
+                                onDelete={() => deleteAnswer(idx)}
+                                onToggleCorrect={() => toggleAnswerCorrect(idx)}
+                              />
+                            ))}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
                     )}
                   </div>
                 </div>

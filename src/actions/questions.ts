@@ -8,6 +8,7 @@ export type AnswerInput = {
   id: string;
   title: string;
   isCorrect: boolean;
+  order?: number;
 };
 
 export type QuestionInput = {
@@ -103,7 +104,7 @@ export async function getQuestions(params: {
       orderBy: { createdAt: "desc" },
       include: {
         answers: {
-          orderBy: { createdAt: "asc" },
+          orderBy: { order: "asc" },
         },
         lesson: {
           include: {
@@ -132,6 +133,7 @@ export async function getQuestions(params: {
           id: a.id,
           title: a.title,
           isCorrect: a.isCorrect,
+          order: a.order,
         })),
         createdAt: q.createdAt,
       })
@@ -199,11 +201,13 @@ export async function saveQuestion(question: QuestionInput) {
             update: {
               title: answer.title,
               isCorrect: answer.isCorrect,
+              order: answer.order ?? 0,
             },
             create: {
               id: answer.id,
               title: answer.title,
               isCorrect: answer.isCorrect,
+              order: answer.order ?? 0,
               questionId: question.id,
             },
           });
@@ -223,6 +227,7 @@ export async function saveQuestion(question: QuestionInput) {
             id: a.id,
             title: a.title,
             isCorrect: a.isCorrect,
+            order: a.order ?? 0,
             questionId: newQuestionId,
           })),
         });
