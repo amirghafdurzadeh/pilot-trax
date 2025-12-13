@@ -4,12 +4,22 @@ import Image from "@tiptap/extension-image";
 import { Mathematics } from "@tiptap/extension-mathematics";
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import "katex/dist/katex.min.css";
 import { BoldIcon, ImageIcon, ItalicIcon, SigmaIcon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import "katex/dist/katex.min.css";
 
 interface RichTextEditorProps {
   value: string;
@@ -19,36 +29,42 @@ interface RichTextEditorProps {
   minHeight?: string;
 }
 
-function createMathExtension(editorRef: React.MutableRefObject<Editor | null>) {
+function createMathExtension(
+  editorRef: React.MutableRefObject<Editor | null>,
+  // showDialog(initialLatex, mode, applyCallback)
+  showDialog: (
+    initial: string,
+    mode: "inline" | "block",
+    apply: (latex: string) => void
+  ) => void
+) {
   return Mathematics.configure({
     inlineOptions: {
       onClick: (node, pos) => {
         const currentEditor = editorRef.current;
         if (!currentEditor) return;
-        const latex = prompt("فرمول LaTeX را وارد کنید:", node.attrs.latex);
-        if (latex !== null) {
+        showDialog(node.attrs.latex ?? "", "inline", (latex) => {
           currentEditor
             .chain()
             .setNodeSelection(pos)
             .updateInlineMath({ latex })
             .focus()
             .run();
-        }
+        });
       },
     },
     blockOptions: {
       onClick: (node, pos) => {
         const currentEditor = editorRef.current;
         if (!currentEditor) return;
-        const latex = prompt("فرمول LaTeX را وارد کنید:", node.attrs.latex);
-        if (latex !== null) {
+        showDialog(node.attrs.latex ?? "", "block", (latex) => {
           currentEditor
             .chain()
             .setNodeSelection(pos)
             .updateBlockMath({ latex })
             .focus()
             .run();
-        }
+        });
       },
     },
     katexOptions: {
@@ -66,6 +82,12 @@ export function RichTextEditor({
   minHeight = "80px",
 }: RichTextEditorProps) {
   const editorRef = useRef<Editor | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogValue, setDialogValue] = useState("");
+  const dialogModeRef = useRef<"image" | "math-inline" | "math-block" | null>(
+    null
+  );
+  const applyCallbackRef = useRef<(val: string) => void>(() => {});
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -76,7 +98,13 @@ export function RichTextEditor({
           class: "max-w-full h-auto rounded",
         },
       }),
-      createMathExtension(editorRef),
+      createMathExtension(editorRef, (initial, mode, apply) => {
+        setDialogValue(initial ?? "");
+        applyCallbackRef.current = apply;
+        dialogModeRef.current =
+          mode === "inline" ? "math-inline" : "math-block";
+        setDialogOpen(true);
+      }),
     ],
     content: value,
     onUpdate: ({ editor }) => {
@@ -106,17 +134,23 @@ export function RichTextEditor({
   }, [value, editor]);
 
   const handleInsertImage = () => {
-    const url = prompt("آدرس تصویر را وارد کنید:");
-    if (url && editor) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+    if (!editor) return;
+    dialogModeRef.current = "image";
+    setDialogValue("");
+    applyCallbackRef.current = (url: string) => {
+      if (url) editor.chain().focus().setImage({ src: url }).run();
+    };
+    setDialogOpen(true);
   };
 
   const handleInsertMath = () => {
-    const latex = prompt("فرمول LaTeX را وارد کنید:", "x^2 + y^2 = z^2");
-    if (latex && editor) {
-      editor.chain().focus().insertInlineMath({ latex }).run();
-    }
+    if (!editor) return;
+    dialogModeRef.current = "math-inline";
+    setDialogValue("");
+    applyCallbackRef.current = (latex: string) => {
+      if (latex) editor.chain().focus().insertInlineMath({ latex }).run();
+    };
+    setDialogOpen(true);
   };
 
   if (!editor) {
@@ -185,6 +219,51 @@ export function RichTextEditor({
           </div>
         )}
       </div>
+
+      {/* Dialog for image / math input */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {dialogModeRef.current === "image" ? "درج تصویر" : "فرمول LaTeX"}
+            </DialogTitle>
+            <DialogDescription>
+              {dialogModeRef.current === "image"
+                ? "آدرس تصویر را وارد کنید"
+                : "فرمول LaTeX را وارد کنید"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-2">
+            <Input
+              value={dialogValue}
+              onChange={(e) => setDialogValue(e.target.value)}
+              placeholder={
+                dialogModeRef.current === "image"
+                  ? "https://example.com/image.png"
+                  : "x^2 + y^2 = z^2"
+              }
+            />
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">لغو</Button>
+            </DialogClose>
+            <Button
+              onClick={() => {
+                try {
+                  applyCallbackRef.current(dialogValue);
+                } finally {
+                  setDialogOpen(false);
+                }
+              }}
+            >
+              درج
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

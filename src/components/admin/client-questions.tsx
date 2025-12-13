@@ -420,37 +420,36 @@ export default function QuestionsPageClient({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="جستجو در سوالات"
           />
-
-          <LessonCombobox
-            lessons={lessons}
-            value={selectedLessonId}
-            onValueChange={setSelectedLessonId}
-            placeholder="فیلتر بر اساس درس"
-            icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
-            triggerClassName="w-fit"
-            className="w-[300px]"
-          />
-
-          {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={clearFilters}
-              title="پاک کردن فیلترها"
-            >
-              <XIcon className="w-4 h-4" />
-            </Button>
-          )}
-
-          <div className="flex-1" />
-          <Button onClick={handleAddNew} className="gap-2">
-            <PlusIcon className="w-4 h-4" />
-            افزودن سوال
-          </Button>
         </div>
       </AppHeader>
 
       <AppContent>
+        <div className="w-full flex flex-col md:flex-row gap-4">
+          <div className="w-full md:w-fit flex gap-2">
+            <LessonCombobox
+              lessons={lessons}
+              value={selectedLessonId}
+              onValueChange={setSelectedLessonId}
+              placeholder="فیلتر بر اساس درس"
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="flex-1 w-fit"
+            />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={clearFilters}
+                title="پاک کردن فیلترها"
+              >
+                <XIcon className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+          <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
+            <PlusIcon className="w-4 h-4" />
+            افزودن سوال
+          </Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {questions.map((question) => (
             <QuestionCard

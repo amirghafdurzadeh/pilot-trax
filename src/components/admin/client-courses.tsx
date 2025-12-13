@@ -378,15 +378,17 @@ export default function CoursesPageClient({
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="جستجوی دوره"
           />
-          <div className="flex-1" />
-          <Button onClick={handleAddNew} className="gap-2">
-            <PlusIcon className="w-4 h-4" />
-            افزودن دوره
-          </Button>
+          
         </div>
       </AppHeader>
 
       <AppContent>
+        <div className="w-full flex flex-col">
+          <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
+            <PlusIcon className="w-4 h-4" />
+            افزودن دوره
+          </Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredCourses.map((course) => (
             <Card
