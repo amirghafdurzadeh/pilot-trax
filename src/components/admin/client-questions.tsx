@@ -521,7 +521,11 @@ export default function QuestionsPageClient({
       </AppHeader>
 
       <AppContent>
-        <div className="w-full flex flex-col md:flex-row gap-4">
+        <div className="w-full flex flex-col md:flex-row gap-2">
+          <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
+            <PlusIcon className="w-4 h-4" />
+            افزودن سوال
+          </Button>
           <div className="w-full md:w-fit flex gap-2">
             <LessonCombobox
               lessons={lessons}
@@ -542,10 +546,6 @@ export default function QuestionsPageClient({
               </Button>
             )}
           </div>
-          <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
-            <PlusIcon className="w-4 h-4" />
-            افزودن سوال
-          </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {questions.map((question) => (

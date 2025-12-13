@@ -1,9 +1,9 @@
 "use client";
 import { BookOpenIcon, HelpCircleIcon, HomeIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect } from "react";
 
+import { AppBrand } from "@/components/core/app-brand";
 import {
   Sidebar,
   SidebarContent,
@@ -13,9 +13,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import { AppBrand } from "./app-brand";
 
 const sidebarItems = [
   {
@@ -36,7 +35,17 @@ const sidebarItems = [
 ];
 
 export function AppSidebar() {
+  const router = useRouter();
   const pathname = usePathname();
+  const { isMobile, setOpen, setOpenMobile } = useSidebar();
+
+  const handleClick = useCallback(
+    (href: string) => {
+      if (isMobile) setOpenMobile(false);
+      router.push(href);
+    },
+    [isMobile, router, setOpen, setOpenMobile]
+  );
 
   return (
     <Sidebar side="right">
@@ -65,14 +74,12 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
-                      asChild
                       isActive={isActive}
                       tooltip={item.title}
+                      onClick={() => handleClick(item.href)}
                     >
-                      <Link href={item.href}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
+                      <item.icon />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
