@@ -68,13 +68,14 @@ jobs:
             docker pull ${{ env.DOCKER_IMAGE_NAME_PRISMA }}
 
             docker stop ${{ env.DOCKER_CONTAINER_NAME }} || true
-
             docker rm ${{ env.DOCKER_CONTAINER_NAME }} || true
 
             docker run --rm \
               --network postgres-network \
               --env DATABASE_URL='${{ secrets.DATABASE_URL }}' \
               ${{ env.DOCKER_IMAGE_NAME_PRISMA }}
+
+            docker image rm ${{ env.DOCKER_IMAGE_NAME_PRISMA }}
 
             docker run --detach \
               --name ${{ env.DOCKER_CONTAINER_NAME }} \
