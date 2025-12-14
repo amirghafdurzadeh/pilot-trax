@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE_NAME: pilot-trax:latest
+  DOCKER_IMAGE_NAME: ${{ secrets.DOCKER_REGISTRY }}/pilot-trax:latest
   DOCKER_CONTAINER_NAME: pilot-trax
 
 jobs:
