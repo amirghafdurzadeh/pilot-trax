@@ -48,6 +48,6 @@ jobs:
               --name ${{ env.DOCKER_CONTAINER_NAME }} \
               --network nginx-network \
               --restart always \
-              --env DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              --env SESSION_SECRET="${{ secrets.SESSION_SECRET }}" \
+              --env DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+              --env SESSION_SECRET='${{ secrets.SESSION_SECRET }}' \
               ${{ env.DOCKER_IMAGE_NAME }}
