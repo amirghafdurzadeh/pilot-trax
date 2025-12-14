@@ -2,11 +2,15 @@
 import { useLogin } from "@/context/login";
 import { LoginOTPForm } from "./form-otp";
 import { LoginPhoneForm } from "./form-phone";
+import { Suspense } from "react";
 
 export function LoginForm() {
   const { step } = useLogin();
 
-  if (step === "phone") return <LoginPhoneForm />;
-  if (step === "otp") return <LoginOTPForm />;
-  return null;
+  return (
+    <Suspense>
+      {step === "phone" && <LoginPhoneForm />}
+      {step === "otp" && <LoginOTPForm />}
+    </Suspense>
+  );
 }

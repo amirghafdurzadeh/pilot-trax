@@ -1,38 +1,40 @@
-# Multi-stage Dockerfile for Next.js + Prisma application
-# Uses Debian-based Node images for Prisma compatibility
+FROM node:20-alpine AS base
 
-### Builder stage
-FROM node:20-bullseye as builder
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies (prefer lockfile if present)
-COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then npm ci --no-optional --prefer-offline; else npm install; fi
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy source
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma client (if Prisma is used)
-RUN if [ -d prisma ] || grep -q "prisma" package.json; then npx prisma generate || true; fi
-
-# Build the Next.js app
+ENV DATABASE_URL="postgresql://dummy"
+RUN npx prisma generate
 RUN npm run build
 
-### Production stage
-FROM node:20-bullseye-slim
+FROM base AS runner
 WORKDIR /app
-
-# Copy necessary files from builder
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.* ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+COPY --chown=nextjs:nodejs entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
+USER nextjs
 
 EXPOSE 3000
 
-# Start the Next.js server
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["./entrypoint.sh"]

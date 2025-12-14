@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DOCKER_IMAGE_NAME: docker.pilot-trax.ir/pilot-trax:latest
+  DOCKER_IMAGE_NAME: pilot-trax:latest
   DOCKER_CONTAINER_NAME: pilot-trax
 
 jobs:
@@ -55,6 +55,8 @@ jobs:
               --name ${{ env.DOCKER_CONTAINER_NAME }} \
               --network nginx-network \
               --restart always \
+              --env DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              --env SESSION_SECRET="${{ secrets.SESSION_SECRET }}" \
               ${{ env.DOCKER_IMAGE_NAME }}
 
             echo "Deployment complete!"
