@@ -9,6 +9,9 @@ FROM base AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+
+ENV DATABASE_URL="postgresql://dummy"
+RUN npx prisma generate
 RUN npm run build
 
 FROM base AS runner
