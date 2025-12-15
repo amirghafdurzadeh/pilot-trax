@@ -9,18 +9,14 @@ const otpSendSchema = z.object({
 
 async function sendOtpMessage(phone: string, code: string) {
   const body = JSON.stringify({
-    from: "50002710032514",
+    bodyId: 406859,
     to: phone,
-    text: `پایلت ترکس\nکد تایید: ${code}`,
+    args: [code],
   });
-  const controller = new AbortController();
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 5000);
 
   try {
     const response = await fetch(
-      "",
+      "https://console.melipayamak.com/api/send/shared/" + process.env["SMS_APIKEY"],
       {
         method: "POST",
         headers: {
@@ -28,15 +24,12 @@ async function sendOtpMessage(phone: string, code: string) {
           "Content-Length": body.length.toString(),
         },
         body,
-        signal: controller.signal,
       }
     );
     const json = await response.json();
     console.log(json);
   } catch (error: any) {
     throw error;
-  } finally {
-    clearTimeout(timeout);
   }
 }
 
@@ -59,8 +52,9 @@ export async function otpSend(_: any, formData: FormData) {
       if (otp && otp.expiredAt > now) return otp.expiredAt;
 
       const code = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiredAt = new Date(now.getTime() + 2 * 60 * 1000);
+      await sendOtpMessage(validatedFields.data.phone, code);
 
+      const expiredAt = new Date(now.getTime() + 2 * 60 * 1000);
       await tx.otp.upsert({
         where: { receiver: validatedFields.data.phone },
         update: { code, expiredAt },
@@ -70,8 +64,6 @@ export async function otpSend(_: any, formData: FormData) {
           expiredAt,
         },
       });
-
-      await sendOtpMessage(validatedFields.data.phone, code);
 
       return expiredAt;
     });

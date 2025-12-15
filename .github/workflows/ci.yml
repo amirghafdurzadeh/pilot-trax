@@ -82,6 +82,7 @@ jobs:
               --restart always \
               --env DATABASE_URL='${{ secrets.DATABASE_URL }}' \
               --env SESSION_SECRET='${{ secrets.SESSION_SECRET }}' \
+              --env SMS_APIKEY='${{ secrets.SMS_APIKEY }}' \
               ${{ env.DOCKER_IMAGE_NAME }}
 
             docker image rm ${{ env.DOCKER_IMAGE_NAME_PRISMA }} || true
