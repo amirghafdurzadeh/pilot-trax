@@ -7,6 +7,7 @@ import {
   useActionState,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -21,7 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import {
   InputOTP,
   InputOTPGroup,
@@ -42,6 +43,15 @@ export function LoginOTPForm() {
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
     otpSend,
     null
+  );
+  const errors = useMemo(
+    () => [
+      ...(otpLoginState?.errors?.formErrors ?? []),
+      ...Object.values(otpLoginState?.errors?.fieldErrors ?? {}).flat(),
+      ...(otpSendState?.errors?.formErrors ?? []),
+      ...Object.values(otpSendState?.errors?.fieldErrors ?? {}).flat(),
+    ],
+    [otpSendState]
   );
   const [otp, setOtp] = useState("");
   const [otpRemaining, setOtpRemaining] = useState(0);
@@ -116,7 +126,12 @@ export function LoginOTPForm() {
             ویرایش
           </Button>
         </div>
-        <form id="loginForm" action={otpLoginAction} ref={formRef}>
+        <form
+          id="loginForm"
+          action={otpLoginAction}
+          ref={formRef}
+          className="flex flex-col gap-4"
+        >
           <Field>
             <FieldLabel htmlFor="otp">کد تایید</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
@@ -141,6 +156,11 @@ export function LoginOTPForm() {
             </div>
           </Field>
           <input type="hidden" name="phone" value={phone} />
+          <div className="flex flex-col gap-2">
+            {errors.map((error, index) => (
+              <FieldError key={index}>{error}</FieldError>
+            ))}
+          </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col gap-2 items-stretch">

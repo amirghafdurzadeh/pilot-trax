@@ -7,6 +7,39 @@ const otpSendSchema = z.object({
   phone: z.string().regex(/^09\d{9}$/, "شماره موبایل نامعتبر است."),
 });
 
+async function sendOtpMessage(phone: string, code: string) {
+  const body = JSON.stringify({
+    from: "50002710032514",
+    to: phone,
+    text: `پایلت ترکس\nکد تایید: ${code}`,
+  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 5000);
+
+  try {
+    const response = await fetch(
+      "",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": body.length.toString(),
+        },
+        body,
+        signal: controller.signal,
+      }
+    );
+    const json = await response.json();
+    console.log(json);
+  } catch (error: any) {
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function otpSend(_: any, formData: FormData) {
   const validatedFields = otpSendSchema.safeParse({
     phone: formData.get("phone"),
@@ -38,18 +71,21 @@ export async function otpSend(_: any, formData: FormData) {
         },
       });
 
-      // TODO: send otp message
+      await sendOtpMessage(validatedFields.data.phone, code);
 
       return expiredAt;
     });
 
     return { success: true, data: { expiredAt } };
   } catch (error) {
+    console.error(error);
     return {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: ["Something went wrong, please try again later."],
+        formErrors: [
+          "خطایی رخ داده است، لطفا در زمان دیگری مجددا تلاش نمایید.",
+        ],
       },
     };
   }

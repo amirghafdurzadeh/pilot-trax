@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect, useMemo } from "react";
 
 import { otpSend } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,13 @@ export function LoginPhoneForm() {
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
     otpSend,
     null
+  );
+  const errors = useMemo(
+    () => [
+      ...(otpSendState?.errors?.formErrors ?? []),
+      ...Object.values(otpSendState?.errors?.fieldErrors ?? {}).flat(),
+    ],
+    [otpSendState]
   );
 
   useEffect(() => {
@@ -48,7 +55,11 @@ export function LoginPhoneForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form id="loginForm" action={otpSendAction}>
+        <form
+          id="loginForm"
+          action={otpSendAction}
+          className="flex flex-col gap-4"
+        >
           <Field>
             <FieldLabel htmlFor="phone">شماره موبایل</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
@@ -61,12 +72,12 @@ export function LoginPhoneForm() {
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
-            {otpSendState?.errors?.fieldErrors.phone && (
-              <FieldError>
-                {otpSendState.errors.fieldErrors.phone[0]}
-              </FieldError>
-            )}
           </Field>
+          <div className="flex flex-col gap-2">
+            {errors.map((error, index) => (
+              <FieldError key={index}>{error}</FieldError>
+            ))}
+          </div>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col gap-2 items-stretch">

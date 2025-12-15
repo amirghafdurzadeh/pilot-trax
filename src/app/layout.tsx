@@ -9,7 +9,7 @@ const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "پایلت ترکس | آمادگی آزمون‌های خلبانی و هوانوردی",
   description:
     "پایلت ترکس پلتفرمی هوشمند برای آمادگی آزمون‌های خلبانی با توضیح کامل سوالات، مرور هوشمند و برنامه‌ریزی شخصی‌سازی شده.",

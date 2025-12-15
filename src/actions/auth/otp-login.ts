@@ -68,7 +68,7 @@ export async function otpLogin(_: any, formData: FormData) {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: ["مشکلی پیش آمد، لطفا بعدا تلاش کنید.", error],
+        formErrors: ["مشکلی پیش آمد، لطفا بعدا تلاش کنید."],
       },
     };
   }
