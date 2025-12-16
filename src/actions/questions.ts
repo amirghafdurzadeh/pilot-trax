@@ -14,6 +14,7 @@ export type AnswerInput = {
 export type QuestionInput = {
   id?: string;
   title: string;
+  description: string;
   lessonId: string;
   answers: AnswerInput[];
 };
@@ -21,6 +22,7 @@ export type QuestionInput = {
 export type QuestionWithDetails = {
   id: string;
   title: string;
+  description: string;
   lessonId: string;
   lessonTitle: string;
   courseName: string;
@@ -135,6 +137,7 @@ export async function getQuestions(params: {
       (q: any) => ({
         id: q.id,
         title: q.title,
+        description: q.description,
         lessonId: q.lessonId,
         lessonTitle: q.lesson.title,
         courseName: q.lesson.course.title,
@@ -183,6 +186,7 @@ export async function saveQuestion(question: QuestionInput) {
           where: { id: question.id },
           data: {
             title: question.title,
+            description: question.description || "",
             lessonId: question.lessonId,
           },
         });
@@ -227,6 +231,7 @@ export async function saveQuestion(question: QuestionInput) {
           data: {
             id: newQuestionId,
             title: question.title,
+            description: question.description || "",
             lessonId: question.lessonId,
           },
         });

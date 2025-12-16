@@ -97,7 +97,7 @@ function SortableLessonItem({
   onDelete: () => void;
   collapseSignal?: number;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const {
     attributes,
@@ -158,13 +158,12 @@ function SortableLessonItem({
       onChange({ ...lesson, children: newChildren });
     }
   };
-  // react to collapseSignal changes using effect to avoid setting state during render
+
   useEffect(() => {
-    if (typeof collapseSignal !== "undefined") {
+    if (collapseSignal !== 0) {
       setIsExpanded(false);
     }
   }, [collapseSignal]);
-
 
   return (
     <div

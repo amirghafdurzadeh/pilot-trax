@@ -241,6 +241,13 @@ function QuestionCard({
           dangerouslySetInnerHTML={{ __html: question.title }}
         />
 
+        {question.description && (
+          <div
+            className="prose prose-sm max-w-none dark:prose-invert text-muted-foreground line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: question.description }}
+          />
+        )}
+
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground border-t pt-3">
           <Badge variant="secondary" className="text-xs">
             {question.courseName}
@@ -359,6 +366,7 @@ export default function QuestionsPageClient({
   const handleAddNew = () => {
     setEditingQuestion({
       title: "",
+      description: "",
       lessonId: "",
       answers: [],
     });
@@ -369,6 +377,7 @@ export default function QuestionsPageClient({
     setEditingQuestion({
       id: question.id,
       title: question.title,
+      description: question.description,
       lessonId: question.lessonId,
       answers: question.answers.map((a) => ({
         id: a.id,
@@ -624,6 +633,21 @@ export default function QuestionsPageClient({
                     }
                     placeholder="متن سوال را وارد کنید..."
                     minHeight="120px"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>توضیحات سوال</Label>
+                  <RichTextEditor
+                    value={editingQuestion.description}
+                    onChange={(value) =>
+                      setEditingQuestion({
+                        ...editingQuestion,
+                        description: value,
+                      })
+                    }
+                    placeholder="توضیحات سوال (اختیاری)..."
+                    minHeight="200px"
                   />
                 </div>
 

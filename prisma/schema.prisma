@@ -68,36 +68,6 @@ model Otp {
   @@map("otp")
 }
 
-model Question {
-  id    String @id @default(uuid())
-  title String
-
-  answers Answer[]
-
-  lessonId String @map("lesson_id")
-  lesson   Lesson @relation(fields: [lessonId], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("questions")
-}
-
-model Answer {
-  id        String  @id @default(uuid())
-  title     String
-  isCorrect Boolean @default(false)
-  order     Int     @default(0)
-
-  questionId String   @map("question_id")
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("answers")
-}
-
 model Course {
   id          String   @id @default(uuid())
   title       String
@@ -128,4 +98,35 @@ model Lesson {
   questions Question[]
 
   @@map("lessons")
+}
+
+model Question {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+
+  answers Answer[]
+
+  lessonId String @map("lesson_id")
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("questions")
+}
+
+model Answer {
+  id        String  @id @default(uuid())
+  title     String
+  isCorrect Boolean @default(false)
+  order     Int     @default(0)
+
+  questionId String   @map("question_id")
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("answers")
 }

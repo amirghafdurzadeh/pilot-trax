@@ -16,7 +16,8 @@ async function sendOtpMessage(phone: string, code: string) {
 
   try {
     const response = await fetch(
-      "https://console.melipayamak.com/api/send/shared/" + process.env["SMS_APIKEY"],
+      "https://console.melipayamak.com/api/send/shared/" +
+        process.env["SMS_APIKEY"],
       {
         method: "POST",
         headers: {
@@ -52,7 +53,10 @@ export async function otpSend(_: any, formData: FormData) {
       if (otp && otp.expiredAt > now) return otp.expiredAt;
 
       const code = Math.floor(100000 + Math.random() * 900000).toString();
-      await sendOtpMessage(validatedFields.data.phone, code);
+      
+      if (process.env.NODE_ENV === "production") {
+        await sendOtpMessage(validatedFields.data.phone, code);
+      }
 
       const expiredAt = new Date(now.getTime() + 2 * 60 * 1000);
       await tx.otp.upsert({
