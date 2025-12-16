@@ -33,7 +33,6 @@ interface RichTextEditorProps {
 
 function createMathExtension(
   editorRef: React.MutableRefObject<Editor | null>,
-  // showDialog(initialLatex, mode, applyCallback)
   showDialog: (
     initial: string,
     mode: "inline" | "block",
