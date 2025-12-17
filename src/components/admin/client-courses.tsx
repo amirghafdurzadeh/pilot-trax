@@ -132,6 +132,7 @@ function SortableLessonItem({
       children: [],
     };
     onChange({ ...lesson, children: [...lesson.children, newChild] });
+    setIsExpanded(true);
   };
 
   const handleUpdateChild = (index: number, updatedChild: Lesson) => {
@@ -160,7 +161,7 @@ function SortableLessonItem({
   };
 
   useEffect(() => {
-    if (collapseSignal !== 0) {
+    if (collapseSignal && collapseSignal > 0) {
       setIsExpanded(false);
     }
   }, [collapseSignal]);
@@ -272,6 +273,7 @@ export default function CoursesPageClient({
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [collapseAllSignal, setCollapseAllSignal] = useState(0);
+
 
   const handleAddNew = () => {
     setEditingCourse({
@@ -522,6 +524,7 @@ export default function CoursesPageClient({
                       >
                         بستن همه
                       </Button>
+
                     </div>
                   </div>
 
