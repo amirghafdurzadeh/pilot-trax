@@ -2,10 +2,20 @@
 
 import Image from "@tiptap/extension-image";
 import { Mathematics } from "@tiptap/extension-mathematics";
+import TextAlign from "@tiptap/extension-text-align";
 import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import "katex/dist/katex.min.css";
-import { BoldIcon, ImageIcon, ItalicIcon, SigmaIcon } from "lucide-react";
+import {
+  AlignCenter,
+  AlignJustify,
+  AlignLeft,
+  AlignRight,
+  BoldIcon,
+  ImageIcon,
+  ItalicIcon,
+  SigmaIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -97,6 +107,9 @@ export function RichTextEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
       Image.configure({
         HTMLAttributes: {
           class: "max-w-full h-auto rounded",
@@ -198,6 +211,53 @@ export function RichTextEditor({
           title="Italic (Ctrl+I)"
         >
           <ItalicIcon className="h-4 w-4" />
+        </Button>
+        <div className="w-px h-5 bg-border mx-1" />
+        <Button
+          type="button"
+          variant={editor.isActive({ textAlign: "left" }) ? "secondary" : "ghost"}
+          size="icon"
+          className="h-7 w-7"
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          title="Align Left"
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant={
+            editor.isActive({ textAlign: "center" }) ? "secondary" : "ghost"
+          }
+          size="icon"
+          className="h-7 w-7"
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          title="Align Center"
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant={
+            editor.isActive({ textAlign: "right" }) ? "secondary" : "ghost"
+          }
+          size="icon"
+          className="h-7 w-7"
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          title="Align Right"
+        >
+          <AlignRight className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          variant={
+            editor.isActive({ textAlign: "justify" }) ? "secondary" : "ghost"
+          }
+          size="icon"
+          className="h-7 w-7"
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          title="Align Justify"
+        >
+          <AlignJustify className="h-4 w-4" />
         </Button>
         <div className="w-px h-5 bg-border mx-1" />
         <Button
