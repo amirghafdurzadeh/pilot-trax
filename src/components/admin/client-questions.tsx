@@ -42,7 +42,7 @@ import {
   type QuestionWithDetails,
 } from "@/actions/questions";
 import { LessonCombobox } from "@/components/admin/lesson-combobox";
-import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { RichTextEditor } from "@/components/admin/rich-text";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { AppSearch } from "@/components/core/app-search";
