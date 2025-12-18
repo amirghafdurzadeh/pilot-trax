@@ -9,6 +9,9 @@ import {
   BoldIcon,
   ImageIcon,
   ItalicIcon,
+  Languages,
+  PilcrowLeft,
+  PilcrowRight,
   SigmaIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,7 +24,7 @@ interface ToolbarProps {
 
 export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
   return (
-    <div className="flex items-center gap-1 p-1 border-b bg-muted/30">
+    <div className="flex items-center gap-1 p-1 border-b bg-muted/30 flex-wrap">
       <Button
         type="button"
         variant={editor.isActive("bold") ? "secondary" : "ghost"}
@@ -41,6 +44,37 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         title="Italic (Ctrl+I)"
       >
         <ItalicIcon className="h-4 w-4" />
+      </Button>
+      <div className="w-px h-5 bg-border mx-1" />
+      <Button
+        type="button"
+        variant={editor.isActive({ dir: "rtl" }) ? "secondary" : "ghost"}
+        size="icon"
+        className="h-7 w-7"
+        onClick={() => editor.chain().focus().setTextDirection("rtl").run()}
+        title="RTL"
+      >
+        <PilcrowLeft className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        variant={editor.isActive({ dir: "ltr" }) ? "secondary" : "ghost"}
+        size="icon"
+        className="h-7 w-7"
+        onClick={() => editor.chain().focus().setTextDirection("ltr").run()}
+        title="LTR"
+      >
+        <PilcrowRight className="h-4 w-4" />
+      </Button>
+      <Button
+        type="button"
+        variant={editor.isActive({ dir: "auto" }) ? "secondary" : "ghost"}
+        size="icon"
+        className="h-7 w-7"
+        onClick={() => editor.chain().focus().setTextDirection("auto").run()}
+        title="Auto"
+      >
+        <Languages className="h-4 w-4" />
       </Button>
       <div className="w-px h-5 bg-border mx-1" />
       <Button

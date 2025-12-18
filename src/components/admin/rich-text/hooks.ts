@@ -43,6 +43,7 @@ export function useRichTextEditor({
         style: `min-height: ${minHeight}`,
       },
     },
+    textDirection: "auto",
   });
 
   useEffect(() => {
