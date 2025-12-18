@@ -5,7 +5,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import StarterKit from "@tiptap/starter-kit";
 
 function createMathExtension(
-  editorRef: React.MutableRefObject<Editor | null>,
+  editorRef: React.RefObject<Editor | null>,
   showDialog: (
     initial: string,
     mode: "inline" | "block",
@@ -49,7 +49,7 @@ function createMathExtension(
 }
 
 export const getEditorExtensions = (
-  editorRef: React.MutableRefObject<Editor | null>,
+  editorRef: React.RefObject<Editor | null>,
   showDialog: (
     initial: string,
     mode: "inline" | "block",
