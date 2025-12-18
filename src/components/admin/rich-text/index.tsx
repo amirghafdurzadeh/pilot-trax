@@ -4,7 +4,8 @@ import "katex/dist/katex.min.css";
 import { useRef, useState } from "react";
 import { RichTextEditorContent } from "./editor-content";
 import { useRichTextEditor } from "./hooks";
-import { DialogMode, InsertDialog } from "./insert-dialog";
+import { InsertImageDialog } from "./insert-image-dialog";
+import { InsertMathDialog } from "./insert-math-dialog";
 import { Toolbar } from "./toolbar";
 import { cn } from "@/lib/utils";
 
@@ -23,9 +24,9 @@ export function RichTextEditor({
   className,
   minHeight = "80px",
 }: RichTextEditorProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = useState(false);
+  const [mathDialogOpen, setMathDialogOpen] = useState(false);
   const [dialogValue, setDialogValue] = useState("");
-  const dialogModeRef = useRef<DialogMode | null>(null);
   const applyCallbackRef = useRef<(val: string) => void>(() => {});
 
   const showDialog = (
@@ -35,8 +36,7 @@ export function RichTextEditor({
   ) => {
     setDialogValue(initial ?? "");
     applyCallbackRef.current = apply;
-    dialogModeRef.current = mode === "inline" ? "math-inline" : "math-block";
-    setDialogOpen(true);
+    setMathDialogOpen(true);
   };
 
   const editor = useRichTextEditor({
@@ -49,22 +49,19 @@ export function RichTextEditor({
 
   const handleInsertImage = () => {
     if (!editor) return;
-    dialogModeRef.current = "image";
-    setDialogValue("");
     applyCallbackRef.current = (url: string) => {
       if (url) editor.chain().focus().setImage({ src: url }).run();
     };
-    setDialogOpen(true);
+    setImageDialogOpen(true);
   };
 
   const handleInsertMath = () => {
     if (!editor) return;
-    dialogModeRef.current = "math-inline";
     setDialogValue("");
     applyCallbackRef.current = (latex: string) => {
       if (latex) editor.chain().focus().insertInlineMath({ latex }).run();
     };
-    setDialogOpen(true);
+    setMathDialogOpen(true);
   };
 
   if (!editor) {
@@ -88,10 +85,14 @@ export function RichTextEditor({
 
       <RichTextEditorContent editor={editor} placeholder={placeholder} />
 
-      <InsertDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        mode={dialogModeRef.current}
+      <InsertImageDialog
+        open={imageDialogOpen}
+        onOpenChange={setImageDialogOpen}
+        onApply={applyCallbackRef.current}
+      />
+      <InsertMathDialog
+        open={mathDialogOpen}
+        onOpenChange={setMathDialogOpen}
         initialValue={dialogValue}
         onApply={applyCallbackRef.current}
       />
