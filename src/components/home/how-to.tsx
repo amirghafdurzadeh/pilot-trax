@@ -1,3 +1,9 @@
+import {
+  BookOpenTextIcon,
+  CrosshairIcon,
+  UserIcon,
+  ZapIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,27 +18,85 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface Highlight {
+type HighlightText = {
   title: string;
   subtitle: string;
-  gradient: string;
-}
+};
 
-interface Step {
-  icon: React.ComponentType<any>;
-  number: number;
+type Highlight = HighlightText & {
+  gradient: string;
+};
+
+type StepText = {
   title: string;
   duration: string;
   description: string;
+};
+
+type Step = StepText & {
+  icon: React.ComponentType<any>;
+  number: number;
   gradient: string;
-}
+};
+
+const highlightVisuals = [
+  {
+    gradient: "from-blue-600 to-blue-500",
+  },
+  {
+    gradient: "from-emerald-500 to-emerald-400",
+  },
+  {
+    gradient: "from-amber-500 to-amber-400",
+  },
+];
+
+const stepVisuals = [
+  {
+    icon: BookOpenTextIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    icon: CrosshairIcon,
+    gradient: "from-emerald-500 to-emerald-400",
+  },
+  {
+    icon: ZapIcon,
+    gradient: "from-amber-500 to-amber-400",
+  },
+  {
+    icon: UserIcon,
+    gradient: "from-indigo-600 to-indigo-400",
+  },
+];
 
 interface HowToProps {
-  highlights: Highlight[];
-  steps: Step[];
+  highlights: HighlightText[];
+  steps: StepText[];
+  dict: {
+    title: string;
+    description: string;
+    cta1: string;
+    cta2: string;
+    quality_assurance: string;
+    steps_title: string;
+    steps_description: string;
+    image_alt: string;
+  };
 }
 
-export function HowTo(props: HowToProps) {
+export function HowTo({ highlights, steps, dict }: HowToProps) {
+  const highlightsWithVisuals = highlights.map((highlight, index) => ({
+    ...highlight,
+    ...highlightVisuals[index],
+  }));
+
+  const stepsWithVisuals = steps.map((step, index) => ({
+    ...step,
+    ...stepVisuals[index],
+    number: index + 1,
+  }));
+
   return (
     <section
       id="how"
@@ -43,18 +107,15 @@ export function HowTo(props: HowToProps) {
           <Card className="rounded-3xl bg-linear-to-br from-white/70 to-neutral-50 dark:from-neutral-900/60 dark:to-neutral-950/60 border border-neutral-100 dark:border-neutral-800 shadow-xl">
             <CardHeader>
               <CardTitle className="text-neutral-900 dark:text-neutral-200 text-2xl md:text-3xl font-extrabold mb-4">
-                پایلت ترکس چگونه کار می‌کند؟ — سریع، هوشمند و هدفمند
+                {dict.title}
               </CardTitle>
               <CardDescription className="text-neutral-600 dark:text-neutral-300 mb-6 leading-relaxed">
-                ترکیبی از سوالات واقعی، توضیحات تحلیلی و برنامه مرور
-                شخصی‌سازی‌شده برای رسیدن به بیشترین بازدهی در کمترین زمان. هر
-                مرحله طوری طراحی شده که یادگیری شما را سیستماتیک و قابل
-                اندازه‌گیری کند.
+                {dict.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                {props.highlights.map((highlight, index) => (
+                {highlightsWithVisuals.map((highlight, index) => (
                   <HighlightCard key={index} highlight={highlight} />
                 ))}
               </div>
@@ -62,20 +123,19 @@ export function HowTo(props: HowToProps) {
             <CardFooter className="flex flex-col items-start gap-4">
               <div className="flex items-center gap-4">
                 <Button asChild size="lg" className="font-semibold shadow-lg">
-                  <Link href="#contact">شروع رایگان</Link>
+                  <Link href="#contact">{dict.cta1}</Link>
                 </Button>
                 <Button asChild size="lg" variant="outline">
-                  <Link href="#pricing">مشاهده پلن‌ها</Link>
+                  <Link href="#pricing">{dict.cta2}</Link>
                 </Button>
               </div>
               <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-                تضمین کیفیت: بروزرسانی مستمر سوالات و پشتیبانی آموزشی برای بهبود
-                نمره شما.
+                {dict.quality_assurance}
               </p>
             </CardFooter>
           </Card>
           <Image
-            alt="Pilot Trax - پایلت ترکس"
+            alt={dict.image_alt}
             src="/logo-full.svg"
             width={500}
             height={300}
@@ -87,16 +147,16 @@ export function HowTo(props: HowToProps) {
           <Card className="bg-linear-to-br from-amber-600 to-amber-400 shadow-lg text-white border-none">
             <CardHeader>
               <CardTitle className="font-extrabold text-lg">
-                مراحل سریع و واضح
+                {dict.steps_title}
               </CardTitle>
               <CardDescription className="mt-2 text-sm opacity-95 text-white">
-                هر قدم همراه با نکات عملی و انتظارات زمانی تا رسیدن به هدف.
+                {dict.steps_description}
               </CardDescription>
             </CardHeader>
           </Card>
 
           <div className="grid gap-4">
-            {props.steps.map((step) => (
+            {stepsWithVisuals.map((step) => (
               <StepCard key={step.number} step={step} />
             ))}
           </div>

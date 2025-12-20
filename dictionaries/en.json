@@ -1,3 +1,242 @@
 {
-  "test": "This is a test string."
+  "test": "This is a test string.",
+  "home": {
+    "header": {
+      "brand": {
+        "title": "Pilot Trax",
+        "description": "The main source for preparing for pilot and aviation exams",
+        "alt": "Pilot Trax"
+      },
+      "nav": {
+        "features": "Features",
+        "how_it_works": "How it works",
+        "plans": "Plans",
+        "start_free": "Start for free"
+      }
+    },
+    "hero": {
+      "title_1": "Prepare for pilot exams with",
+      "title_2": "a smart and targeted approach",
+      "description": "Experience real booklet questions with <strong>detailed explanations</strong>, <strong>personal assessment</strong>, and <strong>smart review scheduling</strong>. Everything you need for guaranteed success in school and organization exams in one platform.",
+      "cta1": "Start for free",
+      "cta2": "View product demo",
+      "subtitle": "Suitable for domestic and immigrant pilots.",
+      "card": {
+        "title": "Exam Simulator",
+        "description": "An environment with a full explanation of each question + three levels of assessment — for faster learning and targeted review.",
+        "badges": {
+          "green": "Green",
+          "yellow": "Yellow",
+          "red": "Red"
+        }
+      }
+    },
+    "features": {
+      "title": "Unique Features",
+      "description": "Better learning experience with smart tools and modern design",
+      "items": [
+        {
+          "title": "Question Explanation",
+          "text": "Each question is accompanied by a complete analysis of the options and the reasons for their correctness/incorrectness."
+        },
+        {
+          "title": "Colored Personal Assessment",
+          "text": "Choosing green/yellow/red allows the system to recognize your learning level."
+        },
+        {
+          "title": "Smart Review Program",
+          "text": "Focus on critical questions to save time and increase the chances of passing."
+        }
+      ]
+    },
+    "howTo": {
+      "image_alt": "Pilot Trax Full Logo",
+      "title": "How does Pilot Trax work? — Fast, Smart, and Targeted",
+      "description": "A combination of real questions, analytical explanations, and a personalized review plan to achieve maximum efficiency in the shortest time. Each step is designed to make your learning systematic and measurable.",
+      "cta1": "Start for free",
+      "cta2": "View Plans",
+      "quality_assurance": "Quality Assurance: Continuous updating of questions and educational support to improve your score.",
+      "steps_title": "Quick and Clear Steps",
+      "steps_description": "Each step is accompanied by practical tips and time expectations to reach the goal.",
+      "highlights": [
+        {
+          "title": "Real Questions",
+          "subtitle": "Exam Booklets"
+        },
+        {
+          "title": "Detailed Analysis",
+          "subtitle": "Correct/Incorrect Reasons"
+        },
+        {
+          "title": "Smart Review",
+          "subtitle": "Targeted Plan"
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simulator with Real Questions",
+          "duration": "5–15 minutes",
+          "description": "Take tests in an environment similar to the main exam with step-by-step explanations for each option to understand the concepts more precisely."
+        },
+        {
+          "title": "Personalized Color-coded Assessment",
+          "duration": "Green/Yellow/Red",
+          "description": "With simple tagging, the system identifies strengths and weaknesses and provides visual output to focus on sensitive topics."
+        },
+        {
+          "title": "Smart Review Program",
+          "duration": "Weekly with dynamic focus",
+          "description": "Our algorithm creates prioritized review sessions based on your assessment to achieve the most progress in the shortest time."
+        },
+        {
+          "title": "Track Progress and Reports",
+          "duration": "Analysis and Suggestions",
+          "description": "Analytical reports, progress charts, and practical suggestions show you where to invest the most time to get definite results."
+        }
+      ]
+    },
+    "plans": {
+      "title": "Plans",
+      "items": [
+        {
+          "title": "Free",
+          "description": "Suitable for beginners and those who want to get acquainted with the platform. Basic features for initial assessment and introductory testing.",
+          "features": [
+            "Limited access to selected questions",
+            "Test simulator (demo version)",
+            "View sample explanations for a few questions",
+            "Basic profile and progress saving"
+          ],
+          "price": "Free",
+          "priceLabel": "No cost",
+          "buttonText": "Start for free"
+        },
+        {
+          "title": "Standard",
+          "description": "Suitable for students who need full access to the question bank and smart review. A balance of price and features for serious study.",
+          "features": [
+            "Full access to the question bank",
+            "Unlimited explanations for questions",
+            "Smart review program",
+            "Basic performance reporting",
+            "Regular priority support"
+          ],
+          "price": "$49,000",
+          "priceLabel": "per month",
+          "buttonText": "Buy Standard"
+        },
+        {
+          "title": "Professional",
+          "description": "Suitable for professionals and centers that need advanced reports, offline courses, and priority support.",
+          "features": [
+            "All standard features + advanced features",
+            "Analytical reporting and report export",
+            "Offline courses and notes for download",
+            "Priority support and dedicated guidance"
+          ],
+          "price": "$199,000",
+          "priceLabel": "per month",
+          "buttonText": "Coming soon"
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Student Trust",
+      "items": [
+        {
+          "name": "Reza M.",
+          "role": "Pilot Student",
+          "testimonial": "“With Pilot Trax, I was able to prepare for the organization's exam in two months. The explanation of the questions was excellent, and each option was explained in detail.”"
+        },
+        {
+          "name": "Sara K.",
+          "role": "Dispatch Student",
+          "testimonial": "“The color-coded review system was exactly what I needed. It helped me quickly find my weaknesses and focus only on sensitive topics.”"
+        },
+        {
+          "name": "Arian D.",
+          "role": "Aerospace Engineering",
+          "testimonial": "“The question bank was complete and realistic. The test-taking experience was exactly like the main exam, and I went into the exam with confidence.”"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "question": "Are the questions real and up-to-date?",
+          "answer": "Yes, the questions are collected from real booklets and are constantly updated."
+        },
+        {
+          "question": "How does smart review work?",
+          "answer": "By selecting the green/yellow/red status, the system creates a special review program for you to focus on your weaknesses."
+        },
+        {
+          "question": "Is there a free trial?",
+          "answer": "Yes, after signing up, you will receive a free test to get acquainted with the platform's functionality."
+        },
+        {
+          "question": "Can I track my progress?",
+          "answer": "Yes, detailed reports and progress charts help you to check your performance."
+        },
+        {
+          "question": "What educational support is there?",
+          "answer": "Our support team is ready to answer questions and guide you to make the best use of the platform."
+        },
+        {
+          "question": "Is it suitable for immigrants?",
+          "answer": "Yes, our resources are designed for both domestic and immigrant pilots."
+        },
+        {
+          "question": "Can I cancel my subscription?",
+          "answer": "Yes, you can cancel your subscription at any time without any additional penalty."
+        },
+        {
+          "question": "How much time is needed to see results?",
+          "answer": "It depends on your effort and initial level, but most students see significant results in 2-3 months."
+        }
+      ]
+    },
+    "contact": {
+      "start": {
+        "title": "Want to get started?",
+        "description": "Sign up now and start your first free test.",
+        "cta": "Start for free",
+        "placeholder": "09123456789"
+      },
+      "info": {
+        "title": "Contact us",
+        "email": "Email: support@yourdomain.com",
+        "address": "Address: Tehran"
+      }
+    },
+    "footer": {
+      "copyright": "© {year} Pilot Trax — All rights reserved.",
+      "nav": {
+        "terms": "Terms and Conditions",
+        "faq": "FAQ"
+      },
+      "support": {
+        "text": "Proudly supported by",
+        "name": "DIBANAM"
+      }
+    },
+    "metadata": {
+      "title": "Pilot Trax | Pilot & Aviation Exam Preparation",
+      "description": "Pilot Trax is an intelligent platform for preparing for pilot exams with detailed explanations of questions, smart review, and personalized scheduling.",
+      "keywords": [
+        "Pilot Exam",
+        "Aviation",
+        "Aviation Booklet",
+        "Pilot Test",
+        "Dispatch",
+        "Organization Exam",
+        "Flight Training"
+      ],
+      "openGraph": {
+        "title": "Pilot Trax | Smart Simulator for Pilot Exams",
+        "description": "Prepare for pilot exams faster with a simulator of real questions, color-coded review, and professional analysis of questions."
+      }
+    }
+  }
 }

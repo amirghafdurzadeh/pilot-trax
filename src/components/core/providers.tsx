@@ -6,12 +6,13 @@ import { AuthProvider } from "@/context/auth";
 import { ThemeProvider } from "./theme-provider";
 
 type Props = Readonly<{
+  dir: "ltr" | "rtl";
   children?: React.ReactNode;
 }>;
 
 export function Providers(props: Props) {
   return (
-    <Direction.Provider dir="rtl">
+    <Direction.Provider dir={props.dir}>
       <AuthProvider>
         <ThemeProvider
           attribute="class"

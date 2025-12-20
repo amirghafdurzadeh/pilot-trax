@@ -1,4 +1,10 @@
 import {
+  BookOpenTextIcon,
+  CrosshairIcon,
+  ZapIcon,
+} from "lucide-react";
+
+import {
   Card,
   CardContent,
   CardDescription,
@@ -7,9 +13,12 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-type Feature = {
+type FeatureText = {
   title: string;
   text: string;
+};
+
+type Feature = FeatureText & {
   icon: React.ComponentType<any>;
   gradient: string;
 };
@@ -17,6 +26,21 @@ type Feature = {
 type FeatureCardProps = {
   feature: Feature;
 };
+
+const featureVisuals = [
+  {
+    icon: BookOpenTextIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    icon: CrosshairIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+  {
+    icon: ZapIcon,
+    gradient: "from-blue-500 to-blue-700",
+  },
+];
 
 export function FeatureCard(props: FeatureCardProps) {
   const Icon = props.feature.icon;
@@ -43,12 +67,17 @@ export function FeatureCard(props: FeatureCardProps) {
 }
 
 type FeaturesProps = {
-  features: Feature[];
+  features: FeatureText[];
   title: string;
   description: string;
 };
 
 export function Features(props: FeaturesProps) {
+  const featuresWithVisuals = props.features.map((feature, index) => ({
+    ...feature,
+    ...featureVisuals[index],
+  }));
+
   return (
     <section id="features" className="max-w-7xl mx-auto px-6 md:px-8 mt-12">
       <div className="text-center mb-12">
@@ -59,7 +88,7 @@ export function Features(props: FeaturesProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {props.features.map((feature, index) => (
+        {featuresWithVisuals.map((feature, index) => (
           <FeatureCard key={index} feature={feature} />
         ))}
       </div>

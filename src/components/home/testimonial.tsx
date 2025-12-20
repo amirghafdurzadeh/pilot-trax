@@ -9,17 +9,38 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface Testimonial {
+type TestimonialText = {
   name: string;
   role: string;
-  avatar: string;
   testimonial: string;
+};
+
+type Testimonial = TestimonialText & {
+  avatar: string;
   rating: number;
-}
+};
 
 interface TestimonialCardProps {
   testimonial: Testimonial;
 }
+
+const testimonialVisuals = [
+  {
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    rating: 5,
+  },
+  {
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+    rating: 5,
+  },
+  {
+    avatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    rating: 5,
+  },
+];
 
 export function TestimonialCard(props: TestimonialCardProps) {
   return (
@@ -60,15 +81,23 @@ export function TestimonialCard(props: TestimonialCardProps) {
 }
 
 interface TestimonialsProps {
-  testimonials: Testimonial[];
+  testimonials: TestimonialText[];
+  dict: {
+    title: string;
+  };
 }
 
-export function Testimonials(props: TestimonialsProps) {
+export function Testimonials({ testimonials, dict }: TestimonialsProps) {
+  const testimonialsWithVisuals = testimonials.map((testimonial, index) => ({
+    ...testimonial,
+    ...testimonialVisuals[index],
+  }));
+
   return (
     <section id="testimonials" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
-      <h3 className="text-3xl font-extrabold mb-8">اعتماد دانشجویان</h3>
+      <h3 className="text-3xl font-extrabold mb-8">{dict.title}</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {props.testimonials.map((testimonial, index) => (
+        {testimonialsWithVisuals.map((testimonial, index) => (
           <TestimonialCard key={index} testimonial={testimonial} />
         ))}
       </div>

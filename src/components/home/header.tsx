@@ -4,14 +4,30 @@ import Link from "next/link";
 import { AppBrand } from "@/components/core/app-brand";
 import { Button } from "@/components/ui/button";
 
-export function Header() {
+type Props = {
+  dict: {
+    brand: {
+      title: string;
+      description: string;
+      alt: string;
+    };
+    nav: {
+      features: string;
+      how_it_works: string;
+      plans: string;
+      start_free: string;
+    };
+  };
+};
+
+export function Header({ dict }: Props) {
   return (
     <header className="max-w-7xl mx-auto px-6 md:px-8 py-6 flex items-center justify-between gap-4">
       <AppBrand
-        title="پایلت ترکس"
-        description="منبع اصلی آماده‌سازی آزمون‌های خلبانی و هوانوردی"
+        title={dict.brand.title}
+        description={dict.brand.description}
         imageProps={{
-          alt: "Pilot Trax - پایلت ترکس",
+          alt: dict.brand.alt,
           src: "/logo.svg",
           width: 48,
           height: 48,
@@ -24,16 +40,16 @@ export function Header() {
       <nav className="flex gap-4 items-center text-sm font-medium">
         <div className="hidden md:flex gap-2 items-center">
           <Button asChild variant="ghost">
-            <Link href="#features">ویژگی‌ها</Link>
+            <Link href="#features">{dict.nav.features}</Link>
           </Button>
           <Button asChild variant="ghost">
-            <Link href="#how">روش کار</Link>
+            <Link href="#how">{dict.nav.how_it_works}</Link>
           </Button>
           <Button asChild variant="ghost">
-            <Link href="#pricing">پلن‌ها</Link>
+            <Link href="#pricing">{dict.nav.plans}</Link>
           </Button>
           <Button asChild className="shadow-lg">
-            <Link href="#contact">شروع رایگان</Link>
+            <Link href="#contact">{dict.nav.start_free}</Link>
           </Button>
         </div>
         <Button

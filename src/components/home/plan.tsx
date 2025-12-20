@@ -12,18 +12,36 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface PlanCardProps {
+type PlanText = {
   title: string;
   description: string;
   features: string[];
   price: string;
   priceLabel: string;
   buttonText: string;
+};
+
+type Plan = PlanText & {
   buttonVariant?: "primary" | "secondary" | "disabled";
   featured?: boolean;
-}
+};
 
-export function PlanCard(props: PlanCardProps) {
+const planVisuals = [
+  {
+    buttonVariant: "primary" as const,
+    featured: false,
+  },
+  {
+    buttonVariant: "secondary" as const,
+    featured: true,
+  },
+  {
+    buttonVariant: "disabled" as const,
+    featured: false,
+  },
+];
+
+export function PlanCard(props: Plan) {
   const isFeatured = props.featured;
 
   return (
@@ -97,15 +115,22 @@ export function PlanCard(props: PlanCardProps) {
 }
 
 interface PlansProps {
-  plans: PlanCardProps[];
+  plans: PlanText[];
+  dict: {
+    title: string;
+  };
 }
 
-export function Plans(props: PlansProps) {
+export function Plans({ plans, dict }: PlansProps) {
+  const plansWithVisuals = plans.map((plan, index) => ({
+    ...plan,
+    ...planVisuals[index],
+  }));
   return (
     <section id="pricing" className="max-w-7xl mx-auto px-6 md:px-8 mt-20">
-      <h3 className="text-3xl font-extrabold">پلن‌ها</h3>
+      <h3 className="text-3xl font-extrabold">{dict.title}</h3>
       <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {props.plans.map((plan, index) => (
+        {plansWithVisuals.map((plan, index) => (
           <PlanCard key={index} {...plan} />
         ))}
       </div>

@@ -12,7 +12,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-export function Contact() {
+type Props = {
+  dict: {
+    start: {
+      title: string;
+      description: string;
+      cta: string;
+      placeholder: string;
+    };
+    info: {
+      title: string;
+      email: string;
+      address: string;
+    };
+  };
+};
+
+export function Contact({ dict }: Props) {
   const router = useRouter();
   const [phone, setPhone] = useState("");
 
@@ -34,19 +50,17 @@ export function Contact() {
     >
       <Card>
         <CardHeader>
-          <CardTitle>می‌خواهید شروع کنید؟</CardTitle>
-          <CardDescription>
-            همین حالا ثبت‌نام کنید و اولین تست رایگان خود را شروع کنید.
-          </CardDescription>
+          <CardTitle>{dict.start.title}</CardTitle>
+          <CardDescription>{dict.start.description}</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex gap-3" onSubmit={handleSubmit}>
-            <Button type="submit">شروع رایگان</Button>
+            <Button type="submit">{dict.start.cta}</Button>
             <div className="w-full" style={{ direction: "ltr" }}>
               <Input
                 name="phone"
                 type="tel"
-                placeholder="09123456789"
+                placeholder={dict.start.placeholder}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
@@ -57,11 +71,11 @@ export function Contact() {
 
       <Card>
         <CardHeader>
-          <CardTitle>تماس با ما</CardTitle>
+          <CardTitle>{dict.info.title}</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          <p>ایمیل: support@yourdomain.com</p>
-          <p className="mt-1">آدرس: تهران</p>
+          <p>{dict.info.email}</p>
+          <p className="mt-1">{dict.info.address}</p>
         </CardContent>
       </Card>
     </section>
