@@ -31,7 +31,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
 
-export function LoginOTPForm() {
+export function LoginOTPForm({ lang }: { lang: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
@@ -59,6 +59,8 @@ export function LoginOTPForm() {
   const handleResend = useCallback(() => {
     const formData = new FormData();
     formData.set("phone", phone);
+    formData.set("redirectURL", `/${lang}/app`);
+
     startTransition(() => {
       otpSendAction(formData);
     });
@@ -85,8 +87,8 @@ export function LoginOTPForm() {
 
   useEffect(() => {
     if (!otpLoginState?.success) return;
-    const redirect = searchParams.get("redirect");
-    router.replace(redirect || "/app");
+    const redirect = otpLoginState.data!.redirectURL;
+    router.replace(redirect || `/${lang}/app`);
   }, [otpLoginState, searchParams]);
 
   useEffect(() => {
@@ -156,6 +158,11 @@ export function LoginOTPForm() {
             </div>
           </Field>
           <input type="hidden" name="phone" value={phone} />
+          <input
+            type="hidden"
+            name="redirectURL"
+            value={`/${lang}/app`}
+          />
           <div className="flex flex-col gap-2">
             {errors.map((error, index) => (
               <FieldError key={index}>{error}</FieldError>

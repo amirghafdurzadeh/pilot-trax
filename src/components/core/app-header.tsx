@@ -2,6 +2,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 
 type Props = Readonly<{
   children?: React.ReactNode;
+  lang: string;
 }>;
 
 export function AppHeader(props: Props) {
@@ -10,6 +11,7 @@ export function AppHeader(props: Props) {
       <SidebarTrigger className="-ml-1" />
       <div className="mr-2 h-4 w-px bg-border" />
       <div className="flex-1 flex">{props.children}</div>
+      <div className="flex-1 flex text-red-500">{props.lang}</div>
     </header>
   );
 }

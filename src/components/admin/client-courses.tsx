@@ -255,8 +255,10 @@ function SortableLessonItem({
 
 export default function CoursesPageClient({
   initialCourses,
+  lang,
 }: {
   initialCourses: Course[];
+  lang: string;
 }) {
   const courses = initialCourses;
   const [searchQuery, setSearchQuery] = useState("");
@@ -383,7 +385,7 @@ export default function CoursesPageClient({
 
   return (
     <>
-      <AppHeader>
+      <AppHeader lang={lang}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
             value={searchQuery}
@@ -604,3 +606,4 @@ export default function CoursesPageClient({
     </>
   );
 }
+

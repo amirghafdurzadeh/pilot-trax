@@ -22,12 +22,10 @@ export async function generateStaticParams() {
   return [{ lang: "en" }, { lang: "fa" }];
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { lang: Locale };
-}): Promise<Metadata> {
-  const lang = params.lang;
+export async function generateMetadata(
+  props: PageProps<"/[lang]">
+): Promise<Metadata> {
+  const lang = (await props.params).lang;
   if (!hasLocale(lang)) return {};
   const dict = await getDictionary(lang);
   return {

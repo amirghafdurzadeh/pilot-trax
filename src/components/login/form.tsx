@@ -4,13 +4,13 @@ import { LoginOTPForm } from "./form-otp";
 import { LoginPhoneForm } from "./form-phone";
 import { Suspense } from "react";
 
-export function LoginForm() {
+export function LoginForm({ lang }: { lang: string }) {
   const { step } = useLogin();
 
   return (
     <Suspense>
-      {step === "phone" && <LoginPhoneForm />}
-      {step === "otp" && <LoginOTPForm />}
+      {step === "phone" && <LoginPhoneForm lang={lang} />}
+      {step === "otp" && <LoginOTPForm lang={lang} />}
     </Suspense>
   );
 }

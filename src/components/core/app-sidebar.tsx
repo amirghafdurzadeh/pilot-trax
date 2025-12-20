@@ -16,28 +16,29 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const sidebarItems = [
+const getSidebarItems = (lang: string) => [
   {
     title: "داشبورد",
-    href: "/app",
+    href: `/${lang}/app`,
     icon: HomeIcon,
   },
   {
     title: "دوره‌ها",
-    href: "/app/courses",
+    href: `/${lang}/app/courses`,
     icon: BookOpenIcon,
   },
   {
     title: "سوالات",
-    href: "/app/questions",
+    href: `/${lang}/app/questions`,
     icon: HelpCircleIcon,
   },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ lang }: { lang: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
+  const sidebarItems = getSidebarItems(lang);
 
   const handleClick = useCallback(
     (href: string) => {

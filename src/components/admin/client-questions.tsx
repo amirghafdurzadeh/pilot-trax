@@ -292,10 +292,12 @@ export default function QuestionsPageClient({
   initialQuestions,
   initialNextCursor,
   initialLessons,
+  lang,
 }: {
   initialQuestions: QuestionWithDetails[];
   initialNextCursor: string | null;
   initialLessons: LessonOption[];
+  lang: string;
 }) {
   const [questions, setQuestions] = useState(initialQuestions);
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
@@ -519,7 +521,7 @@ export default function QuestionsPageClient({
 
   return (
     <>
-      <AppHeader>
+      <AppHeader lang={lang}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
             value={searchQuery}
@@ -731,7 +733,7 @@ export default function QuestionsPageClient({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               حذف
-            </AlertDialogAction>
+            </AlertDialogAction>.
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

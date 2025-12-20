@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
 
-export function LoginPhoneForm() {
+export function LoginPhoneForm({ lang }: { lang: string }) {
   const searchParams = useSearchParams();
   const { setStep, phone, setPhone, setOtpExpiredAt } = useLogin();
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
@@ -60,6 +60,11 @@ export function LoginPhoneForm() {
           action={otpSendAction}
           className="flex flex-col gap-4"
         >
+          <input
+            type="hidden"
+            name="redirectURL"
+            value={`/${lang}/app`}
+          />
           <Field>
             <FieldLabel htmlFor="phone">شماره موبایل</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>

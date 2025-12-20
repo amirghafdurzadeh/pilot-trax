@@ -28,7 +28,7 @@ export function FAQ({ faqs, dict }: FAQProps) {
               <h4 className="font-bold text-lg text-right">{faq.question}</h4>
             </AccordionTrigger>
             <AccordionContent>
-              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm text-right">
+              <p className="mt-2 text-neutral-600 dark:text-neutral-300 text-sm text-start">
                 {faq.answer}
               </p>
             </AccordionContent>
