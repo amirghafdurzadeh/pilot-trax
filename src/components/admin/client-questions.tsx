@@ -76,18 +76,24 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { getDictionary } from "@/lib/dictionaries";
 import { Skeleton } from "@/components/ui/skeleton";
+
+type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
+type QuestionsDict = AppDict["admin"]["questions"];
 
 function AnswerItem({
   answer,
   onChange,
   onDelete,
   onToggleCorrect,
+  dict,
 }: {
   answer: AnswerInput;
   onChange: (updated: AnswerInput) => void;
   onDelete: () => void;
   onToggleCorrect: () => void;
+  dict: QuestionsDict;
 }) {
   return (
     <div className="flex flex-col gap-2 p-3 border rounded-lg bg-card">
@@ -103,7 +109,9 @@ function AnswerItem({
           }`}
           onClick={onToggleCorrect}
           title={
-            answer.isCorrect ? "پاسخ صحیح" : "علامت‌گذاری به عنوان پاسخ صحیح"
+            answer.isCorrect
+              ? dict.correct_answer_tooltip
+              : dict.mark_as_correct_tooltip
           }
         >
           {answer.isCorrect ? (
@@ -115,7 +123,7 @@ function AnswerItem({
         <div className="flex-1 text-sm font-medium">
           {answer.isCorrect && (
             <Badge variant="default" className="bg-green-600">
-              پاسخ صحیح
+              {dict.correct_answer_badge}
             </Badge>
           )}
         </div>
@@ -125,7 +133,7 @@ function AnswerItem({
           size="icon"
           className="h-8 w-8 shrink-0 text-destructive hover:text-destructive/80"
           onClick={onDelete}
-          title="حذف پاسخ"
+          title={dict.delete_answer_tooltip}
         >
           <Trash2Icon className="h-4 w-4" />
         </Button>
@@ -133,7 +141,7 @@ function AnswerItem({
       <RichTextEditor
         value={answer.title}
         onChange={(value) => onChange({ ...answer, title: value })}
-        placeholder="متن پاسخ..."
+        placeholder={dict.answer_placeholder}
         minHeight="60px"
       />
     </div>
@@ -145,11 +153,13 @@ function SortableAnswerItem({
   onChange,
   onDelete,
   onToggleCorrect,
+  dict,
 }: {
   answer: AnswerInput;
   onChange: (updated: AnswerInput) => void;
   onDelete: () => void;
   onToggleCorrect: () => void;
+  dict: QuestionsDict;
 }) {
   const {
     attributes,
@@ -186,6 +196,7 @@ function SortableAnswerItem({
             onChange={onChange}
             onDelete={onDelete}
             onToggleCorrect={onToggleCorrect}
+            dict={dict}
           />
         </div>
       </div>
@@ -197,10 +208,12 @@ function QuestionCard({
   question,
   onEdit,
   onDelete,
+  dict,
 }: {
   question: QuestionWithDetails;
   onEdit: () => void;
   onDelete: () => void;
+  dict: QuestionsDict;
 }) {
   const correctAnswersCount = question.answers.filter(
     (a) => a.isCorrect
@@ -222,14 +235,14 @@ function QuestionCard({
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={onEdit}>
               <PencilIcon className="w-4 h-4" />
-              ویرایش
+              {dict.edit_button}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
               onClick={onDelete}
             >
               <Trash2Icon className="w-4 h-4 text-inherit" />
-              حذف
+              {dict.delete_button}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -257,11 +270,17 @@ function QuestionCard({
           </Badge>
           <div className="flex-1" />
           <span className="bg-secondary px-2 py-0.5 rounded">
-            {question.answers.length} پاسخ
+            {dict.answers_count.replace(
+              "{count}",
+              String(question.answers.length)
+            )}
           </span>
           {correctAnswersCount > 0 && (
             <span className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-0.5 rounded">
-              {correctAnswersCount} صحیح
+              {dict.correct_answers_count.replace(
+                "{count}",
+                String(correctAnswersCount)
+              )}
             </span>
           )}
         </div>
@@ -293,16 +312,19 @@ export default function QuestionsPageClient({
   initialNextCursor,
   initialLessons,
   lang,
+  dict,
 }: {
   initialQuestions: QuestionWithDetails[];
   initialNextCursor: string | null;
   initialLessons: LessonOption[];
   lang: string;
+  dict: AppDict;
 }) {
   const [questions, setQuestions] = useState(initialQuestions);
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
   const [isLoading, setIsLoading] = useState(false);
   const [lessons] = useState(initialLessons);
+  const questionsDict = dict.admin.questions;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
@@ -521,12 +543,12 @@ export default function QuestionsPageClient({
 
   return (
     <>
-      <AppHeader lang={lang}>
+      <AppHeader lang={lang} dict={dict}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="جستجو در سوالات"
+            placeholder={questionsDict.search_placeholder}
           />
         </div>
       </AppHeader>
@@ -535,14 +557,14 @@ export default function QuestionsPageClient({
         <div className="w-full flex flex-col md:flex-row gap-2">
           <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
             <PlusIcon className="w-4 h-4" />
-            افزودن سوال
+            {questionsDict.add_question_button}
           </Button>
           <div className="w-full md:w-fit flex gap-2">
             <LessonCombobox
               lessons={lessons}
               value={selectedLessonId}
               onValueChange={setSelectedLessonId}
-              placeholder="فیلتر بر اساس درس"
+              dict={questionsDict.lesson_combobox}
               icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
               triggerClassName="flex-1 w-fit"
             />
@@ -551,7 +573,7 @@ export default function QuestionsPageClient({
                 variant="ghost"
                 size="icon"
                 onClick={clearFilters}
-                title="پاک کردن فیلترها"
+                title={questionsDict.clear_filters_tooltip}
               >
                 <XIcon className="w-4 h-4" />
               </Button>
@@ -565,6 +587,7 @@ export default function QuestionsPageClient({
               question={question}
               onEdit={() => handleEdit(question)}
               onDelete={() => handleDelete(question.id)}
+              dict={questionsDict}
             />
           ))}
 
@@ -580,10 +603,10 @@ export default function QuestionsPageClient({
 
         {!isLoading && questions.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-            <p className="text-lg">سوالی یافت نشد</p>
+            <p className="text-lg">{questionsDict.no_questions_found}</p>
             {hasActiveFilters && (
               <Button variant="link" onClick={clearFilters}>
-                پاک کردن فیلترها
+                {questionsDict.clear_filters_button}
               </Button>
             )}
           </div>
@@ -599,10 +622,12 @@ export default function QuestionsPageClient({
         >
           <SheetHeader>
             <SheetTitle>
-              {editingQuestion?.id ? "ویرایش سوال" : "سوال جدید"}
+              {editingQuestion?.id
+                ? questionsDict.edit_question_sheet_title
+                : questionsDict.new_question_sheet_title}
             </SheetTitle>
             <SheetDescription>
-              سوال و پاسخ‌های آن را تنظیم کنید.
+              {questionsDict.sheet_description}
             </SheetDescription>
           </SheetHeader>
 
@@ -610,7 +635,7 @@ export default function QuestionsPageClient({
             {editingQuestion && (
               <div className="flex flex-col gap-6">
                 <div className="space-y-2">
-                  <Label>درس مربوطه</Label>
+                  <Label>{questionsDict.related_lesson_label}</Label>
                   <LessonCombobox
                     lessons={lessons}
                     value={editingQuestion.lessonId}
@@ -620,26 +645,26 @@ export default function QuestionsPageClient({
                         lessonId: value,
                       })
                     }
-                    placeholder="انتخاب درس..."
+                    dict={questionsDict.lesson_combobox}
                     triggerClassName="w-full"
                     className="w-full"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>متن سوال</Label>
+                  <Label>{questionsDict.question_text_label}</Label>
                   <RichTextEditor
                     value={editingQuestion.title}
                     onChange={(value) =>
                       setEditingQuestion({ ...editingQuestion, title: value })
                     }
-                    placeholder="متن سوال را وارد کنید..."
+                    placeholder={questionsDict.question_text_placeholder}
                     minHeight="120px"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label>توضیحات سوال</Label>
+                  <Label>{questionsDict.question_description_label}</Label>
                   <RichTextEditor
                     value={editingQuestion.description}
                     onChange={(value) =>
@@ -648,7 +673,9 @@ export default function QuestionsPageClient({
                         description: value,
                       })
                     }
-                    placeholder="توضیحات سوال (اختیاری)..."
+                    placeholder={
+                      questionsDict.question_description_placeholder
+                    }
                     minHeight="200px"
                   />
                 </div>
@@ -657,17 +684,19 @@ export default function QuestionsPageClient({
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">پاسخ‌ها</Label>
+                    <Label className="text-base font-semibold">
+                      {questionsDict.answers_label}
+                    </Label>
                     <Button size="sm" variant="outline" onClick={addAnswer}>
                       <PlusIcon className="w-4 h-4 ml-2" />
-                      افزودن پاسخ
+                      {questionsDict.add_answer_button}
                     </Button>
                   </div>
 
                   <div className="flex flex-col gap-3">
                     {editingQuestion.answers.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground border border-dashed rounded-md">
-                        هنوز پاسخی اضافه نشده است.
+                        {questionsDict.no_answers_message}
                       </div>
                     ) : (
                       <DndContext
@@ -688,7 +717,10 @@ export default function QuestionsPageClient({
                                   updateAnswer(idx, updated)
                                 }
                                 onDelete={() => deleteAnswer(idx)}
-                                onToggleCorrect={() => toggleAnswerCorrect(idx)}
+                                onToggleCorrect={() =>
+                                  toggleAnswerCorrect(idx)
+                                }
+                                dict={questionsDict}
                               />
                             ))}
                           </div>
@@ -703,10 +735,12 @@ export default function QuestionsPageClient({
 
           <SheetFooter className="mt-auto border-t pt-4 flex-row-reverse sm:justify-start gap-2">
             <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+              {isSaving
+                ? questionsDict.saving_button
+                : questionsDict.save_changes_button}
             </Button>
             <SheetClose asChild>
-              <Button variant="outline">لغو</Button>
+              <Button variant="outline">{questionsDict.cancel_button}</Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>
@@ -719,21 +753,22 @@ export default function QuestionsPageClient({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              آیا از حذف این سوال اطمینان دارید؟
+              {questionsDict.delete_dialog_title}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              این عملیات غیرقابل بازگشت است و تمام پاسخ‌های مربوط به این سوال
-              نیز حذف خواهد شد.
+              {questionsDict.delete_dialog_description}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogCancel>
+              {questionsDict.delete_dialog_cancel}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={executeDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              حذف
-            </AlertDialogAction>.
+              {questionsDict.delete_dialog_confirm}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -238,5 +238,129 @@
         "description": "Prepare for pilot exams faster with a simulator of real questions, color-coded review, and professional analysis of questions."
       }
     }
+  },
+  "login": {
+    "phone": {
+      "title": "Login",
+      "description": "Enter your mobile number to log in.",
+      "label": "Mobile Number",
+      "placeholder": "09123456789",
+      "button": "Login"
+    },
+    "otp": {
+      "title": "Login",
+      "description": "Enter the confirmation code sent to your mobile number.",
+      "phone_label": "Mobile Number",
+      "edit_button": "Edit",
+      "otp_label": "Confirmation Code",
+      "resend_button": "Resend",
+      "login_button": "Login"
+    }
+  },
+  "app": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "courses": "Courses",
+      "questions": "Questions",
+      "brand": {
+        "title": "Pilot Trax",
+        "alt": "Pilot Trax"
+      }
+    },
+    "dashboard": {
+      "user_chart_title": "User Growth",
+      "user_chart_description": "Displaying user growth in the last 12 months",
+      "selling_chart_title": "Sales Growth",
+      "selling_chart_description": "Displaying sales growth in the last 12 months"
+    },
+    "admin": {
+      "courses": {
+        "new_lesson": "New Lesson",
+        "lesson_title_placeholder": "Lesson Title",
+        "add_sub_lesson_tooltip": "Add Sub-lesson",
+        "delete_lesson_tooltip": "Delete Lesson",
+        "delete_course_success": "Course deleted successfully",
+        "delete_course_error": "Error deleting course",
+        "title_required": "Title is required",
+        "save_course_success": "Course saved successfully",
+        "save_course_error": "Error saving",
+        "new_module": "New Module",
+        "search_placeholder": "Search course",
+        "add_course_button": "Add Course",
+        "edit_button": "Edit",
+        "delete_button": "Delete",
+        "no_description": "No description provided.",
+        "questions_count": "{count} questions",
+        "modules_count": "{count} modules",
+        "edit_course_sheet_title": "Edit Course",
+        "new_course_sheet_title": "New Course",
+        "sheet_description": "Course details and its lesson structure.",
+        "title_label": "Title",
+        "course_title_placeholder": "Course Title",
+        "description_label": "Description",
+        "description_placeholder": "Short description...",
+        "lesson_structure_label": "Lesson Structure",
+        "add_module_button": "Add Module",
+        "collapse_all_tooltip": "Collapse All",
+        "close_all_button": "Close All",
+        "no_lessons_message": "No lessons added yet.",
+        "saving_button": "Saving...",
+        "save_changes_button": "Save Changes",
+        "cancel_button": "Cancel",
+        "delete_dialog_title": "Are you sure you want to delete this course?",
+        "delete_dialog_description": "This action is irreversible and all data related to this course will be deleted.",
+        "delete_dialog_cancel": "Cancel",
+        "delete_dialog_confirm": "Delete"
+      },
+      "questions": {
+        "correct_answer_tooltip": "Correct Answer",
+        "mark_as_correct_tooltip": "Mark as correct answer",
+        "correct_answer_badge": "Correct Answer",
+        "delete_answer_tooltip": "Delete Answer",
+        "answer_placeholder": "Answer text...",
+        "edit_button": "Edit",
+        "delete_button": "Delete",
+        "answers_count": "{count} answers",
+        "correct_answers_count": "{count} correct",
+        "delete_question_success": "Question deleted successfully",
+        "delete_question_error": "Error deleting question",
+        "title_required": "Question title is required",
+        "lesson_required": "Selecting a lesson is required",
+        "answer_required": "At least one answer is required",
+        "correct_answer_required": "At least one correct answer is required",
+        "save_question_success": "Question saved successfully",
+        "save_question_error": "Error saving",
+        "search_placeholder": "Search in questions",
+        "add_question_button": "Add Question",
+        "filter_by_lesson_placeholder": "Filter by lesson",
+        "clear_filters_tooltip": "Clear filters",
+        "no_questions_found": "No questions found",
+        "clear_filters_button": "Clear filters",
+        "edit_question_sheet_title": "Edit Question",
+        "new_question_sheet_title": "New Question",
+        "sheet_description": "Set the question and its answers.",
+        "related_lesson_label": "Related Lesson",
+        "select_lesson_placeholder": "Select lesson...",
+        "question_text_label": "Question Text",
+        "question_text_placeholder": "Enter the question text...",
+        "question_description_label": "Question Description",
+        "question_description_placeholder": "Question description (optional)...",
+        "answers_label": "Answers",
+        "add_answer_button": "Add Answer",
+        "no_answers_message": "No answers added yet.",
+        "saving_button": "Saving...",
+        "save_changes_button": "Save Changes",
+        "cancel_button": "Cancel",
+        "delete_dialog_title": "Are you sure you want to delete this question?",
+        "delete_dialog_description": "This action is irreversible and all answers related to this question will also be deleted.",
+        "delete_dialog_cancel": "Cancel",
+        "delete_dialog_confirm": "Delete",
+        "lesson_combobox": {
+          "placeholder": "Select lesson...",
+          "empty_text": "No lesson found.",
+          "search_placeholder": "Search lessons..."
+        }
+      }
+    }
   }
 }

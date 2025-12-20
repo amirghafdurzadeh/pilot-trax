@@ -30,8 +30,11 @@ import {
 } from "@/components/ui/input-otp";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
+import { getDictionary } from "@/lib/dictionaries";
 
-export function LoginOTPForm({ lang }: { lang: string }) {
+type Dict = Awaited<ReturnType<typeof getDictionary>>["login"]["otp"];
+
+export function LoginOTPForm({ lang, dict }: { lang: string; dict: Dict }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
@@ -107,15 +110,13 @@ export function LoginOTPForm({ lang }: { lang: string }) {
   return (
     <Card className="max-w-xs w-full m-auto">
       <CardHeader>
-        <CardTitle>ورود</CardTitle>
-        <CardDescription>
-          کد تایید ارسال شده به شماره موبایل خود را وارد کنید.
-        </CardDescription>
+        <CardTitle>{dict.title}</CardTitle>
+        <CardDescription>{dict.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <div className="flex items-center">
           <div className="flex flex-col gap-1">
-            <span className="text-sm">شماره موبایل</span>
+            <span className="text-sm">{dict.phone_label}</span>
             <span className="text-sm text-muted-foreground">{phone}</span>
           </div>
           <Button
@@ -125,7 +126,7 @@ export function LoginOTPForm({ lang }: { lang: string }) {
             onClick={() => setStep("phone")}
           >
             <SquarePenIcon className="size-3" />
-            ویرایش
+            {dict.edit_button}
           </Button>
         </div>
         <form
@@ -135,7 +136,7 @@ export function LoginOTPForm({ lang }: { lang: string }) {
           className="flex flex-col gap-4"
         >
           <Field>
-            <FieldLabel htmlFor="otp">کد تایید</FieldLabel>
+            <FieldLabel htmlFor="otp">{dict.otp_label}</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
               <InputOTP
                 id="otp"
@@ -183,7 +184,7 @@ export function LoginOTPForm({ lang }: { lang: string }) {
               {String(otpRemaining % 60).padStart(2, "0")}
             </span>
           )}
-          ارسال مجدد
+          {dict.resend_button}
         </Button>
         <Button
           variant="default"
@@ -192,7 +193,7 @@ export function LoginOTPForm({ lang }: { lang: string }) {
           disabled={otpLoginPending || otpSendPending}
         >
           {otpLoginPending && <Spinner />}
-          ورود
+          {dict.login_button}
         </Button>
       </CardFooter>
     </Card>

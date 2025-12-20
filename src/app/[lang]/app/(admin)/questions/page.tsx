@@ -1,8 +1,12 @@
 import { getLessonsForFilter, getQuestions } from "@/actions/questions";
 import QuestionsPageClient from "@/components/admin/client-questions";
+import { getDictionary, Locale } from "@/lib/dictionaries";
 
-export default async function QuestionsPage(props: PageProps<"/[lang]/app/questions">) {
-  const lang = (await props.params).lang;
+export default async function QuestionsPage(
+  props: PageProps<"/[lang]/app/questions">
+) {
+  const lang = (await props.params).lang as Locale;
+  const dict = await getDictionary(lang);
   const [questionsResult, lessons] = await Promise.all([
     getQuestions({}),
     getLessonsForFilter(),
@@ -14,6 +18,7 @@ export default async function QuestionsPage(props: PageProps<"/[lang]/app/questi
       initialNextCursor={questionsResult.nextCursor}
       initialLessons={lessons}
       lang={lang}
+      dict={dict.app}
     />
   );
 }

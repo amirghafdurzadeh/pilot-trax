@@ -9,16 +9,16 @@ export default async function Page(props: PageProps<"/[lang]/login">) {
   const dict = await getDictionary(lang);
   return (
     <>
-      <AppHeader lang={lang} />
+      <AppHeader lang={lang} dict={dict.app} />
       <AppContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UserChart
-            title="رشد کاربران"
-            description="نمایش رشد کاربران در 12 ماه گذشته"
+            title={dict.app.dashboard.user_chart_title}
+            description={dict.app.dashboard.user_chart_description}
           />
           <SellingChart
-            title="رشد فروش"
-            description="نمایش رشد فروش در 12 ماه گذشته"
+            title={dict.app.dashboard.selling_chart_title}
+            description={dict.app.dashboard.selling_chart_description}
           />
         </div>
       </AppContent>

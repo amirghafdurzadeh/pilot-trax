@@ -16,8 +16,11 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
+import { getDictionary } from "@/lib/dictionaries";
 
-export function LoginPhoneForm({ lang }: { lang: string }) {
+type Dict = Awaited<ReturnType<typeof getDictionary>>["login"]["phone"];
+
+export function LoginPhoneForm({ lang, dict }: { lang: string; dict: Dict }) {
   const searchParams = useSearchParams();
   const { setStep, phone, setPhone, setOtpExpiredAt } = useLogin();
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
@@ -49,10 +52,8 @@ export function LoginPhoneForm({ lang }: { lang: string }) {
   return (
     <Card className="max-w-xs w-full m-auto">
       <CardHeader>
-        <CardTitle>ورود</CardTitle>
-        <CardDescription>
-          برای ورود شماره موبایل خود را وارد کنید.
-        </CardDescription>
+        <CardTitle>{dict.title}</CardTitle>
+        <CardDescription>{dict.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -60,19 +61,15 @@ export function LoginPhoneForm({ lang }: { lang: string }) {
           action={otpSendAction}
           className="flex flex-col gap-4"
         >
-          <input
-            type="hidden"
-            name="redirectURL"
-            value={`/${lang}/app`}
-          />
+          <input type="hidden" name="redirectURL" value={`/${lang}/app`} />
           <Field>
-            <FieldLabel htmlFor="phone">شماره موبایل</FieldLabel>
+            <FieldLabel htmlFor="phone">{dict.label}</FieldLabel>
             <div className="flex w-full" style={{ direction: "ltr" }}>
               <Input
                 id="phone"
                 name="phone"
                 type="tel"
-                placeholder="09123456789"
+                placeholder={dict.placeholder}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
@@ -93,7 +90,7 @@ export function LoginPhoneForm({ lang }: { lang: string }) {
           disabled={otpSendPending}
         >
           {otpSendPending && <Spinner />}
-          ورود
+          {dict.button}
         </Button>
       </CardFooter>
     </Card>

@@ -239,5 +239,129 @@
         "description": "با شبیه‌ساز پرسش‌های واقعی، مرور رنگی و تحلیل حرفه‌ای سوالات، سریع‌تر برای آزمون‌های خلبانی آماده شوید."
       }
     }
+  },
+  "login": {
+    "phone": {
+      "title": "ورود",
+      "description": "برای ورود شماره موبایل خود را وارد کنید.",
+      "label": "شماره موبایل",
+      "placeholder": "09123456789",
+      "button": "ورود"
+    },
+    "otp": {
+      "title": "ورود",
+      "description": "کد تایید ارسال شده به شماره موبایل خود را وارد کنید.",
+      "phone_label": "شماره موبایل",
+      "edit_button": "ویرایش",
+      "otp_label": "کد تایید",
+      "resend_button": "ارسال مجدد",
+      "login_button": "ورود"
+    }
+  },
+  "app": {
+    "sidebar": {
+      "dashboard": "داشبورد",
+      "courses": "دوره‌ها",
+      "questions": "سوالات",
+      "brand": {
+        "title": "پایلت ترکس",
+        "alt": "Pilot Trax - پایلت ترکس"
+      }
+    },
+    "dashboard": {
+      "user_chart_title": "رشد کاربران",
+      "user_chart_description": "نمایش رشد کاربران در 12 ماه گذشته",
+      "selling_chart_title": "رشد فروش",
+      "selling_chart_description": "نمایش رشد فروش در 12 ماه گذشته"
+    },
+    "admin": {
+      "courses": {
+        "new_lesson": "درس جدید",
+        "lesson_title_placeholder": "عنوان درس",
+        "add_sub_lesson_tooltip": "افزودن زیرمجموعه",
+        "delete_lesson_tooltip": "حذف درس",
+        "delete_course_success": "دوره با موفقیت حذف شد",
+        "delete_course_error": "خطا در حذف دوره",
+        "title_required": "عنوان الزامی است",
+        "save_course_success": "دوره با موفقیت ذخیره شد",
+        "save_course_error": "خطا در ذخیره سازی",
+        "new_module": "ماژول جدید",
+        "search_placeholder": "جستجوی دوره",
+        "add_course_button": "افزودن دوره",
+        "edit_button": "ویرایش",
+        "delete_button": "حذف",
+        "no_description": "توضیحی ارائه نشده است.",
+        "questions_count": "{count} سوال",
+        "modules_count": "{count} ماژول",
+        "edit_course_sheet_title": "ویرایش دوره",
+        "new_course_sheet_title": "دوره جدید",
+        "sheet_description": "جزئیات دوره و ساختار دروس آن.",
+        "title_label": "عنوان",
+        "course_title_placeholder": "عنوان دوره",
+        "description_label": "توضیحات",
+        "description_placeholder": "توضیح مختصر...",
+        "lesson_structure_label": "ساختار دروس",
+        "add_module_button": "افزودن ماژول",
+        "collapse_all_tooltip": "جمع‌کردن همه",
+        "close_all_button": "بستن همه",
+        "no_lessons_message": "هنوز درسی اضافه نشده است.",
+        "saving_button": "در حال ذخیره...",
+        "save_changes_button": "ذخیره تغییرات",
+        "cancel_button": "لغو",
+        "delete_dialog_title": "آیا از حذف این دوره اطمینان دارید؟",
+        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این دوره حذف خواهد شد.",
+        "delete_dialog_cancel": "انصراف",
+        "delete_dialog_confirm": "حذف"
+      },
+      "questions": {
+        "correct_answer_tooltip": "پاسخ صحیح",
+        "mark_as_correct_tooltip": "علامت‌گذاری به عنوان پاسخ صحیح",
+        "correct_answer_badge": "پاسخ صحیح",
+        "delete_answer_tooltip": "حذف پاسخ",
+        "answer_placeholder": "متن پاسخ...",
+        "edit_button": "ویرایش",
+        "delete_button": "حذف",
+        "answers_count": "{count} پاسخ",
+        "correct_answers_count": "{count} صحیح",
+        "delete_question_success": "سوال با موفقیت حذف شد",
+        "delete_question_error": "خطا در حذف سوال",
+        "title_required": "عنوان سوال الزامی است",
+        "lesson_required": "انتخاب درس الزامی است",
+        "answer_required": "حداقل یک پاسخ الزامی است",
+        "correct_answer_required": "حداقل یک پاسخ صحیح الزامی است",
+        "save_question_success": "سوال با موفقیت ذخیره شد",
+        "save_question_error": "خطا در ذخیره سازی",
+        "search_placeholder": "جستجو در سوالات",
+        "add_question_button": "افزودن سوال",
+        "filter_by_lesson_placeholder": "فیلتر بر اساس درس",
+        "clear_filters_tooltip": "پاک کردن فیلترها",
+        "no_questions_found": "سوالی یافت نشد",
+        "clear_filters_button": "پاک کردن فیلترها",
+        "edit_question_sheet_title": "ویرایش سوال",
+        "new_question_sheet_title": "سوال جدید",
+        "sheet_description": "سوال و پاسخ‌های آن را تنظیم کنید.",
+        "related_lesson_label": "درس مربوطه",
+        "select_lesson_placeholder": "انتخاب درس...",
+        "question_text_label": "متن سوال",
+        "question_text_placeholder": "متن سوال را وارد کنید...",
+        "question_description_label": "توضیحات سوال",
+        "question_description_placeholder": "توضیحات سوال (اختیاری)...",
+        "answers_label": "پاسخ‌ها",
+        "add_answer_button": "افزودن پاسخ",
+        "no_answers_message": "هنوز پاسخی اضافه نشده است.",
+        "saving_button": "در حال ذخیره...",
+        "save_changes_button": "ذخیره تغییرات",
+        "cancel_button": "لغو",
+        "delete_dialog_title": "آیا از حذف این سوال اطمینان دارید؟",
+        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام پاسخ‌های مربوط به این سوال نیز حذف خواهد شد.",
+        "delete_dialog_cancel": "انصراف",
+        "delete_dialog_confirm": "حذف",
+        "lesson_combobox": {
+          "placeholder": "انتخاب درس...",
+          "empty_text": "درسی یافت نشد",
+          "search_placeholder": "جستجو در دروس..."
+        }
+      }
+    }
   }
 }

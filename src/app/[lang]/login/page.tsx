@@ -8,7 +8,7 @@ export default async function Page(props: PageProps<"/[lang]/login">) {
   return (
     <LoginProvider>
       <main className="flex-1 flex p-4 pb-20">
-        <LoginForm lang={lang} />
+        <LoginForm lang={lang} dict={dict.login} />
       </main>
     </LoginProvider>
   );

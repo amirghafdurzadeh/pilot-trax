@@ -69,7 +69,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { getDictionary } from "@/lib/dictionaries";
 import { cn } from "@/lib/utils";
+
+type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
+type CoursesDict = AppDict["admin"]["courses"];
 
 type Lesson = {
   id: string;
@@ -91,11 +95,13 @@ function SortableLessonItem({
   onChange,
   onDelete,
   collapseSignal,
+  dict,
 }: {
   lesson: Lesson;
   onChange: (updated: Lesson) => void;
   onDelete: () => void;
   collapseSignal?: number;
+  dict: CoursesDict;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -127,7 +133,7 @@ function SortableLessonItem({
   const handleAddChild = () => {
     const newChild: Lesson = {
       id: crypto.randomUUID(),
-      title: "درس جدید",
+      title: dict.new_lesson,
       order: lesson.children.length,
       children: [],
     };
@@ -204,14 +210,14 @@ function SortableLessonItem({
           value={lesson.title}
           onChange={handleTitleChange}
           className="h-8 text-sm"
-          placeholder="عنوان درس"
+          placeholder={dict.lesson_title_placeholder}
         />
         <Button
           variant="ghost"
           size="icon"
           className="h-6 w-6 shrink-0 text-muted-foreground hover:text-foreground"
           onClick={handleAddChild}
-          title="افزودن زیرمجموعه"
+          title={dict.add_sub_lesson_tooltip}
         >
           <PlusIcon className="h-4 w-4" />
         </Button>
@@ -220,7 +226,7 @@ function SortableLessonItem({
           size="icon"
           className="h-6 w-6 shrink-0 text-destructive hover:text-destructive/80"
           onClick={onDelete}
-          title="حذف درس"
+          title={dict.delete_lesson_tooltip}
         >
           <Trash2Icon className="h-4 w-4" />
         </Button>
@@ -243,6 +249,7 @@ function SortableLessonItem({
                   collapseSignal={collapseSignal}
                   onChange={(updated) => handleUpdateChild(idx, updated)}
                   onDelete={() => handleDeleteChild(idx)}
+                  dict={dict}
                 />
               ))}
             </div>
@@ -256,12 +263,15 @@ function SortableLessonItem({
 export default function CoursesPageClient({
   initialCourses,
   lang,
+  dict,
 }: {
   initialCourses: Course[];
   lang: string;
+  dict: AppDict;
 }) {
   const courses = initialCourses;
   const [searchQuery, setSearchQuery] = useState("");
+  const coursesDict = dict.admin.courses;
 
   const filteredCourses = courses.filter(
     (course) =>
@@ -275,7 +285,6 @@ export default function CoursesPageClient({
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [collapseAllSignal, setCollapseAllSignal] = useState(0);
-
 
   const handleAddNew = () => {
     setEditingCourse({
@@ -291,7 +300,9 @@ export default function CoursesPageClient({
   const handleEdit = (course: Course) => {
     setEditingCourse({
       ...course,
-      lessons: [...course.lessons].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+      lessons: [...course.lessons].sort(
+        (a, b) => (a.order ?? 0) - (b.order ?? 0)
+      ),
     });
     setIsSheetOpen(true);
   };
@@ -304,9 +315,9 @@ export default function CoursesPageClient({
     if (courseToDelete) {
       const result = await deleteCourseAction(courseToDelete);
       if (result.success) {
-        toast.success("دوره با موفقیت حذف شد");
+        toast.success(coursesDict.delete_course_success);
       } else {
-        toast.error("خطا در حذف دوره");
+        toast.error(coursesDict.delete_course_error);
       }
       setCourseToDelete(null);
     }
@@ -316,7 +327,7 @@ export default function CoursesPageClient({
     if (!editingCourse) return;
 
     if (!editingCourse.title.trim()) {
-      toast.error("عنوان الزامی است");
+      toast.error(coursesDict.title_required);
       return;
     }
 
@@ -326,9 +337,9 @@ export default function CoursesPageClient({
 
     if (result.success) {
       setIsSheetOpen(false);
-      toast.success("دوره با موفقیت ذخیره شد");
+      toast.success(coursesDict.save_course_success);
     } else {
-      toast.error("خطا در ذخیره سازی: " + (result.error || "Unknown error"));
+      toast.error(coursesDict.save_course_error + (result.error || ""));
     }
   };
 
@@ -336,7 +347,7 @@ export default function CoursesPageClient({
     if (!editingCourse) return;
     const newLesson: Lesson = {
       id: crypto.randomUUID(),
-      title: "ماژول جدید",
+      title: coursesDict.new_module,
       order: editingCourse.lessons.length,
       children: [],
     };
@@ -377,7 +388,6 @@ export default function CoursesPageClient({
 
     if (oldIndex !== -1 && newIndex !== -1) {
       let newLessons = arrayMove(editingCourse.lessons, oldIndex, newIndex);
-      // Update order fields to reflect new positions
       newLessons = newLessons.map((l, idx) => ({ ...l, order: idx }));
       setEditingCourse({ ...editingCourse, lessons: newLessons });
     }
@@ -385,14 +395,13 @@ export default function CoursesPageClient({
 
   return (
     <>
-      <AppHeader lang={lang}>
+      <AppHeader lang={lang} dict={dict}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="جستجوی دوره"
+            placeholder={coursesDict.search_placeholder}
           />
-          
         </div>
       </AppHeader>
 
@@ -400,7 +409,7 @@ export default function CoursesPageClient({
         <div className="w-full flex flex-col">
           <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
             <PlusIcon className="w-4 h-4" />
-            افزودن دوره
+            {coursesDict.add_course_button}
           </Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -423,14 +432,14 @@ export default function CoursesPageClient({
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => handleEdit(course)}>
                       <PencilIcon className="w-4 h-4" />
-                      ویرایش
+                      {coursesDict.edit_button}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="text-destructive focus:text-destructive"
                       onClick={() => handleDelete(course.id)}
                     >
                       <Trash2Icon className="w-4 h-4 text-inherit" />
-                      حذف
+                      {coursesDict.delete_button}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -444,14 +453,20 @@ export default function CoursesPageClient({
                 </div>
                 <div className="flex flex-col gap-2">
                   <CardDescription className="line-clamp-3 min-h-[4.5em]">
-                    {course.description || "توضیحی ارائه نشده است."}
+                    {course.description || coursesDict.no_description}
                   </CardDescription>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                     <span className="bg-secondary px-2 py-0.5 rounded text-xs">
-                      {course.questions} سوال
+                      {coursesDict.questions_count.replace(
+                        "{count}",
+                        String(course.questions)
+                      )}
                     </span>
                     <span className="bg-secondary px-2 py-0.5 rounded text-xs">
-                      {course.lessons.length} ماژول
+                      {coursesDict.modules_count.replace(
+                        "{count}",
+                        String(course.lessons.length)
+                      )}
                     </span>
                   </div>
                 </div>
@@ -468,9 +483,13 @@ export default function CoursesPageClient({
         >
           <SheetHeader>
             <SheetTitle>
-              {editingCourse?.id ? "ویرایش دوره" : "دوره جدید"}
+              {editingCourse?.id
+                ? coursesDict.edit_course_sheet_title
+                : coursesDict.new_course_sheet_title}
             </SheetTitle>
-            <SheetDescription>جزئیات دوره و ساختار دروس آن.</SheetDescription>
+            <SheetDescription>
+              {coursesDict.sheet_description}
+            </SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto p-4">
@@ -478,7 +497,7 @@ export default function CoursesPageClient({
               <div className="flex flex-col gap-6">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label>عنوان</Label>
+                    <Label>{coursesDict.title_label}</Label>
                     <Input
                       value={editingCourse.title}
                       onChange={(e) =>
@@ -487,11 +506,11 @@ export default function CoursesPageClient({
                           title: e.target.value,
                         })
                       }
-                      placeholder="عنوان دوره"
+                      placeholder={coursesDict.course_title_placeholder}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>توضیحات</Label>
+                    <Label>{coursesDict.description_label}</Label>
                     <Textarea
                       value={editingCourse.description || ""}
                       onChange={(e) =>
@@ -500,7 +519,7 @@ export default function CoursesPageClient({
                           description: e.target.value,
                         })
                       }
-                      placeholder="توضیح مختصر..."
+                      placeholder={coursesDict.description_placeholder}
                       rows={3}
                     />
                   </div>
@@ -511,29 +530,32 @@ export default function CoursesPageClient({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <Label className="text-base font-semibold">
-                      ساختار دروس
+                      {coursesDict.lesson_structure_label}
                     </Label>
                     <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline" onClick={addRootLesson}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={addRootLesson}
+                      >
                         <PlusIcon className="w-4 h-4 ml-2" />
-                        افزودن ماژول
+                        {coursesDict.add_module_button}
                       </Button>
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => setCollapseAllSignal((s) => s + 1)}
-                        title="جمع‌کردن همه"
+                        title={coursesDict.collapse_all_tooltip}
                       >
-                        بستن همه
+                        {coursesDict.close_all_button}
                       </Button>
-
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     {editingCourse.lessons.length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground border border-dashed rounded-md">
-                        هنوز درسی اضافه نشده است.
+                        {coursesDict.no_lessons_message}
                       </div>
                     ) : (
                       <DndContext
@@ -555,6 +577,7 @@ export default function CoursesPageClient({
                                   updateRootLesson(idx, updated)
                                 }
                                 onDelete={() => deleteRootLesson(idx)}
+                                dict={coursesDict}
                               />
                             ))}
                           </div>
@@ -569,10 +592,12 @@ export default function CoursesPageClient({
 
           <SheetFooter className="mt-auto border-t pt-4 flex-row-reverse sm:justify-start gap-2">
             <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? "در حال ذخیره..." : "ذخیره تغییرات"}
+              {isSaving
+                ? coursesDict.saving_button
+                : coursesDict.save_changes_button}
             </Button>
             <SheetClose asChild>
-              <Button variant="outline">لغو</Button>
+              <Button variant="outline">{coursesDict.cancel_button}</Button>
             </SheetClose>
           </SheetFooter>
         </SheetContent>
@@ -585,20 +610,21 @@ export default function CoursesPageClient({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              آیا از حذف این دوره اطمینان دارید؟
+              {coursesDict.delete_dialog_title}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این دوره حذف
-              خواهد شد.
+              {coursesDict.delete_dialog_description}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel>انصراف</AlertDialogCancel>
+            <AlertDialogCancel>
+              {coursesDict.delete_dialog_cancel}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={executeDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              حذف
+              {coursesDict.delete_dialog_confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -606,4 +632,3 @@ export default function CoursesPageClient({
     </>
   );
 }
-

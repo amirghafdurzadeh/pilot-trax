@@ -1,7 +1,7 @@
 "use client";
 import { BookOpenIcon, HelpCircleIcon, HomeIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 import { AppBrand } from "@/components/core/app-brand";
 import {
@@ -15,30 +15,33 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { getDictionary } from "@/lib/dictionaries";
 
-const getSidebarItems = (lang: string) => [
+type Dict = Awaited<ReturnType<typeof getDictionary>>["app"]["sidebar"];
+
+const getSidebarItems = (lang: string, dict: Dict) => [
   {
-    title: "داشبورد",
+    title: dict.dashboard,
     href: `/${lang}/app`,
     icon: HomeIcon,
   },
   {
-    title: "دوره‌ها",
+    title: dict.courses,
     href: `/${lang}/app/courses`,
     icon: BookOpenIcon,
   },
   {
-    title: "سوالات",
+    title: dict.questions,
     href: `/${lang}/app/questions`,
     icon: HelpCircleIcon,
   },
 ];
 
-export function AppSidebar({ lang }: { lang: string }) {
+export function AppSidebar({ lang, dict }: { lang: string; dict: Dict }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
-  const sidebarItems = getSidebarItems(lang);
+  const sidebarItems = getSidebarItems(lang, dict);
 
   const handleClick = useCallback(
     (href: string) => {
@@ -49,13 +52,13 @@ export function AppSidebar({ lang }: { lang: string }) {
   );
 
   return (
-    <Sidebar side="right">
+    <Sidebar side={lang === "fa" ? "right" : "left"}>
       <SidebarHeader className="border-b border-sidebar-border">
         <AppBrand
-          title="پایلت ترکس"
+          title={dict.brand.title}
           className="py-1 px-2"
           imageProps={{
-            alt: "Pilot Trax - پایلت ترکس",
+            alt: dict.brand.alt,
             src: "/logo.svg",
             width: 24,
             height: 24,

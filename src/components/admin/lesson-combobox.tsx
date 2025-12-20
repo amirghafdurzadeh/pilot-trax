@@ -18,6 +18,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { getDictionary } from "@/lib/dictionaries";
+
+type QuestionsDict = Awaited<ReturnType<typeof getDictionary>>["app"]["admin"]["questions"];
+type LessonComboboxDict = QuestionsDict["lesson_combobox"];
 
 export type LessonOption = {
   id: string;
@@ -32,9 +36,7 @@ interface LessonComboboxProps {
   lessons: LessonOption[];
   value: string;
   onValueChange: (value: string) => void;
-  placeholder?: string;
-  emptyText?: string;
-  searchPlaceholder?: string;
+  dict: LessonComboboxDict;
   className?: string;
   triggerClassName?: string;
   icon?: React.ReactNode;
@@ -44,9 +46,7 @@ export function LessonCombobox({
   lessons,
   value,
   onValueChange,
-  placeholder = "انتخاب درس...",
-  emptyText = "درسی یافت نشد",
-  searchPlaceholder = "جستجو در دروس...",
+  dict,
   className,
   triggerClassName,
   icon,
@@ -134,7 +134,7 @@ export function LessonCombobox({
             {selectedLesson ? (
               <span className="truncate">{selectedLesson.title}</span>
             ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
+              <span className="text-muted-foreground">{dict.placeholder}</span>
             )}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -142,9 +142,9 @@ export function LessonCombobox({
       </PopoverTrigger>
       <PopoverContent className={cn("p-0", className)} align="start">
         <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+          <CommandInput placeholder={dict.search_placeholder} />
           <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
+            <CommandEmpty>{dict.empty_text}</CommandEmpty>
             {Object.entries(lessonsByCourse).map(
               ([courseName, courseLessons]) => (
                 <CommandGroup key={courseName} heading={courseName}>
