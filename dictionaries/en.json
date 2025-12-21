@@ -378,6 +378,8 @@
         "question_text_placeholder": "Enter the question text here...",
         "question_description_label": "Question Description (optional)",
         "question_description_placeholder": "Enter more details about the question here...",
+        "question_index_label": "Question Order",
+        "question_index_placeholder": "Question display order (optional)",
         "answers_label": "Answers",
         "add_answer_button": "Add Answer",
         "no_answers_message": "No answers have been added yet.",

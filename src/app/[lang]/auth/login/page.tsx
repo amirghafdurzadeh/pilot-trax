@@ -3,7 +3,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import { LoginProvider } from "@/context/login";
 
-export default async function Page(props: PageProps<"/[lang]/login">) {
+export default async function Page(props: PageProps<"/[lang]/auth/login">) {
   const lang = (await props.params).lang as Locale;
   const dict = await getDictionary(lang);
   return (

@@ -4,7 +4,9 @@ import { CompleteProfileForm } from "@/components/auth/complete-profile-form";
 import { getDictionary } from "@/lib/dictionaries";
 import { readSession } from "@/lib/session";
 
-export default async function Page(props: PageProps<"/[lang]/login">) {
+export default async function Page(
+  props: PageProps<"/[lang]/auth/complete-profile">
+) {
   const lang = (await props.params).lang;
   const user = await readSession();
   if (!user) {

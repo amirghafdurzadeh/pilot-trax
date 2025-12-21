@@ -250,6 +250,11 @@ function QuestionCard({
       </div>
 
       <CardContent className="flex flex-col gap-3 p-4">
+        {question.index !== null && question.index !== undefined && (
+          <span className="text-sm font-semibold text-muted-foreground">
+            {question.index}.
+          </span>
+        )}
         <div
           className="prose prose-sm max-w-none dark:prose-invert line-clamp-3 min-h-[3em]"
           dangerouslySetInnerHTML={{ __html: question.title }}
@@ -414,6 +419,7 @@ export default function QuestionsPageClient({
       title: question.title,
       description: question.description,
       lessonId: question.lessonId,
+      index: question.index,
       answers: question.answers.map((a) => ({
         id: a.id,
         title: a.title,
@@ -665,6 +671,22 @@ export default function QuestionsPageClient({
                     dict={questionsDict.lesson_combobox}
                     triggerClassName="w-full"
                     className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>{questionsDict.question_index_label}</Label>
+                  <input
+                    type="number"
+                    value={editingQuestion.index ?? ""}
+                    onChange={(e) =>
+                      setEditingQuestion({
+                        ...editingQuestion,
+                        index: e.target.value ? parseInt(e.target.value) : undefined,
+                      })
+                    }
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder={questionsDict.question_index_placeholder}
                   />
                 </div>
 

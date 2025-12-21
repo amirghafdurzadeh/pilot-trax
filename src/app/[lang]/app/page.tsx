@@ -5,7 +5,7 @@ import { AppHeader } from "@/components/core/app-header";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 
-export default async function Page(props: PageProps<"/[lang]/login">) {
+export default async function Page(props: PageProps<"/[lang]/app">) {
   const lang = (await props.params).lang as Locale;
   const dict = await getDictionary(lang);
   return (

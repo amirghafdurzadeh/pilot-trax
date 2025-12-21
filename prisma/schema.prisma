@@ -101,7 +101,8 @@ model Lesson {
 }
 
 model Question {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
+  index       Int?
   title       String
   description String
 

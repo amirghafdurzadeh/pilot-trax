@@ -15,6 +15,7 @@ export type AnswerInput = {
 
 export type QuestionInput = {
   id?: string;
+  index?: number;
   title: string;
   description: string;
   lessonId: string;
@@ -23,6 +24,7 @@ export type QuestionInput = {
 
 export type QuestionWithDetails = {
   id: string;
+  index?: number;
   title: string;
   description: string;
   lessonId: string;
@@ -114,7 +116,7 @@ export async function getQuestions(params: {
         skip: 1,
         cursor: { id: cursor },
       }),
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ index: "asc" }, { createdAt: "desc" }],
       include: {
         answers: {
           orderBy: { order: "asc" },
@@ -138,6 +140,7 @@ export async function getQuestions(params: {
     const formattedQuestions: QuestionWithDetails[] = questions.map(
       (q: any) => ({
         id: q.id,
+        index: q.index,
         title: q.title,
         description: q.description,
         lessonId: q.lessonId,
@@ -191,6 +194,7 @@ export async function saveQuestion(lang: Locale, question: QuestionInput) {
             title: question.title,
             description: question.description || "",
             lessonId: question.lessonId,
+            ...(question.index !== undefined && { index: question.index }),
           },
         });
 
@@ -235,6 +239,7 @@ export async function saveQuestion(lang: Locale, question: QuestionInput) {
             title: question.title,
             description: question.description || "",
             lessonId: question.lessonId,
+            index: question.index,
             answers: {
               create: question.answers.map((a) => ({
                 id: a.id,
