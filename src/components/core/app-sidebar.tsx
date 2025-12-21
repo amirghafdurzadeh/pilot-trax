@@ -55,6 +55,7 @@ export function AppSidebar({ lang, dict }: { lang: string; dict: Dict }) {
     <Sidebar side={lang === "fa" ? "right" : "left"}>
       <SidebarHeader className="border-b border-sidebar-border">
         <AppBrand
+          lang={lang}
           title={dict.brand.title}
           className="py-1 px-2"
           imageProps={{

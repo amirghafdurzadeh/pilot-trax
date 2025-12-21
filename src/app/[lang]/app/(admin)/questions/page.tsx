@@ -1,6 +1,7 @@
 import { getLessonsForFilter, getQuestions } from "@/actions/questions";
 import QuestionsPageClient from "@/components/admin/client-questions";
-import { getDictionary, Locale } from "@/lib/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 export default async function QuestionsPage(
   props: PageProps<"/[lang]/app/questions">

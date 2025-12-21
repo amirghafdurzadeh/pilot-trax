@@ -9,7 +9,8 @@ import {
   Plans,
   Testimonials,
 } from "@/components/home";
-import { getDictionary, Locale } from "@/lib/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 export default async function Page(props: PageProps<"/[lang]">) {
   const lang = (await props.params).lang as Locale;
@@ -18,7 +19,7 @@ export default async function Page(props: PageProps<"/[lang]">) {
   return (
     <main className="w-full">
       <div className="mx-auto min-h-screen">
-        <Header dict={dict.home.header} />
+        <Header lang={lang} dict={dict.home.header} />
         <Hero dict={dict.home.hero} />
         <Features
           features={dict.home.features.items}

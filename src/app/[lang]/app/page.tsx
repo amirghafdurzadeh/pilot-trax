@@ -2,7 +2,8 @@ import { SellingChart } from "@/components/admin/charts/selling-chart";
 import { UserChart } from "@/components/admin/charts/user-chart";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
-import { getDictionary, Locale } from "@/lib/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 export default async function Page(props: PageProps<"/[lang]/login">) {
   const lang = (await props.params).lang as Locale;

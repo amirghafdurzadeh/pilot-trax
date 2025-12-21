@@ -70,6 +70,7 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 import { cn } from "@/lib/utils";
 
 type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
@@ -266,7 +267,7 @@ export default function CoursesPageClient({
   dict,
 }: {
   initialCourses: Course[];
-  lang: string;
+  lang: Locale;
   dict: AppDict;
 }) {
   const courses = initialCourses;

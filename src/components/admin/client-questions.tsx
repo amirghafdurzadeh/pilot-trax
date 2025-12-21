@@ -77,6 +77,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
@@ -317,7 +318,7 @@ export default function QuestionsPageClient({
   initialQuestions: QuestionWithDetails[];
   initialNextCursor: string | null;
   initialLessons: LessonOption[];
-  lang: string;
+  lang: Locale;
   dict: AppDict;
 }) {
   const [questions, setQuestions] = useState(initialQuestions);

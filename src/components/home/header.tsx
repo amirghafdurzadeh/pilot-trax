@@ -2,9 +2,12 @@ import { UserIcon } from "lucide-react";
 import Link from "next/link";
 
 import { AppBrand } from "@/components/core/app-brand";
+import { LanguageSwitcher } from "@/components/core/language-switcher";
 import { Button } from "@/components/ui/button";
+import { Locale } from "@/lib/locales";
 
 type Props = {
+  lang: Locale;
   dict: {
     brand: {
       title: string;
@@ -20,10 +23,11 @@ type Props = {
   };
 };
 
-export function Header({ dict }: Props) {
+export function Header({ lang, dict }: Props) {
   return (
     <header className="max-w-7xl mx-auto px-6 md:px-8 py-6 flex items-center justify-between gap-4">
       <AppBrand
+        lang={lang}
         title={dict.brand.title}
         description={dict.brand.description}
         imageProps={{
@@ -58,10 +62,11 @@ export function Header({ dict }: Props) {
           size="icon"
           className="rounded-full shadow-lg shadow-blue-600/30"
         >
-          <Link href="/app">
+          <Link href={`/${lang}/app`}>
             <UserIcon className="size-5" />
           </Link>
         </Button>
+        <LanguageSwitcher lang={lang} />
       </nav>
     </header>
   );

@@ -3,7 +3,8 @@ import { Inter, Vazirmatn } from "next/font/google";
 
 import "@/assets/styles/globals.css";
 import { Providers } from "@/components/core/providers";
-import { getDictionary, hasLocale, Locale } from "@/lib/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
+import { hasLocale, Locale } from "@/lib/locales";
 
 const vazirmatn = Vazirmatn({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],

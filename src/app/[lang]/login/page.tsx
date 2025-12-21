@@ -1,5 +1,6 @@
 import { LoginForm } from "@/components/login/form";
-import { getDictionary, Locale } from "@/lib/dictionaries";
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 import { LoginProvider } from "@/context/login";
 
 export default async function Page(props: PageProps<"/[lang]/login">) {

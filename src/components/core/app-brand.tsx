@@ -4,6 +4,7 @@ import Image, { ImageProps } from "next/image";
 import Link from "next/link";
 
 type Props = Readonly<{
+  lang: string;
   title: string;
   description?: string;
   className?: string;
@@ -13,7 +14,10 @@ type Props = Readonly<{
 
 export function AppBrand(props: Props) {
   return (
-    <Link href="/" className={cn("flex items-center gap-4", props.className)}>
+    <Link
+      href={`/${props.lang}`}
+      className={cn("flex items-center gap-4", props.className)}
+    >
       <Image
         alt={props.imageProps.alt}
         src={props.imageProps.src}
