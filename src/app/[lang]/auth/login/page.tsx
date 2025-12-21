@@ -1,4 +1,4 @@
-import { LoginForm } from "@/components/login/form";
+import { LoginForm } from "@/components/auth/login/form";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import { LoginProvider } from "@/context/login";

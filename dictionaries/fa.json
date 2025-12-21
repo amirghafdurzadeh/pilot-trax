@@ -277,6 +277,22 @@
       "login_button": "ورود"
     }
   },
+  "e_unauthorized": "شما مجاز به انجام این عملیات نیستید.",
+  "v_update_profile": {
+    "first_name_min": "نام باید حداقل ۲ حرف داشته باشد.",
+    "last_name_min": "نام خانوادگی باید حداقل ۲ حرف داشته باشد."
+  },
+  "complete_profile": {
+    "title": "تکمیل پروفایل",
+    "description": "لطفا برای ادامه، نام و نام خانوادگی خود را وارد کنید.",
+    "firstName_label": "نام",
+    "firstName_placeholder": "نام خود را وارد کنید",
+    "lastName_label": "نام خانوادگی",
+    "lastName_placeholder": "نام خانوادگی خود را وارد کنید",
+    "save_button": "ذخیره و ادامه",
+    "saving_button": "در حال ذخیره...",
+    "skip_button": "رد شدن"
+  },
   "app": {
     "sidebar": {
       "dashboard": "داشبورد",

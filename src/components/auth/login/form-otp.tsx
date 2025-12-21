@@ -111,7 +111,7 @@ export function LoginOTPForm({ lang, dict }: { lang: Locale; dict: Dict }) {
   }, [otp]);
 
   return (
-    <Card className="max-w-xs w-full m-auto">
+    <Card className="max-w-sm w-full m-auto">
       <CardHeader>
         <CardTitle>{dict.title}</CardTitle>
         <CardDescription>{dict.description}</CardDescription>

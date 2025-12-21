@@ -76,8 +76,13 @@ export async function otpLogin(lang: Locale, _: any, formData: FormData) {
     };
   }
 
+  const redirectURL =
+    !user.firstName || !user.lastName
+      ? `/${lang}/auth/complete-profile`
+      : validatedFields.data.redirectURL;
+
   return {
     success: true,
-    data: { redirectURL: validatedFields.data.redirectURL },
+    data: { redirectURL },
   };
 }

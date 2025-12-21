@@ -6,6 +6,6 @@ import { readSession } from "@/lib/session";
 
 export async function authentication(lang: string) {
   const session = await readSession();
-  if (!session) redirect(`/${lang}/login`);
+  if (!session) redirect(`/${lang}/auth/login`);
   return session;
 }

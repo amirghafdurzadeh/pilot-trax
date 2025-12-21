@@ -1,7 +1,12 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import z from "zod";
+
+import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
+import { readSession } from "@/lib/session";
 
 type UsersGrowth = {
   month: string;
@@ -42,4 +47,63 @@ export async function getUsersGrowth(lang: Locale) {
   }
 
   return data;
+}
+
+export async function updateUserProfile(
+  lang: Locale,
+  _: any,
+  formData: FormData
+) {
+  const dictionary = await getDictionary(lang);
+  const user = await readSession();
+  if (!user) {
+    return {
+      success: false,
+      errors: {
+        fieldErrors: {},
+        formErrors: [dictionary.e_unauthorized],
+      },
+    };
+  }
+
+  const userProfileSchema = z.object({
+    firstName: z.string().min(2, dictionary.v_update_profile.first_name_min),
+    lastName: z.string().min(2, dictionary.v_update_profile.last_name_min),
+    redirectURL: z.string().optional(),
+  });
+
+  const validatedFields = userProfileSchema.safeParse({
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
+    redirectURL: formData.get("redirectURL"),
+  });
+
+  if (!validatedFields.success) {
+    return { success: false, errors: z.flattenError(validatedFields.error) };
+  }
+
+  try {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        firstName: validatedFields.data.firstName,
+        lastName: validatedFields.data.lastName,
+      },
+    });
+  } catch (error) {
+    return {
+      success: false,
+      errors: {
+        fieldErrors: {},
+        formErrors: [dictionary.e_something_went_wrong],
+      },
+    };
+  }
+
+  revalidatePath(`/${lang}/app`);
+
+  return {
+    success: true,
+    data: { redirectURL: validatedFields.data.redirectURL },
+  };
 }

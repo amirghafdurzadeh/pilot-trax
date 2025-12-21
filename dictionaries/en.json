@@ -276,6 +276,22 @@
       "login_button": "Login"
     }
   },
+  "e_unauthorized": "You are not authorized to perform this action.",
+  "v_update_profile": {
+    "first_name_min": "First name must be at least 2 characters.",
+    "last_name_min": "Last name must be at least 2 characters."
+  },
+  "complete_profile": {
+    "title": "Complete Your Profile",
+    "description": "Please enter your first and last name to continue.",
+    "firstName_label": "First Name",
+    "firstName_placeholder": "Enter your first name",
+    "lastName_label": "Last Name",
+    "lastName_placeholder": "Enter your last name",
+    "save_button": "Save and Continue",
+    "saving_button": "Saving...",
+    "skip_button": "Skip"
+  },
   "app": {
     "sidebar": {
       "dashboard": "Dashboard",
