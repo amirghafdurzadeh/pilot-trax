@@ -419,7 +419,7 @@ export default function CoursesPageClient({
               key={course.id}
               className="relative group overflow-hidden transition-all hover:shadow-md"
             >
-              <div className="absolute top-2 left-2 z-10">
+              <div className="absolute top-2 end-2 z-10">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -446,7 +446,7 @@ export default function CoursesPageClient({
                 </DropdownMenu>
               </div>
 
-              <CardContent className="flex flex-col gap-4 p-6">
+              <CardContent className="flex flex-col gap-3 p-4">
                 <div>
                   <CardTitle className="line-clamp-1 text-lg">
                     {course.title}
@@ -480,7 +480,7 @@ export default function CoursesPageClient({
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent
           className="sm:max-w-2xl flex flex-col h-full w-full"
-          side="left"
+          side={lang === "fa" ? "left" : "right"}
         >
           <SheetHeader>
             <SheetTitle>
@@ -488,9 +488,7 @@ export default function CoursesPageClient({
                 ? coursesDict.edit_course_sheet_title
                 : coursesDict.new_course_sheet_title}
             </SheetTitle>
-            <SheetDescription>
-              {coursesDict.sheet_description}
-            </SheetDescription>
+            <SheetDescription>{coursesDict.sheet_description}</SheetDescription>
           </SheetHeader>
 
           <div className="flex-1 overflow-y-auto p-4">

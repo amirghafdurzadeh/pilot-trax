@@ -30,15 +30,15 @@ type FeatureCardProps = {
 const featureVisuals = [
   {
     icon: BookOpenTextIcon,
-    gradient: "from-blue-500 to-blue-700",
+    gradient: "from-amber-500 to-amber-400",
   },
   {
     icon: CrosshairIcon,
-    gradient: "from-blue-500 to-blue-700",
+    gradient: "from-emerald-500 to-emerald-400",
   },
   {
     icon: ZapIcon,
-    gradient: "from-blue-500 to-blue-700",
+    gradient: "from-blue-600 to-blue-500",
   },
 ];
 
@@ -49,7 +49,7 @@ export function FeatureCard(props: FeatureCardProps) {
       <CardHeader>
         <div
           className={cn(
-            "w-14 h-14 rounded-xl bg-linear-to-br flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform",
+            "w-14 h-14 rounded-xl bg-linear-to-br flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform text-white",
             props.feature.gradient
           )}
         >

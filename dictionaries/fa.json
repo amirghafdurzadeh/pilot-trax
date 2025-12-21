@@ -268,6 +268,12 @@
         "alt": "Pilot Trax - پایلت ترکس"
       }
     },
+    "theme_switcher": {
+      "toggle_theme": "تغییر پوسته",
+      "light": "روشن",
+      "dark": "تاریک",
+      "system": "سیستم"
+    },
     "dashboard": {
       "user_chart_title": "رشد کاربران",
       "user_chart_description": "نمایش رشد کاربران در 12 ماه گذشته",

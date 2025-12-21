@@ -222,7 +222,7 @@ function QuestionCard({
 
   return (
     <Card className="relative group overflow-hidden transition-all hover:shadow-md">
-      <div className="absolute top-2 left-2 z-10">
+      <div className="absolute top-2 end-2 z-10">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -619,7 +619,7 @@ export default function QuestionsPageClient({
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetContent
           className="sm:max-w-2xl flex flex-col h-full w-full"
-          side="left"
+          side={lang === "fa" ? "left" : "right"}
         >
           <SheetHeader>
             <SheetTitle>
@@ -674,9 +674,7 @@ export default function QuestionsPageClient({
                         description: value,
                       })
                     }
-                    placeholder={
-                      questionsDict.question_description_placeholder
-                    }
+                    placeholder={questionsDict.question_description_placeholder}
                     minHeight="200px"
                   />
                 </div>
@@ -718,9 +716,7 @@ export default function QuestionsPageClient({
                                   updateAnswer(idx, updated)
                                 }
                                 onDelete={() => deleteAnswer(idx)}
-                                onToggleCorrect={() =>
-                                  toggleAnswerCorrect(idx)
-                                }
+                                onToggleCorrect={() => toggleAnswerCorrect(idx)}
                                 dict={questionsDict}
                               />
                             ))}

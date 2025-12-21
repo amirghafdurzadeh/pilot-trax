@@ -1,7 +1,7 @@
 import "server-only";
 import { Locale } from "./locales";
 
-type Dictionary = typeof import("@/../dictionaries/en.json");
+export type Dictionary = typeof import("@/../dictionaries/en.json");
 
 const dictionaries: { [key in Locale]: () => Promise<Dictionary> } = {
   en: () =>

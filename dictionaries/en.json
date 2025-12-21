@@ -267,6 +267,12 @@
         "alt": "Pilot Trax"
       }
     },
+    "theme_switcher": {
+      "toggle_theme": "Toggle theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
     "dashboard": {
       "user_chart_title": "User Growth",
       "user_chart_description": "Displaying user growth in the last 12 months",

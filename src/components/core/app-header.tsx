@@ -2,6 +2,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import { LanguageSwitcher } from "@/components/core/language-switcher";
+import { ThemeSwitcher } from "@/components/core/theme-switcher";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>["app"];
 
@@ -19,6 +20,7 @@ export function AppHeader(props: Props) {
       <div className="flex-1 flex items-center">{props.children}</div>
       <div className="flex items-center">
         <LanguageSwitcher lang={props.lang} />
+        <ThemeSwitcher dict={props.dict.theme_switcher} />
       </div>
     </header>
   );

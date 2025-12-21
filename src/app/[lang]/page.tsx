@@ -19,7 +19,7 @@ export default async function Page(props: PageProps<"/[lang]">) {
   return (
     <main className="w-full">
       <div className="mx-auto min-h-screen">
-        <Header lang={lang} dict={dict.home.header} />
+        <Header lang={lang} dict={dict} />
         <Hero dict={dict.home.hero} />
         <Features
           features={dict.home.features.items}
