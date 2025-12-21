@@ -314,7 +314,7 @@ export default function CoursesPageClient({
 
   const executeDelete = async () => {
     if (courseToDelete) {
-      const result = await deleteCourseAction(courseToDelete);
+      const result = await deleteCourseAction(lang, courseToDelete);
       if (result.success) {
         toast.success(coursesDict.delete_course_success);
       } else {
@@ -333,7 +333,7 @@ export default function CoursesPageClient({
     }
 
     setIsSaving(true);
-    const result = await saveCourse(editingCourse);
+    const result = await saveCourse(lang, editingCourse);
     setIsSaving(false);
 
     if (result.success) {

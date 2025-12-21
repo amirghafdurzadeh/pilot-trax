@@ -31,20 +31,23 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
 import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>["login"]["otp"];
 
-export function LoginOTPForm({ lang, dict }: { lang: string; dict: Dict }) {
+export function LoginOTPForm({ lang, dict }: { lang: Locale; dict: Dict }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formRef = useRef<HTMLFormElement>(null);
   const { phone, setStep, otpExpiredAt, setOtpExpiredAt } = useLogin();
+  const otpLoginWithLang = otpLogin.bind(null, lang);
   const [otpLoginState, otpLoginAction, otpLoginPending] = useActionState(
-    otpLogin,
+    otpLoginWithLang,
     null
   );
+  const otpSendWithLang = otpSend.bind(null, lang);
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
-    otpSend,
+    otpSendWithLang,
     null
   );
   const errors = useMemo(

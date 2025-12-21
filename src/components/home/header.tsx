@@ -2,8 +2,6 @@ import { UserIcon } from "lucide-react";
 import Link from "next/link";
 
 import { AppBrand } from "@/components/core/app-brand";
-import { LanguageSwitcher } from "@/components/core/language-switcher";
-import { ThemeSwitcher } from "@/components/core/theme-switcher";
 import { Button } from "@/components/ui/button";
 import { Locale } from "@/lib/locales";
 import { Dictionary } from "@/lib/dictionaries";
@@ -56,8 +54,6 @@ export function Header({ lang, dict }: Props) {
             <UserIcon className="size-5" />
           </Link>
         </Button>
-        <LanguageSwitcher lang={lang} />
-        <ThemeSwitcher dict={dict.app.theme_switcher} />
       </nav>
     </header>
   );

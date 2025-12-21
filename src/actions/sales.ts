@@ -1,13 +1,16 @@
 "use server";
 
+import { Locale } from "@/lib/locales";
+
 type SellingGrowth = {
   month: string;
   income: number;
 };
 
-export async function getSellingGrowthDummyData() {
+export async function getSellingGrowthDummyData(lang: Locale) {
   const data: SellingGrowth[] = [];
   const now = new Date();
+  const locale = lang === "fa" ? "fa-IR" : "en-US";
 
   for (let i = 0; i < 12; i++) {
     const date = new Date(now);
@@ -18,7 +21,7 @@ export async function getSellingGrowthDummyData() {
     const income = trend * 10000000;
 
     data.push({
-      month: date.toLocaleString("fa-IR", {
+      month: date.toLocaleString(locale, {
         month: "long",
       }),
       income: income,

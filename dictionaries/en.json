@@ -1,5 +1,20 @@
 {
   "test": "This is a test string.",
+  "v_otp_login": {
+    "phone_invalid": "Invalid phone number.",
+    "otp_invalid": "Invalid OTP code."
+  },
+  "v_otp_send": {
+    "phone_invalid": "Invalid phone number."
+  },
+  "e_login_failed": "Login failed. Please check your information and try again.",
+  "e_something_went_wrong": "Something went wrong, please try again later.",
+  "e_course_id_missing": "Course ID missing",
+  "e_db_error": "Database error",
+  "e_lesson_required": "Lesson is required",
+  "e_title_required": "Title is required",
+  "e_at_least_one_answer": "At least one answer is required",
+  "e_at_least_one_correct_answer": "At least one correct answer is required",
   "home": {
     "header": {
       "brand": {
@@ -213,8 +228,12 @@
     "footer": {
       "copyright": "© {year} Pilot Trax — All rights reserved.",
       "nav": {
+        "pilot_trax": "Pilot Trax",
+        "about_us": "About Us",
         "terms": "Terms and Conditions",
-        "faq": "FAQ"
+        "faq": "FAQ",
+        "legal": "Legal",
+        "privacy_policy": "Privacy Policy"
       },
       "support": {
         "text": "Proudly supported by",
@@ -276,8 +295,10 @@
     "dashboard": {
       "user_chart_title": "User Growth",
       "user_chart_description": "Displaying user growth in the last 12 months",
+      "user_chart_label": "Number of users",
       "selling_chart_title": "Sales Growth",
-      "selling_chart_description": "Displaying sales growth in the last 12 months"
+      "selling_chart_description": "Displaying sales growth in the last 12 months",
+      "selling_chart_label": "Income"
     },
     "admin": {
       "courses": {

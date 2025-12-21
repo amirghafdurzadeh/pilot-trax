@@ -4,13 +4,16 @@ import z from "zod";
 import prisma from "@/lib/prisma";
 import { createSession } from "@/lib/session";
 
-const otpLoginSchema = z.object({
-  phone: z.string().regex(/^09\d{9}$/, "Invalid phone number."),
-  otp: z.string().regex(/^\d{6}$/, "Invalid OTP code."),
-  redirectURL: z.string().optional(),
-});
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
-export async function otpLogin(_: any, formData: FormData) {
+export async function otpLogin(lang: Locale, _: any, formData: FormData) {
+  const dictionary = await getDictionary(lang);
+  const otpLoginSchema = z.object({
+    phone: z.string().regex(/^09\d{9}$/, dictionary.v_otp_login.phone_invalid),
+    otp: z.string().regex(/^\d{6}$/, dictionary.v_otp_login.otp_invalid),
+    redirectURL: z.string().optional(),
+  });
   const validatedFields = otpLoginSchema.safeParse({
     phone: formData.get("phone"),
     otp: formData.get("otp"),
@@ -57,9 +60,7 @@ export async function otpLogin(_: any, formData: FormData) {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: [
-          "Login failed. Please check your information and try again.",
-        ],
+        formErrors: [dictionary.e_login_failed],
       },
     };
 
@@ -70,7 +71,7 @@ export async function otpLogin(_: any, formData: FormData) {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: ["Something went wrong, please try again later."],
+        formErrors: [dictionary.e_something_went_wrong],
       },
     };
   }

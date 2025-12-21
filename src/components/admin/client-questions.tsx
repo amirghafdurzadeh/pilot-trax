@@ -429,7 +429,7 @@ export default function QuestionsPageClient({
 
   const executeDelete = async () => {
     if (questionToDelete) {
-      const result = await deleteQuestion(questionToDelete);
+      const result = await deleteQuestion(lang, questionToDelete);
       if (result.success) {
         setQuestions((prev) => prev.filter((q) => q.id !== questionToDelete));
         toast.success(questionsDict.delete_success_toast);
@@ -465,7 +465,7 @@ export default function QuestionsPageClient({
     }
 
     setIsSaving(true);
-    const result = await saveQuestion(editingQuestion);
+    const result = await saveQuestion(lang, editingQuestion);
     setIsSaving(false);
 
     if (result.success) {

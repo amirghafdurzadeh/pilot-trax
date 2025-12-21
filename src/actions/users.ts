@@ -1,5 +1,6 @@
 "use server";
 
+import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
 
 type UsersGrowth = {
@@ -7,9 +8,10 @@ type UsersGrowth = {
   users: number;
 };
 
-export async function getUsersGrowth() {
+export async function getUsersGrowth(lang: Locale) {
   const data: UsersGrowth[] = [];
   const now = new Date();
+  const locale = lang === "fa" ? "fa-IR" : "en-US";
 
   for (let i = 0; i < 12; i++) {
     const startOfMonth = new Date();
@@ -32,7 +34,7 @@ export async function getUsersGrowth() {
     });
 
     data.push({
-      month: startOfMonth.toLocaleString("fa-IR", {
+      month: startOfMonth.toLocaleString(locale, {
         month: "long",
       }),
       users: users,

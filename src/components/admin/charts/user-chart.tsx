@@ -17,32 +17,40 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Locale } from "@/lib/locales";
 
 interface UserChartProps {
   title: string;
   description: string;
+  lang: Locale;
+  chartLabel: string;
 }
 
-const chartConfig = {
-  users: {
-    label: "تعداد کاربران",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig;
+export function UserChart({
+  title,
+  description,
+  lang,
+  chartLabel,
+}: UserChartProps) {
+  const chartConfig = {
+    users: {
+      label: chartLabel,
+      color: "var(--chart-1)",
+    },
+  } satisfies ChartConfig;
 
-export function UserChart({ title, description }: UserChartProps) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const userGrowthData = await getUsersGrowth();
+      const userGrowthData = await getUsersGrowth(lang);
       setData(userGrowthData);
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [lang]);
 
   if (loading) {
     return <Skeleton className="w-full h-80" />;

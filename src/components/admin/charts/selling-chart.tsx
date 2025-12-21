@@ -17,32 +17,40 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Locale } from "@/lib/locales";
 
 interface SellingChartProps {
   title: string;
   description: string;
+  lang: Locale;
+  chartLabel: string;
 }
 
-const chartConfig = {
-  income: {
-    label: "درآمد",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
+export function SellingChart({
+  title,
+  description,
+  lang,
+  chartLabel,
+}: SellingChartProps) {
+  const chartConfig = {
+    income: {
+      label: chartLabel,
+      color: "var(--chart-2)",
+    },
+  } satisfies ChartConfig;
 
-export function SellingChart({ title, description }: SellingChartProps) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const sellingGrowthData = await getSellingGrowthDummyData();
+      const sellingGrowthData = await getSellingGrowthDummyData(lang);
       setData(sellingGrowthData);
       setLoading(false);
     }
     fetchData();
-  }, []);
+  }, [lang]);
 
   if (loading) {
     return <Skeleton className="w-full h-80" />;

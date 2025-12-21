@@ -17,14 +17,16 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogin } from "@/context/login";
 import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>["login"]["phone"];
 
-export function LoginPhoneForm({ lang, dict }: { lang: string; dict: Dict }) {
+export function LoginPhoneForm({ lang, dict }: { lang: Locale; dict: Dict }) {
   const searchParams = useSearchParams();
   const { setStep, phone, setPhone, setOtpExpiredAt } = useLogin();
+  const otpSendWithLang = otpSend.bind(null, lang);
   const [otpSendState, otpSendAction, otpSendPending] = useActionState(
-    otpSend,
+    otpSendWithLang,
     null
   );
   const errors = useMemo(

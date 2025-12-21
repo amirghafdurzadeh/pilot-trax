@@ -38,7 +38,7 @@ export default async function Page(props: PageProps<"/[lang]">) {
         />
         <FAQ faqs={dict.home.faq.items} dict={dict.home.faq} />
         <Contact dict={dict.home.contact} />
-        <Footer dict={dict.home.footer} />
+        <Footer lang={lang} dict={dict} />
       </div>
     </main>
   );

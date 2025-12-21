@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
 
 export type AnswerInput = {
@@ -161,27 +163,27 @@ export async function getQuestions(params: {
   }
 }
 
-export async function saveQuestion(question: QuestionInput) {
+export async function saveQuestion(lang: Locale, question: QuestionInput) {
+  const dictionary = await getDictionary(lang);
   if (!question.lessonId) {
-    return { success: false, error: "Lesson is required" };
+    return { success: false, error: dictionary.e_lesson_required };
   }
 
   if (!question.title.trim()) {
-    return { success: false, error: "Title is required" };
+    return { success: false, error: dictionary.e_title_required };
   }
 
   if (question.answers.length === 0) {
-    return { success: false, error: "At least one answer is required" };
+    return { success: false, error: dictionary.e_at_least_one_answer };
   }
 
   const hasCorrectAnswer = question.answers.some((a) => a.isCorrect);
   if (!hasCorrectAnswer) {
-    return { success: false, error: "At least one correct answer is required" };
+    return { success: false, error: dictionary.e_at_least_one_correct_answer };
   }
 
   try {
-    let newQuestion: { id: string } | null = null;
-    await prisma.$transaction(async (tx: any) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       if (question.id) {
         await tx.question.update({
           where: { id: question.id },
@@ -226,8 +228,9 @@ export async function saveQuestion(question: QuestionInput) {
             },
           });
         }
+        return { newQuestionId: null };
       } else {
-        newQuestion = await tx.question.create({
+        const newQuestion = await tx.question.create({
           data: {
             title: question.title,
             description: question.description || "",
@@ -243,29 +246,31 @@ export async function saveQuestion(question: QuestionInput) {
           },
           select: { id: true },
         });
+        return { newQuestionId: newQuestion.id };
       }
     });
 
     revalidatePath("/app/questions");
 
-    if (newQuestion) {
-      return { success: true, newQuestionId: newQuestion.id };
+    if (result.newQuestionId) {
+      return { success: true, newQuestionId: result.newQuestionId };
     }
 
     return { success: true };
   } catch (error) {
     console.error("Save question failed", error);
-    return { success: false, error: "Database error" };
+    return { success: false, error: dictionary.e_db_error };
   }
 }
 
-export async function deleteQuestion(id: string) {
+export async function deleteQuestion(lang: Locale, id: string) {
+  const dictionary = await getDictionary(lang);
   try {
     await prisma.question.delete({ where: { id } });
     revalidatePath("/app/questions");
     return { success: true };
   } catch (error) {
     console.error("Delete question failed", error);
-    return { success: false, error: "Database error" };
+    return { success: false, error: dictionary.e_db_error };
   }
 }

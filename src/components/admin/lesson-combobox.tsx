@@ -134,7 +134,7 @@ export function LessonCombobox({
             {selectedLesson ? (
               <span className="truncate">{selectedLesson.title}</span>
             ) : (
-              <span className="text-muted-foreground">{dict.placeholder}</span>
+              <span className="text-muted-foreground">{dict.select_lesson_placeholder}</span>
             )}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -144,7 +144,7 @@ export function LessonCombobox({
         <Command>
           <CommandInput placeholder={dict.search_placeholder} />
           <CommandList>
-            <CommandEmpty>{dict.empty_text}</CommandEmpty>
+            <CommandEmpty>{dict.no_lesson_found_message}</CommandEmpty>
             {Object.entries(lessonsByCourse).map(
               ([courseName, courseLessons]) => (
                 <CommandGroup key={courseName} heading={courseName}>

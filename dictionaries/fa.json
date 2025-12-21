@@ -1,5 +1,20 @@
 {
   "test": "این یک متن است.",
+  "v_otp_login": {
+    "phone_invalid": "شماره موبایل نامعتبر است.",
+    "otp_invalid": "کد تایید نامعتبر است."
+  },
+  "v_otp_send": {
+    "phone_invalid": "شماره موبایل نامعتبر است."
+  },
+  "e_login_failed": "ورود انجام نشد. لطفا اطلاعات خود را بررسی کرده و مجددا تلاش کنید.",
+  "e_something_went_wrong": "خطایی رخ داده است، لطفا در زمان دیگری مجددا تلاش نمایید.",
+  "e_course_id_missing": "شناسه دوره وجود ندارد.",
+  "e_db_error": "خطای پایگاه داده.",
+  "e_lesson_required": "انتخاب درس الزامی است.",
+  "e_title_required": "عنوان الزامی است.",
+  "e_at_least_one_answer": "حداقل یک پاسخ الزامی است.",
+  "e_at_least_one_correct_answer": "حداقل یک پاسخ صحیح الزامی است.",
   "home": {
     "header": {
       "brand": {
@@ -213,8 +228,12 @@
     "footer": {
       "copyright": "© {year} Pilot Trax — همه حقوق محفوظ است.",
       "nav": {
+        "pilot_trax": "پایلت ترکس",
+        "about_us": "درباره ما",
         "terms": "قوانین و مقررات",
-        "faq": "سوالات متداول"
+        "faq": "سوالات متداول",
+        "legal": "حقوقی",
+        "privacy_policy": "سیاست حفظ حریم خصوصی"
       },
       "support": {
         "text": "مفتخرانه تحت پشتیبانی",
@@ -277,8 +296,10 @@
     "dashboard": {
       "user_chart_title": "رشد کاربران",
       "user_chart_description": "نمایش رشد کاربران در 12 ماه گذشته",
+      "user_chart_label": "تعداد کاربران",
       "selling_chart_title": "رشد فروش",
-      "selling_chart_description": "نمایش رشد فروش در 12 ماه گذشته"
+      "selling_chart_description": "نمایش رشد فروش در 12 ماه گذشته",
+      "selling_chart_label": "درآمد"
     },
     "admin": {
       "courses": {

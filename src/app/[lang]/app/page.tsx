@@ -14,12 +14,16 @@ export default async function Page(props: PageProps<"/[lang]/login">) {
       <AppContent>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <UserChart
+            lang={lang}
             title={dict.app.dashboard.user_chart_title}
             description={dict.app.dashboard.user_chart_description}
+            chartLabel={dict.app.dashboard.user_chart_label}
           />
           <SellingChart
+            lang={lang}
             title={dict.app.dashboard.selling_chart_title}
             description={dict.app.dashboard.selling_chart_description}
+            chartLabel={dict.app.dashboard.selling_chart_label}
           />
         </div>
       </AppContent>

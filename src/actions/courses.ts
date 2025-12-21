@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
 
 type LessonFlat = {
@@ -37,11 +39,21 @@ export async function getCourses() {
     const allLessons = await prisma.lesson.findMany({
       where: { courseId: { in: courseIds } },
       orderBy: { order: "asc" },
+      include: {
+        _count: {
+          select: { questions: true },
+        },
+      },
     });
 
     const coursesWithLessons = courses.map((course: any) => {
       const courseLessons = allLessons.filter(
         (l: any) => l.courseId === course.id
+      );
+
+      const questionsCount = courseLessons.reduce(
+        (total, l) => total + (l._count?.questions || 0),
+        0
       );
 
       const buildTree = (parentId: string | null): LessonNode[] => {
@@ -59,6 +71,7 @@ export async function getCourses() {
       return {
         ...course,
         lessons: buildTree(null),
+        questions: questionsCount,
       };
     });
 
@@ -69,8 +82,9 @@ export async function getCourses() {
   }
 }
 
-export async function saveCourse(course: CourseInput) {
-  if (!course.id) return { success: false, error: "Course ID missing" };
+export async function saveCourse(lang: Locale, course: CourseInput) {
+  const dictionary = await getDictionary(lang);
+  if (!course.id) return { success: false, error: dictionary.e_course_id_missing };
 
   try {
     await prisma.$transaction(async (tx: any) => {
@@ -182,17 +196,18 @@ export async function saveCourse(course: CourseInput) {
     return { success: true };
   } catch (error) {
     console.error("Save course failed", error);
-    return { success: false, error: "Database error" };
+    return { success: false, error: dictionary.e_db_error };
   }
 }
 
-export async function deleteCourseAction(id: string) {
+export async function deleteCourseAction(lang: Locale, id: string) {
+  const dictionary = await getDictionary(lang);
   try {
     await prisma.course.delete({ where: { id } });
     revalidatePath("/app/courses");
     return { success: true };
   } catch (error) {
     console.error("Delete course failed", error);
-    return { success: false };
+    return { success: false, error: dictionary.e_db_error };
   }
 }

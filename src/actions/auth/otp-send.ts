@@ -3,9 +3,8 @@ import z from "zod";
 
 import prisma from "@/lib/prisma";
 
-const otpSendSchema = z.object({
-  phone: z.string().regex(/^09\d{9}$/, "شماره موبایل نامعتبر است."),
-});
+import { getDictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
 
 async function sendOtpMessage(phone: string, code: string) {
   const body = JSON.stringify({
@@ -34,7 +33,11 @@ async function sendOtpMessage(phone: string, code: string) {
   }
 }
 
-export async function otpSend(_: any, formData: FormData) {
+export async function otpSend(lang: Locale, _: any, formData: FormData) {
+  const dictionary = await getDictionary(lang);
+  const otpSendSchema = z.object({
+    phone: z.string().regex(/^09\d{9}$/, dictionary.v_otp_send.phone_invalid),
+  });
   const validatedFields = otpSendSchema.safeParse({
     phone: formData.get("phone"),
   });
@@ -79,9 +82,7 @@ export async function otpSend(_: any, formData: FormData) {
       success: false,
       errors: {
         fieldErrors: {},
-        formErrors: [
-          "خطایی رخ داده است، لطفا در زمان دیگری مجددا تلاش نمایید.",
-        ],
+        formErrors: [dictionary.e_something_went_wrong],
       },
     };
   }
