@@ -392,10 +392,20 @@ export default function QuestionsPageClient({
     setEditingQuestion({
       title: "",
       description: "",
-      lessonId: "",
+      lessonId: selectedLessonId,
       answers: [],
     });
     setIsSheetOpen(true);
+  };
+
+  const handleReset = () => {
+    if (!editingQuestion) return;
+    setEditingQuestion({
+      lessonId: editingQuestion.lessonId,
+      title: "",
+      description: "",
+      answers: [],
+    });
   };
 
   const handleEdit = (question: QuestionWithDetails) => {
@@ -422,9 +432,9 @@ export default function QuestionsPageClient({
       const result = await deleteQuestion(questionToDelete);
       if (result.success) {
         setQuestions((prev) => prev.filter((q) => q.id !== questionToDelete));
-        toast.success("سوال با موفقیت حذف شد");
+        toast.success(questionsDict.delete_success_toast);
       } else {
-        toast.error("خطا در حذف سوال");
+        toast.error(questionsDict.delete_error_toast);
       }
       setQuestionToDelete(null);
     }
@@ -434,23 +444,23 @@ export default function QuestionsPageClient({
     if (!editingQuestion) return;
 
     if (!editingQuestion.title.trim()) {
-      toast.error("عنوان سوال الزامی است");
+      toast.error(questionsDict.title_required_toast);
       return;
     }
 
     if (!editingQuestion.lessonId) {
-      toast.error("انتخاب درس الزامی است");
+      toast.error(questionsDict.lesson_required_toast);
       return;
     }
 
     if (editingQuestion.answers.length === 0) {
-      toast.error("حداقل یک پاسخ الزامی است");
+      toast.error(questionsDict.one_answer_required_toast);
       return;
     }
 
     const hasCorrectAnswer = editingQuestion.answers.some((a) => a.isCorrect);
     if (!hasCorrectAnswer) {
-      toast.error("حداقل یک پاسخ صحیح الزامی است");
+      toast.error(questionsDict.one_correct_answer_required_toast);
       return;
     }
 
@@ -459,16 +469,22 @@ export default function QuestionsPageClient({
     setIsSaving(false);
 
     if (result.success) {
-      setIsSheetOpen(false);
+      if (result.newQuestionId) {
+        setEditingQuestion((prev) =>
+          prev ? { ...prev, id: result.newQuestionId } : null
+        );
+      }
       const reloadResult = await getQuestions({
         lessonId: selectedLessonId || undefined,
         search: debouncedSearch || undefined,
       });
       setQuestions(reloadResult.questions);
       setNextCursor(reloadResult.nextCursor);
-      toast.success("سوال با موفقیت ذخیره شد");
+      toast.success(questionsDict.save_success_toast);
     } else {
-      toast.error("خطا در ذخیره سازی: " + (result.error || "Unknown error"));
+      toast.error(
+        questionsDict.save_error_toast + (result.error || "")
+      );
     }
   };
 
@@ -739,6 +755,14 @@ export default function QuestionsPageClient({
             <SheetClose asChild>
               <Button variant="outline">{questionsDict.cancel_button}</Button>
             </SheetClose>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleReset}
+              disabled={isSaving}
+            >
+              {questionsDict.reset_button}
+            </Button>
           </SheetFooter>
         </SheetContent>
       </Sheet>

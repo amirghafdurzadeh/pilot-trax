@@ -180,6 +180,7 @@ export async function saveQuestion(question: QuestionInput) {
   }
 
   try {
+    let newQuestion: { id: string } | null = null;
     await prisma.$transaction(async (tx: any) => {
       if (question.id) {
         await tx.question.update({
@@ -226,29 +227,31 @@ export async function saveQuestion(question: QuestionInput) {
           });
         }
       } else {
-        const newQuestionId = crypto.randomUUID();
-        await tx.question.create({
+        newQuestion = await tx.question.create({
           data: {
-            id: newQuestionId,
             title: question.title,
             description: question.description || "",
             lessonId: question.lessonId,
+            answers: {
+              create: question.answers.map((a) => ({
+                id: a.id,
+                title: a.title,
+                isCorrect: a.isCorrect,
+                order: a.order ?? 0,
+              })),
+            },
           },
-        });
-
-        await tx.answer.createMany({
-          data: question.answers.map((a) => ({
-            id: a.id,
-            title: a.title,
-            isCorrect: a.isCorrect,
-            order: a.order ?? 0,
-            questionId: newQuestionId,
-          })),
+          select: { id: true },
         });
       }
     });
 
     revalidatePath("/app/questions");
+
+    if (newQuestion) {
+      return { success: true, newQuestionId: newQuestion.id };
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Save question failed", error);
