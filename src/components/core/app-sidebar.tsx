@@ -7,6 +7,7 @@ import { AppBrand } from "@/components/core/app-brand";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -15,11 +16,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { User } from "@/generated/prisma/client";
 import { getDictionary } from "@/lib/dictionaries";
+import { AppNavUser } from "./app-nav-user";
+import { LanguageSwitcher } from "./language-switcher";
+import { ThemeSwitcher } from "./theme-switcher";
 
-type Dict = Awaited<ReturnType<typeof getDictionary>>["app"]["sidebar"];
+type Dict = Awaited<ReturnType<typeof getDictionary>>;
 
-const getSidebarItems = (lang: string, dict: Dict) => [
+const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"]) => [
   {
     title: dict.dashboard,
     href: `/${lang}/app`,
@@ -37,11 +42,19 @@ const getSidebarItems = (lang: string, dict: Dict) => [
   },
 ];
 
-export function AppSidebar({ lang, dict }: { lang: string; dict: Dict }) {
+export function AppSidebar({
+  lang,
+  dict,
+  session,
+}: {
+  lang: string;
+  dict: Dict;
+  session: User;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
-  const sidebarItems = getSidebarItems(lang, dict);
+  const sidebarItems = getSidebarItems(lang, dict.app.sidebar);
 
   const handleClick = useCallback(
     (href: string) => {
@@ -56,10 +69,10 @@ export function AppSidebar({ lang, dict }: { lang: string; dict: Dict }) {
       <SidebarHeader className="border-b border-sidebar-border">
         <AppBrand
           lang={lang}
-          title={dict.brand.title}
+          title={dict.app.sidebar.brand.title}
           className="py-1 px-2"
           imageProps={{
-            alt: dict.brand.alt,
+            alt: dict.app.sidebar.brand.alt,
             src: "/logo.svg",
             width: 24,
             height: 24,
@@ -94,6 +107,13 @@ export function AppSidebar({ lang, dict }: { lang: string; dict: Dict }) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <div className="flex items-center justify-end">
+          <LanguageSwitcher lang={lang} />
+          <ThemeSwitcher dict={dict.app.theme_switcher} />
+        </div>
+        <AppNavUser session={session} dict={dict.app.userNav} />
+      </SidebarFooter>
     </Sidebar>
   );
 }

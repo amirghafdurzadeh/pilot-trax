@@ -387,6 +387,12 @@
         "save_success_toast": "Question saved successfully",
         "save_error_toast": "Error saving question: "
       }
+    },
+    "userNav": {
+      "account": "Account",
+      "billing": "Billing",
+      "logout": "Log out",
+      "unnamedUser": "Unnamed User"
     }
   }
 }

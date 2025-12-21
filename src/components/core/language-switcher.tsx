@@ -38,7 +38,7 @@ export const LanguageSwitcher = ({ lang }: { lang: Locale }) => {
           <Languages />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>
           <Link href={getLanguageLink("fa")}>فارسی</Link>
         </DropdownMenuItem>

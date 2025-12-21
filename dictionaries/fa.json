@@ -388,6 +388,12 @@
         "save_success_toast": "سوال با موفقیت ذخیره شد",
         "save_error_toast": "خطا در ذخیره سازی: "
       }
+    },
+    "userNav": {
+      "account": "حساب کاربری",
+      "billing": "صورتحساب",
+      "logout": "خروج",
+      "unnamedUser": "کاربر ناشناس"
     }
   }
 }

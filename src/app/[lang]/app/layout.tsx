@@ -6,11 +6,11 @@ import { Locale } from "@/lib/locales";
 
 export default async function Layout(props: LayoutProps<"/[lang]/app">) {
   const lang = (await props.params).lang as Locale;
-  await authentication(lang);
+  const session = await authentication(lang);
   const dict = await getDictionary(lang);
   return (
     <SidebarProvider>
-      <AppSidebar lang={lang} dict={dict.app.sidebar} />
+      <AppSidebar lang={lang} dict={dict} session={session} />
       <SidebarInset>{props.children}</SidebarInset>
     </SidebarProvider>
   );
