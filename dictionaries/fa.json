@@ -298,6 +298,7 @@
       "dashboard": "داشبورد",
       "courses": "دوره‌ها",
       "questions": "سوالات",
+      "quizzes": "آزمون‌ها",
       "brand": {
         "title": "پایلت ترکس",
         "alt": "Pilot Trax - پایلت ترکس"
@@ -412,6 +413,15 @@
       "billing": "صورتحساب",
       "logout": "خروج",
       "unnamedUser": "کاربر ناشناس"
+    },
+    "quizzes": {
+      "search_placeholder": "جستجوی آزمون...",
+      "duration": "مدت زمان",
+      "minutes": "دقیقه",
+      "questions": "تعداد سوالات",
+      "selection_mode": "حالت انتخاب",
+      "attempts": "تعداد تلاش‌ها",
+      "created_at": "تاریخ ایجاد"
     }
   }
 }

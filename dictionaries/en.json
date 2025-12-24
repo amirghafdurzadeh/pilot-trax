@@ -297,6 +297,7 @@
       "dashboard": "Dashboard",
       "courses": "Courses",
       "questions": "Questions",
+      "quizzes": "Quizzes",
       "brand": {
         "title": "Pilot Trax",
         "alt": "Pilot Trax"
@@ -411,6 +412,15 @@
       "billing": "Billing",
       "logout": "Log out",
       "unnamedUser": "Unnamed User"
+    },
+    "quizzes": {
+      "search_placeholder": "Search quizzes...",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "questions": "Questions",
+      "selection_mode": "Selection Mode",
+      "attempts": "Attempts",
+      "created_at": "Created At"
     }
   }
 }

@@ -1,5 +1,5 @@
 "use client";
-import { BookOpenIcon, HelpCircleIcon, HomeIcon } from "lucide-react";
+import { BookOpenIcon, HelpCircleIcon, HomeIcon, ClipboardCheck } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 
@@ -39,6 +39,11 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"]) => [
     title: dict.questions,
     href: `/${lang}/app/questions`,
     icon: HelpCircleIcon,
+  },
+  {
+    title: dict.quizzes,
+    href: `/${lang}/app/quizzes`,
+    icon: ClipboardCheck,
   },
 ];
 
