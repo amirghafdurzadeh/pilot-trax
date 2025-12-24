@@ -20,6 +20,7 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
+  ChevronRightIcon,
   ChevronsUpDownIcon,
   PlusIcon,
   Trash2Icon,
@@ -142,7 +143,10 @@ export function SortableLessonItem({
             {isExpanded ? (
               <ChevronDownIcon className="h-4 w-4" />
             ) : (
-              <ChevronLeftIcon className="h-4 w-4" />
+              <>
+                <ChevronLeftIcon className="ltr:hidden h-4 w-4" />
+                <ChevronRightIcon className="rtl:hidden h-4 w-4" />
+              </>
             )}
           </Button>
         ) : (

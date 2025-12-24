@@ -239,7 +239,7 @@ export function QuestionSheet({
                       {questionsDict.answers_label}
                     </Label>
                     <Button size="sm" variant="outline" onClick={addAnswer}>
-                      <PlusIcon className="w-4 h-4 ml-2" />
+                      <PlusIcon className="w-4 h-4" />
                       {questionsDict.add_answer_button}
                     </Button>
                   </div>

@@ -167,7 +167,7 @@ export function CourseEditSheet({
                         variant="outline"
                         onClick={addRootLesson}
                       >
-                        <PlusIcon className="w-4 h-4 ml-2" />
+                        <PlusIcon className="w-4 h-4" />
                         {dict.add_module_button}
                       </Button>
                       <Button
