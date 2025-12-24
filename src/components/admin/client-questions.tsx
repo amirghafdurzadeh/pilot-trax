@@ -11,7 +11,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   closestCenter,
   DndContext,
@@ -32,6 +32,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 
+import { type CourseOption } from "@/actions/courses";
 import {
   deleteQuestion,
   getQuestions,
@@ -41,6 +42,7 @@ import {
   type QuestionInput,
   type QuestionWithDetails,
 } from "@/actions/questions";
+import { CourseCombobox } from "@/components/admin/course-combobox";
 import { LessonCombobox } from "@/components/admin/lesson-combobox";
 import { RichTextEditor } from "@/components/admin/rich-text";
 import { AppContent } from "@/components/core/app-content";
@@ -317,12 +319,14 @@ export default function QuestionsPageClient({
   initialQuestions,
   initialNextCursor,
   initialLessons,
+  initialCourses,
   lang,
   dict,
 }: {
   initialQuestions: QuestionWithDetails[];
   initialNextCursor: string | null;
   initialLessons: LessonOption[];
+  initialCourses: CourseOption[];
   lang: Locale;
   dict: AppDict;
 }) {
@@ -330,9 +334,11 @@ export default function QuestionsPageClient({
   const [nextCursor, setNextCursor] = useState(initialNextCursor);
   const [isLoading, setIsLoading] = useState(false);
   const [lessons] = useState(initialLessons);
+  const [courses] = useState(initialCourses);
   const questionsDict = dict.admin.questions;
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
@@ -346,6 +352,13 @@ export default function QuestionsPageClient({
 
   const { ref: loadMoreRef, inView } = useInView();
 
+  const filteredLessons = useMemo(() => {
+    if (!selectedCourseId) {
+      return lessons;
+    }
+    return lessons.filter((lesson) => lesson.courseId === selectedCourseId);
+  }, [selectedCourseId, lessons]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -357,6 +370,7 @@ export default function QuestionsPageClient({
     const loadFiltered = async () => {
       setIsLoading(true);
       const result = await getQuestions({
+        courseId: selectedCourseId || undefined,
         lessonId: selectedLessonId || undefined,
         search: debouncedSearch || undefined,
       });
@@ -365,13 +379,23 @@ export default function QuestionsPageClient({
       setIsLoading(false);
     };
 
-    if (debouncedSearch || selectedLessonId) {
+    if (debouncedSearch || selectedLessonId || selectedCourseId) {
       loadFiltered();
-    } else if (debouncedSearch === "" && selectedLessonId === "") {
+    } else if (
+      debouncedSearch === "" &&
+      selectedLessonId === "" &&
+      selectedCourseId === ""
+    ) {
       setQuestions(initialQuestions);
       setNextCursor(initialNextCursor);
     }
-  }, [debouncedSearch, selectedLessonId, initialQuestions, initialNextCursor]);
+  }, [
+    debouncedSearch,
+    selectedLessonId,
+    selectedCourseId,
+    initialQuestions,
+    initialNextCursor,
+  ]);
 
   const loadMore = useCallback(async () => {
     if (!nextCursor || isLoading) return;
@@ -379,13 +403,20 @@ export default function QuestionsPageClient({
     setIsLoading(true);
     const result = await getQuestions({
       cursor: nextCursor,
+      courseId: selectedCourseId || undefined,
       lessonId: selectedLessonId || undefined,
       search: debouncedSearch || undefined,
     });
     setQuestions((prev) => [...prev, ...result.questions]);
     setNextCursor(result.nextCursor);
     setIsLoading(false);
-  }, [nextCursor, isLoading, selectedLessonId, debouncedSearch]);
+  }, [
+    nextCursor,
+    isLoading,
+    selectedCourseId,
+    selectedLessonId,
+    debouncedSearch,
+  ]);
 
   useEffect(() => {
     if (inView) {
@@ -481,6 +512,7 @@ export default function QuestionsPageClient({
         );
       }
       const reloadResult = await getQuestions({
+        courseId: selectedCourseId || undefined,
         lessonId: selectedLessonId || undefined,
         search: debouncedSearch || undefined,
       });
@@ -557,12 +589,19 @@ export default function QuestionsPageClient({
     }
   };
 
-  const clearFilters = () => {
-    setSearchQuery("");
+  const handleCourseChange = (courseId: string) => {
+    setSelectedCourseId(courseId);
     setSelectedLessonId("");
   };
 
-  const hasActiveFilters = searchQuery || selectedLessonId;
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCourseId("");
+    setSelectedLessonId("");
+  };
+
+  const hasActiveFilters =
+    searchQuery || selectedCourseId || selectedLessonId;
 
   return (
     <>
@@ -583,8 +622,23 @@ export default function QuestionsPageClient({
             {questionsDict.add_question_button}
           </Button>
           <div className="w-full md:w-fit flex gap-2">
+            <CourseCombobox
+              courses={courses}
+              value={selectedCourseId}
+              onValueChange={handleCourseChange}
+              dict={{
+                select_course_placeholder:
+                  questionsDict.course_combobox.select_course_placeholder,
+                search_placeholder:
+                  questionsDict.course_combobox.search_placeholder,
+                no_course_found_message:
+                  questionsDict.course_combobox.no_course_found_message,
+              }}
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="flex-1 w-fit"
+            />
             <LessonCombobox
-              lessons={lessons}
+              lessons={filteredLessons}
               value={selectedLessonId}
               onValueChange={setSelectedLessonId}
               dict={questionsDict.lesson_combobox}

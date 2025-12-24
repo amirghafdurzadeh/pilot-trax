@@ -398,6 +398,11 @@
           "no_lesson_found_message": "درسی یافت نشد.",
           "search_placeholder": "جستجوی درس..."
         },
+        "course_combobox": {
+          "select_course_placeholder": "همه دوره ها",
+          "no_course_found_message": "دوره ای یافت نشد.",
+          "search_placeholder": "جستجوی دوره..."
+        },
         "delete_success_toast": "سوال با موفقیت حذف شد",
         "delete_error_toast": "خطا در حذف سوال",
         "title_required_toast": "عنوان سوال الزامی است",

@@ -397,6 +397,11 @@
           "no_lesson_found_message": "No lesson found.",
           "search_placeholder": "Search for a lesson..."
         },
+        "course_combobox": {
+          "select_course_placeholder": "All Courses",
+          "no_course_found_message": "No course found.",
+          "search_placeholder": "Search for a course..."
+        },
         "delete_success_toast": "Question deleted successfully",
         "delete_error_toast": "Error deleting question",
         "title_required_toast": "Question title is required",

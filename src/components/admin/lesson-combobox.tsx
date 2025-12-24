@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import * as React from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +17,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { getDictionary } from "@/lib/dictionaries";
+import { cn } from "@/lib/utils";
 
-type QuestionsDict = Awaited<ReturnType<typeof getDictionary>>["app"]["admin"]["questions"];
+type QuestionsDict = Awaited<
+  ReturnType<typeof getDictionary>
+>["app"]["admin"]["questions"];
 type LessonComboboxDict = QuestionsDict["lesson_combobox"];
 
 export type LessonOption = {
@@ -51,10 +53,10 @@ export function LessonCombobox({
   triggerClassName,
   icon,
 }: LessonComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   // Group lessons by course
-  const lessonsByCourse = React.useMemo(() => {
+  const lessonsByCourse = useMemo(() => {
     const grouped = lessons.reduce((acc, lesson) => {
       if (!acc[lesson.courseName]) {
         acc[lesson.courseName] = [];
@@ -69,7 +71,7 @@ export function LessonCombobox({
       const items = grouped[courseName];
 
       // Build map of nodes
-      const nodeMap = new Map<string, (LessonOption & { children: any[] })>();
+      const nodeMap = new Map<string, LessonOption & { children: any[] }>();
       items.forEach((it) => nodeMap.set(it.id, { ...it, children: [] } as any));
 
       const roots: (LessonOption & { children: any[] })[] = [];
@@ -134,7 +136,9 @@ export function LessonCombobox({
             {selectedLesson ? (
               <span className="truncate">{selectedLesson.title}</span>
             ) : (
-              <span className="text-muted-foreground">{dict.select_lesson_placeholder}</span>
+              <span className="text-muted-foreground">
+                {dict.select_lesson_placeholder}
+              </span>
             )}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

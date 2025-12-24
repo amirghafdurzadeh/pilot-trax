@@ -37,6 +37,7 @@ export type QuestionWithDetails = {
 export type LessonOption = {
   id: string;
   title: string;
+  courseId: string;
   courseName: string;
   depth: number;
   order?: number;
@@ -73,6 +74,7 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
     return lessons.map((lesson: any) => ({
       id: lesson.id,
       title: lesson.title,
+      courseId: lesson.courseId,
       courseName: lesson.course.title,
       depth: getDepth(lesson.id),
       order: lesson.order,
@@ -88,18 +90,23 @@ export async function getQuestions(params: {
   cursor?: string;
   limit?: number;
   lessonId?: string;
+  courseId?: string;
   search?: string;
 }): Promise<{
   questions: QuestionWithDetails[];
   nextCursor: string | null;
 }> {
-  const { cursor, limit = 20, lessonId, search } = params;
+  const { cursor, limit = 20, lessonId, courseId, search } = params;
 
   try {
     const where: any = {};
 
     if (lessonId) {
       where.lessonId = lessonId;
+    } else if (courseId) {
+      where.lesson = {
+        courseId: courseId,
+      };
     }
 
     if (search && search.trim()) {
