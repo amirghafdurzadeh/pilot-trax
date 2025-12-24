@@ -3,10 +3,9 @@ import { UserChart } from "@/components/admin/charts/user-chart";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { getDictionary } from "@/lib/dictionaries";
-import { Locale } from "@/lib/locales";
 
 export default async function Page(props: PageProps<"/[lang]/app">) {
-  const lang = (await props.params).lang as Locale;
+  const lang = (await props.params).lang;
   const dict = await getDictionary(lang);
   return (
     <>
