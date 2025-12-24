@@ -64,38 +64,38 @@ export function RichTextEditor({
     setMathDialogOpen(true);
   };
 
-  if (!editor) {
-    return null;
-  }
-
   return (
     <div
       className={cn(
         "border rounded-md overflow-hidden bg-background transition-colors",
-        editor.isFocused &&
+        editor?.isFocused &&
           "ring-2 ring-ring ring-offset-2 ring-offset-background",
         className
       )}
     >
-      <Toolbar
-        editor={editor}
-        onInsertImage={handleInsertImage}
-        onInsertMath={handleInsertMath}
-      />
+      {editor && (
+        <>
+          <Toolbar
+            editor={editor}
+            onInsertImage={handleInsertImage}
+            onInsertMath={handleInsertMath}
+          />
 
-      <RichTextEditorContent editor={editor} placeholder={placeholder} />
+          <RichTextEditorContent editor={editor} placeholder={placeholder} />
 
-      <InsertImageDialog
-        open={imageDialogOpen}
-        onOpenChange={setImageDialogOpen}
-        onApply={applyCallbackRef.current}
-      />
-      <InsertMathDialog
-        open={mathDialogOpen}
-        onOpenChange={setMathDialogOpen}
-        initialValue={dialogValue}
-        onApply={applyCallbackRef.current}
-      />
+          <InsertImageDialog
+            open={imageDialogOpen}
+            onOpenChange={setImageDialogOpen}
+            onApply={applyCallbackRef.current}
+          />
+          <InsertMathDialog
+            open={mathDialogOpen}
+            onOpenChange={setMathDialogOpen}
+            initialValue={dialogValue}
+            onApply={applyCallbackRef.current}
+          />
+        </>
+      )}
     </div>
   );
 }
