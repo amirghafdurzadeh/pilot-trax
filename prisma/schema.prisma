@@ -78,6 +78,7 @@ model Course {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   lessons Lesson[]
+  quizzes Quiz[]
 
   @@map("courses")
 }
@@ -142,6 +143,8 @@ model Quiz {
 
   creatorId    String        @map("creator_id")
   creator      User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  courseId     String        @map("course_id")
+  course       Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
   quizLessons  QuizLesson[]
   quizAttempts QuizAttempt[]
 
