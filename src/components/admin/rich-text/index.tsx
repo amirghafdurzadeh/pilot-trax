@@ -6,7 +6,7 @@ import { RichTextEditorContent } from "./editor-content";
 import { useRichTextEditor } from "./hooks";
 import { InsertImageDialog } from "./insert-image-dialog";
 import { InsertMathDialog } from "./insert-math-dialog";
-import { Toolbar } from "./toolbar";
+import { Toolbar, ToolbarDictionary } from "./toolbar";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
@@ -15,6 +15,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   className?: string;
   minHeight?: string;
+  dictionary: ToolbarDictionary;
 }
 
 export function RichTextEditor({
@@ -23,6 +24,7 @@ export function RichTextEditor({
   placeholder = "متن را وارد کنید...",
   className,
   minHeight = "80px",
+  dictionary,
 }: RichTextEditorProps) {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [mathDialogOpen, setMathDialogOpen] = useState(false);
@@ -79,6 +81,7 @@ export function RichTextEditor({
             editor={editor}
             onInsertImage={handleInsertImage}
             onInsertMath={handleInsertMath}
+            dictionary={dictionary}
           />
 
           <RichTextEditorContent editor={editor} placeholder={placeholder} />

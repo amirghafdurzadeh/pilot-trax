@@ -16,13 +16,33 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+export interface ToolbarDictionary {
+  bold: string;
+  italic: string;
+  rtl: string;
+  ltr: string;
+  auto: string;
+  align_left: string;
+  align_center: string;
+  align_right: string;
+  align_justify: string;
+  insert_image: string;
+  insert_math: string;
+}
+
 interface ToolbarProps {
   editor: Editor;
   onInsertImage: () => void;
   onInsertMath: () => void;
+  dictionary: ToolbarDictionary;
 }
 
-export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
+export function Toolbar({
+  editor,
+  onInsertImage,
+  onInsertMath,
+  dictionary,
+}: ToolbarProps) {
   return (
     <div className="flex items-center gap-1 p-1 border-b bg-muted/30 flex-wrap">
       <Button
@@ -31,7 +51,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().toggleBold().run()}
-        title="Bold (Ctrl+B)"
+        title={dictionary.bold}
       >
         <BoldIcon className="h-4 w-4" />
       </Button>
@@ -41,7 +61,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        title="Italic (Ctrl+I)"
+        title={dictionary.italic}
       >
         <ItalicIcon className="h-4 w-4" />
       </Button>
@@ -52,7 +72,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextDirection("rtl").run()}
-        title="RTL"
+        title={dictionary.rtl}
       >
         <PilcrowLeft className="h-4 w-4" />
       </Button>
@@ -62,7 +82,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextDirection("ltr").run()}
-        title="LTR"
+        title={dictionary.ltr}
       >
         <PilcrowRight className="h-4 w-4" />
       </Button>
@@ -72,18 +92,20 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextDirection("auto").run()}
-        title="Auto"
+        title={dictionary.auto}
       >
         <Languages className="h-4 w-4" />
       </Button>
       <div className="w-px h-5 bg-border mx-1" />
       <Button
         type="button"
-        variant={editor.isActive({ textAlign: "left" }) ? "secondary" : "ghost"}
+        variant={
+          editor.isActive({ textAlign: "left" }) ? "secondary" : "ghost"
+        }
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextAlign("left").run()}
-        title="Align Left"
+        title={dictionary.align_left}
       >
         <AlignLeft className="h-4 w-4" />
       </Button>
@@ -95,7 +117,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextAlign("center").run()}
-        title="Align Center"
+        title={dictionary.align_center}
       >
         <AlignCenter className="h-4 w-4" />
       </Button>
@@ -107,7 +129,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextAlign("right").run()}
-        title="Align Right"
+        title={dictionary.align_right}
       >
         <AlignRight className="h-4 w-4" />
       </Button>
@@ -119,7 +141,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-        title="Align Justify"
+        title={dictionary.align_justify}
       >
         <AlignJustify className="h-4 w-4" />
       </Button>
@@ -130,7 +152,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={onInsertImage}
-        title="درج تصویر"
+        title={dictionary.insert_image}
       >
         <ImageIcon className="h-4 w-4" />
       </Button>
@@ -140,7 +162,7 @@ export function Toolbar({ editor, onInsertImage, onInsertMath }: ToolbarProps) {
         size="icon"
         className="h-7 w-7"
         onClick={onInsertMath}
-        title="درج فرمول LaTeX"
+        title={dictionary.insert_math}
       >
         <SigmaIcon className="h-4 w-4" />
       </Button>

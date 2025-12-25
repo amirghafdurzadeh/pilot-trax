@@ -1,5 +1,21 @@
 "use client";
 
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { type CourseOption } from "@/actions/courses";
@@ -9,11 +25,6 @@ import { LessonCombobox } from "@/components/admin/lesson-combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -34,22 +45,6 @@ import {
 import { QuizSelectionMode } from "@/generated/prisma/enums";
 import { Dictionary } from "@/lib/dictionaries";
 import { type Locale } from "@/lib/locales";
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { PlusIcon } from "lucide-react";
 import { CourseCombobox } from "../course-combobox";
 import { SortableQuizLessonItem } from "./quiz-lesson-item";
 
@@ -96,18 +91,6 @@ export function QuizSheet({
       }
     );
   }, [quiz, open]);
-
-  const handleReset = () => {
-    if (!editingQuiz) return;
-    setEditingQuiz({
-      title: "",
-      duration: 120,
-      questionCount: 120,
-      selectionMode: QuizSelectionMode.SHUFFLED,
-      courseId: "",
-      lessons: [],
-    });
-  };
 
   const handleSave = () => {
     if (editingQuiz) {
@@ -273,27 +256,22 @@ export function QuizSheet({
                     <Label className="text-base font-semibold">
                       {quizzesDict.lessons_label}
                     </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button size="sm" variant="outline">
-                          <PlusIcon className="w-4 h-4" />
-                          {quizzesDict.add_lesson_button}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <LessonCombobox
-                          lessons={lessons.filter(
-                            (l) =>
-                              !editingQuiz.lessons.some(
-                                (el) => el.lessonId === l.id
-                              )
-                          )}
-                          value=""
-                          onValueChange={addLesson}
-                          dict={quizzesDict.lesson_combobox}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <LessonCombobox
+                      lessons={lessons.filter(
+                        (l) =>
+                          l.courseId === editingQuiz.courseId &&
+                          !editingQuiz.lessons.some(
+                            (el) => el.lessonId === l.id
+                          )
+                      )}
+                      value=""
+                      onValueChange={addLesson}
+                      icon={<PlusIcon className="w-4 h-4" />}
+                      dict={quizzesDict.lesson_combobox}
+                      placeholder={quizzesDict.add_lesson_button}
+                      align="end"
+                      disabled={!editingQuiz.courseId}
+                    />
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -341,14 +319,6 @@ export function QuizSheet({
               <SheetClose asChild>
                 <Button variant="outline">{quizzesDict.cancel_button}</Button>
               </SheetClose>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleReset}
-                disabled={isSaving}
-              >
-                {quizzesDict.reset_button}
-              </Button>
             </SheetFooter>
           </>
         )}

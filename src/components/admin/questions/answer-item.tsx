@@ -2,18 +2,19 @@
 
 import {
   CheckCircle2Icon,
-  ChevronsUpDownIcon,
   CircleIcon,
+  GripIcon,
   Trash2Icon,
 } from "lucide-react";
 
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { type AnswerInput } from "@/actions/questions";
 import { RichTextEditor } from "@/components/admin/rich-text";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/dictionaries";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { ToolbarDictionary } from "../rich-text/toolbar";
 
 type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
 type QuestionsDict = AppDict["admin"]["questions"];
@@ -24,12 +25,14 @@ function AnswerItem({
   onDelete,
   onToggleCorrect,
   dict,
+  toolbarDictionary,
 }: {
   answer: AnswerInput;
   onChange: (updated: AnswerInput) => void;
   onDelete: () => void;
   onToggleCorrect: () => void;
   dict: QuestionsDict;
+  toolbarDictionary: ToolbarDictionary;
 }) {
   return (
     <div className="flex flex-col gap-2 p-3 border rounded-lg bg-card">
@@ -79,6 +82,7 @@ function AnswerItem({
         onChange={(value) => onChange({ ...answer, title: value })}
         placeholder={dict.answer_placeholder}
         minHeight="60px"
+        dictionary={toolbarDictionary}
       />
     </div>
   );
@@ -90,12 +94,14 @@ export function SortableAnswerItem({
   onDelete,
   onToggleCorrect,
   dict,
+  toolbarDictionary,
 }: {
   answer: AnswerInput;
   onChange: (updated: AnswerInput) => void;
   onDelete: () => void;
   onToggleCorrect: () => void;
   dict: QuestionsDict;
+  toolbarDictionary: ToolbarDictionary;
 }) {
   const {
     attributes,
@@ -120,11 +126,11 @@ export function SortableAnswerItem({
       <div className="flex items-start gap-2">
         <button
           type="button"
-          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none h-8 w-8"
+          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none h-8 w-8 flex items-center justify-center"
           {...attributes}
           {...listeners}
         >
-          <ChevronsUpDownIcon className="h-4 w-4" />
+          <GripIcon className="w-4 h-4" />
         </button>
         <div className="flex-1">
           <AnswerItem
@@ -133,6 +139,7 @@ export function SortableAnswerItem({
             onDelete={onDelete}
             onToggleCorrect={onToggleCorrect}
             dict={dict}
+            toolbarDictionary={toolbarDictionary}
           />
         </div>
       </div>

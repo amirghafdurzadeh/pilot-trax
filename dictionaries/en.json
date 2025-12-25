@@ -429,7 +429,6 @@
         "saving_button": "Saving...",
         "save_changes_button": "Save Changes",
         "cancel_button": "Cancel",
-        "reset_button": "Reset",
         "course_combobox": {
           "select_course_placeholder": "Select a course",
           "no_course_found_message": "No course found.",
@@ -444,6 +443,19 @@
           "no_lesson_found_message": "No lesson found.",
           "search_placeholder": "Search for a lesson..."
         }
+      },
+      "rich_text_toolbar": {
+        "bold": "Bold (Ctrl+B)",
+        "italic": "Italic (Ctrl+I)",
+        "rtl": "RTL",
+        "ltr": "LTR",
+        "auto": "Auto",
+        "align_left": "Align Left",
+        "align_center": "Align Center",
+        "align_right": "Align Right",
+        "align_justify": "Align Justify",
+        "insert_image": "Insert Image",
+        "insert_math": "Insert LaTeX Formula"
       }
     },
     "userNav": {

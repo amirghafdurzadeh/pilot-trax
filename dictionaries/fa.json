@@ -430,7 +430,6 @@
         "saving_button": "در حال ذخیره...",
         "save_changes_button": "ذخیره تغییرات",
         "cancel_button": "لغو",
-        "reset_button": "بازنشانی",
         "course_combobox": {
           "select_course_placeholder": "انتخاب دوره",
           "no_course_found_message": "دوره ای یافت نشد.",
@@ -445,6 +444,19 @@
           "no_lesson_found_message": "درسی یافت نشد.",
           "search_placeholder": "جستجوی درس..."
         }
+      },
+      "rich_text_toolbar": {
+        "bold": "ضخیم (Ctrl+B)",
+        "italic": "کج (Ctrl+I)",
+        "rtl": "راست‌چین",
+        "ltr": "چپ‌چین",
+        "auto": "خودکار",
+        "align_left": "تراز از چپ",
+        "align_center": "تراز وسط",
+        "align_right": "تراز از راست",
+        "align_justify": "تراز دو طرفه",
+        "insert_image": "درج تصویر",
+        "insert_math": "درج فرمول LaTeX"
       }
     },
     "userNav": {

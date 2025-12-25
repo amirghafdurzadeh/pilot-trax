@@ -22,6 +22,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
+  GripIcon,
   PlusIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -127,11 +128,11 @@ export function SortableLessonItem({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none"
+          className="cursor-grab shrink-0 text-muted-foreground hover:text-foreground touch-none flex items-center justify-center"
           {...attributes}
           {...listeners}
         >
-          <ChevronsUpDownIcon className="h-4 w-4" />
+          <GripIcon className="w-4 h-4" />
         </button>
         {lesson.children.length > 0 ? (
           <Button

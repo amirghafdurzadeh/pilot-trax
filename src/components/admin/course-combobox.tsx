@@ -1,5 +1,6 @@
 "use client";
 
+import { PopoverContentProps } from "@radix-ui/react-popover";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -36,6 +37,9 @@ interface CourseComboboxProps {
   className?: string;
   triggerClassName?: string;
   icon?: React.ReactNode;
+  align?: PopoverContentProps["align"];
+  placeholder?: string;
+  disabled?: boolean;
 }
 
 export function CourseCombobox({
@@ -46,6 +50,9 @@ export function CourseCombobox({
   className,
   triggerClassName,
   icon,
+  align = "start",
+  placeholder,
+  disabled,
 }: CourseComboboxProps) {
   const [open, setOpen] = useState(false);
 
@@ -59,6 +66,7 @@ export function CourseCombobox({
           role="combobox"
           aria-expanded={open}
           className={cn("justify-between font-normal", triggerClassName)}
+          disabled={disabled}
         >
           <span className="flex items-center gap-2 truncate">
             {icon}
@@ -66,14 +74,14 @@ export function CourseCombobox({
               <span className="truncate">{selectedCourse.title}</span>
             ) : (
               <span className="text-muted-foreground">
-                {dict.select_course_placeholder}
+                {placeholder ?? dict.select_course_placeholder}
               </span>
             )}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0 w-80", className)} align="start">
+      <PopoverContent className={cn("p-0 w-80", className)} align={align}>
         <Command>
           <CommandInput placeholder={dict.search_placeholder} />
           <CommandList>

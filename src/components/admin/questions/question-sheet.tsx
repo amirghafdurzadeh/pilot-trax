@@ -210,6 +210,7 @@ export function QuestionSheet({
                     }
                     placeholder={questionsDict.question_text_placeholder}
                     minHeight="120px"
+                    dictionary={dict.admin.rich_text_toolbar}
                   />
                 </div>
 
@@ -227,6 +228,7 @@ export function QuestionSheet({
                       questionsDict.question_description_placeholder
                     }
                     minHeight="200px"
+                    dictionary={dict.admin.rich_text_toolbar}
                   />
                 </div>
 
@@ -271,6 +273,7 @@ export function QuestionSheet({
                                   toggleAnswerCorrect(idx)
                                 }
                                 dict={questionsDict}
+                                toolbarDictionary={dict.admin.rich_text_toolbar}
                               />
                             ))}
                           </div>
