@@ -447,7 +447,9 @@
           "select_lesson_placeholder": "انتخاب درس",
           "no_lesson_found_message": "درسی یافت نشد.",
           "search_placeholder": "جستجوی درس..."
-        }
+        },
+        "quiz_public_label": "آزمون عمومی",
+        "quiz_public_description": "آزمون در لیست عمومی نمایش داده شود."
       },
       "rich_text_toolbar": {
         "bold": "ضخیم (Ctrl+B)",

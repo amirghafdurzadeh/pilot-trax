@@ -9,6 +9,7 @@ import { type QuizInput, type QuizLessonInput } from "@/actions/quizzes";
 import { CourseCombobox } from "@/components/admin/course-combobox";
 import { LessonCombobox } from "@/components/admin/lesson-combobox";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -69,6 +70,7 @@ export function QuizSheet({
         selectionMode: QuizSelectionMode.SHUFFLED,
         courseId: "",
         lessons: [],
+        isPublic: false,
       }
     );
   }, [quiz, open]);
@@ -271,6 +273,25 @@ export function QuizSheet({
                     </SelectContent>
                   </Select>
                 </div>
+
+                <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-md border p-3 has-aria-checked:border-blue-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-blue-900 dark:has-aria-checked:bg-blue-950 cursor-pointer">
+                  <Checkbox
+                    id="isPublic"
+                    checked={editingQuiz.isPublic}
+                    onCheckedChange={(checked) =>
+                      setEditingQuiz({ ...editingQuiz, isPublic: !!checked })
+                    }
+                    className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                  />
+                  <div className="grid gap-1.5 font-normal">
+                    <p className="text-sm leading-none font-medium">
+                      {quizzesDict.quiz_public_label}
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                      {quizzesDict.quiz_public_description}
+                    </p>
+                  </div>
+                </Label>
 
                 <Separator />
 

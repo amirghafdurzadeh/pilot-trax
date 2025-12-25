@@ -446,7 +446,9 @@
           "select_lesson_placeholder": "Select a lesson",
           "no_lesson_found_message": "No lesson found.",
           "search_placeholder": "Search for a lesson..."
-        }
+        },
+        "quiz_public_label": "Public Quiz",
+        "quiz_public_description": "Display the quiz in the public list."
       },
       "rich_text_toolbar": {
         "bold": "Bold (Ctrl+B)",

@@ -21,6 +21,7 @@ export type QuizInput = {
   selectionMode: QuizSelectionMode;
   courseId: string;
   lessons: QuizLessonInput[];
+  isPublic: boolean;
 };
 
 export async function getQuizzes() {
