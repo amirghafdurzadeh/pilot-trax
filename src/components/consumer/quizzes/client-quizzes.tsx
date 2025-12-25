@@ -17,6 +17,8 @@ import { Locale } from "@/lib/locales";
 import { QuizCard } from "./quiz-card";
 import { QuizSheet } from "./quiz-sheet";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 type Quizzes = Awaited<ReturnType<typeof getQuizzes>>;
 
 interface ClientQuizzesProps {
@@ -33,19 +35,25 @@ export function ClientQuizzes({ lang, quizzes, dict }: ClientQuizzesProps) {
   const [lessons, setLessons] = useState<LessonOption[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [activeTab, setActiveTab] = useState("my");
+
+  const myQuizzes = quizzes.filter((quiz) => quiz.creatorId);
+  const publicQuizzes = quizzes.filter((quiz) => !quiz.creatorId);
 
   useEffect(() => {
     getCourseOptions().then(setCourses);
     getLessonsForFilter().then(setLessons);
   }, []);
 
-  const filteredQuizzes = quizzes
-    .filter((quiz) =>
-      quiz.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .filter((quiz) =>
-      selectedCourse ? quiz.courseId === selectedCourse : true
-    );
+  const getFilteredQuizzes = (quizzes: Quizzes) => {
+    return quizzes
+      .filter((quiz) =>
+        quiz.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter((quiz) =>
+        selectedCourse ? quiz.courseId === selectedCourse : true
+      );
+  };
 
   const handleAddQuiz = () => {
     setSelectedQuiz({
@@ -55,6 +63,7 @@ export function ClientQuizzes({ lang, quizzes, dict }: ClientQuizzesProps) {
       questionCount: 120,
       selectionMode: QuizSelectionMode.SHUFFLED,
       lessons: [],
+      isPublic: false,
     });
     setSheetOpen(true);
   };
@@ -83,25 +92,51 @@ export function ClientQuizzes({ lang, quizzes, dict }: ClientQuizzesProps) {
       </AppHeader>
 
       <AppContent>
-        <div className="w-full flex flex-col md:flex-row gap-2">
-          <Button onClick={handleAddQuiz} className="w-full md:w-fit gap-2">
-            <PlusIcon className="w-4 h-4" />
-            {dict.app.admin.quizzes.new_quiz_sheet_title}
-          </Button>
-          <CourseCombobox
-            courses={courses}
-            value={selectedCourse}
-            onValueChange={setSelectedCourse}
-            dict={dict.app.admin.questions.course_combobox}
-            icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
-            triggerClassName="w-full md:w-fit"
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredQuizzes.map((quiz) => (
-            <QuizCard key={quiz.id} quiz={quiz} dict={dict} lang={lang} />
-          ))}
-        </div>
+        <Tabs
+          dir={lang === "fa" ? "rtl" : "ltr"}
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full"
+        >
+          <div className="w-full flex flex-col md:flex-row gap-2">
+            <TabsList className="w-full md:w-fit">
+              <TabsTrigger value="my" className="flex-1">
+                {dict.app.quizzes.my_quizzes}
+              </TabsTrigger>
+              <TabsTrigger value="public" className="flex-1">
+                {dict.app.quizzes.public_quizzes}
+              </TabsTrigger>
+            </TabsList>
+            {activeTab === "my" && (
+              <Button onClick={handleAddQuiz} className="w-full md:w-fit gap-2">
+                <PlusIcon className="w-4 h-4" />
+                {dict.app.admin.quizzes.new_quiz_sheet_title}
+              </Button>
+            )}
+            <CourseCombobox
+              courses={courses}
+              value={selectedCourse}
+              onValueChange={setSelectedCourse}
+              dict={dict.app.admin.questions.course_combobox}
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="w-full md:w-fit"
+            />
+          </div>
+          <TabsContent value="my">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+              {getFilteredQuizzes(myQuizzes).map((quiz) => (
+                <QuizCard key={quiz.id} quiz={quiz} dict={dict} lang={lang} />
+              ))}
+            </div>
+          </TabsContent>
+          <TabsContent value="public">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+              {getFilteredQuizzes(publicQuizzes).map((quiz) => (
+                <QuizCard key={quiz.id} quiz={quiz} dict={dict} lang={lang} />
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </AppContent>
 
       <QuizSheet

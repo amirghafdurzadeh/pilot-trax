@@ -477,7 +477,9 @@
       "questions": "Questions",
       "selection_mode": "Selection Mode",
       "attempts": "Attempts",
-      "created_at": "Created At"
+      "created_at": "Created At",
+      "my_quizzes": "My Quizzes",
+      "public_quizzes": "Public Quizzes"
     }
   }
 }

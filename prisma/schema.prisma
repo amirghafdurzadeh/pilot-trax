@@ -140,6 +140,7 @@ model Quiz {
   duration      Int
   questionCount Int               @map("question_count")
   selectionMode QuizSelectionMode @default(SHUFFLED) @map("selection_mode")
+  isPublic      Boolean           @default(false) @map("is_public")
 
   creatorId    String        @map("creator_id")
   creator      User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)

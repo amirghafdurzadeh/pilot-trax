@@ -478,7 +478,9 @@
       "questions": "تعداد سوالات",
       "selection_mode": "حالت انتخاب",
       "attempts": "تعداد تلاش‌ها",
-      "created_at": "تاریخ ایجاد"
+      "created_at": "تاریخ ایجاد",
+			"my_quizzes": "آزمون های من",
+			"public_quizzes": "آزمون های عمومی"
     }
   }
 }
