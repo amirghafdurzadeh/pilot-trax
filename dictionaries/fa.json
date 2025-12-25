@@ -480,7 +480,24 @@
       "attempts": "تعداد تلاش‌ها",
       "created_at": "تاریخ ایجاد",
 			"my_quizzes": "آزمون های من",
-			"public_quizzes": "آزمون های عمومی"
+			"public_quizzes": "آزمون های عمومی",
+      "quiz_not_found": "آزمون یافت نشد.",
+      "public": "عمومی",
+      "public_yes": "بله",
+      "public_no": "خیر",
+      "lessons_label": "درس‌ها",
+      "edit": "ویرایش",
+      "delete": "حذف",
+      "delete_dialog_title": "آیا از حذف این آزمون اطمینان دارید؟",
+      "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این آزمون حذف خواهد شد.",
+      "delete_dialog_cancel": "انصراف",
+      "delete_dialog_confirm": "حذف",
+      "saving_quiz": "در حال ذخیره آزمون...",
+      "quiz_saved_successfully": "آزمون با موفقیت ذخیره شد.",
+      "failed_to_save_quiz": "خطا در ذخیره آزمون.",
+      "deleting_quiz": "در حال حذف آزمون...",
+      "quiz_deleted_successfully": "آزمون با موفقیت حذف شد.",
+      "failed_to_delete_quiz": "خطا در حذف آزمون."
     }
   }
 }

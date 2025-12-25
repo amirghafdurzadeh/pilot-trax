@@ -154,7 +154,7 @@ model Quiz {
 
 model QuizLesson {
   quizId              String                   @map("quiz_id")
-  quiz                Quiz                     @relation(fields: [quizId], references: [id])
+  quiz                Quiz                     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   lessonId            String                   @map("lesson_id")
   lesson              Lesson                   @relation(fields: [lessonId], references: [id])
   questionsStartIndex Int?                     @map("questions_start_index")
