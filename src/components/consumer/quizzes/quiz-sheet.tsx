@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { type CourseOption } from "@/actions/courses";
 import { type LessonOption } from "@/actions/questions";
 import { type QuizInput, type QuizLessonInput } from "@/actions/quizzes";
+import { CourseCombobox } from "@/components/admin/course-combobox";
 import { LessonCombobox } from "@/components/admin/lesson-combobox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,6 @@ import {
 import { QuizSelectionMode } from "@/generated/prisma/enums";
 import { Dictionary } from "@/lib/dictionaries";
 import { type Locale } from "@/lib/locales";
-import { CourseCombobox } from "../course-combobox";
 import { QuizLessonItem } from "./quiz-lesson-item";
 
 export function QuizSheet({

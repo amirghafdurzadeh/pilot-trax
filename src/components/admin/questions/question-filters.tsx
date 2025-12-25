@@ -39,12 +39,7 @@ export function QuestionFilters({
         courses={courses}
         value={selectedCourseId}
         onValueChange={onCourseChange}
-        dict={{
-          select_course_placeholder:
-            dict.course_combobox.select_course_placeholder,
-          search_placeholder: dict.course_combobox.search_placeholder,
-          no_course_found_message: dict.course_combobox.no_course_found_message,
-        }}
+        dict={dict.course_combobox}
         icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
         triggerClassName="w-full md:w-fit"
       />
