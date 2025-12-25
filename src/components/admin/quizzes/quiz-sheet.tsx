@@ -1,20 +1,5 @@
 "use client";
 
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -46,7 +31,7 @@ import { QuizSelectionMode } from "@/generated/prisma/enums";
 import { Dictionary } from "@/lib/dictionaries";
 import { type Locale } from "@/lib/locales";
 import { CourseCombobox } from "../course-combobox";
-import { SortableQuizLessonItem } from "./quiz-lesson-item";
+import { QuizLessonItem } from "./quiz-lesson-item";
 
 export function QuizSheet({
   open,
@@ -72,12 +57,8 @@ export function QuizSheet({
   const [editingQuiz, setEditingQuiz] = useState<QuizInput | null>(quiz);
   const quizzesDict = dict.admin.quizzes;
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const isOrderedMode =
+    editingQuiz?.selectionMode === QuizSelectionMode.ORDERED;
 
   useEffect(() => {
     setEditingQuiz(
@@ -91,6 +72,22 @@ export function QuizSheet({
       }
     );
   }, [quiz, open]);
+
+  useEffect(() => {
+    if (editingQuiz && isOrderedMode) {
+      const totalQuestions = editingQuiz.lessons.reduce((sum, lesson) => {
+        const start = lesson.startIndex ?? 0;
+        const end = lesson.endIndex ?? 0;
+        if (start > 0 && end > 0 && end >= start) {
+          return sum + (end - start + 1);
+        }
+        return sum;
+      }, 0);
+      if (totalQuestions > 0) {
+        setEditingQuiz((prev) => ({ ...prev!, questionCount: totalQuestions }));
+      }
+    }
+  }, [editingQuiz?.lessons, isOrderedMode]);
 
   const handleSave = () => {
     if (editingQuiz) {
@@ -107,10 +104,33 @@ export function QuizSheet({
       id: crypto.randomUUID(),
       lessonId: lesson.id,
       lessonTitle: lesson.title,
+      order: lesson.order,
     };
     setEditingQuiz({
       ...editingQuiz,
       lessons: [...editingQuiz.lessons, newQuizLesson],
+    });
+  };
+
+  const addAllLessons = () => {
+    if (!editingQuiz || !editingQuiz.courseId) return;
+
+    const courseLessons = lessons.filter(
+      (l) =>
+        l.courseId === editingQuiz.courseId &&
+        !editingQuiz.lessons.some((el) => el.lessonId === l.id)
+    );
+
+    const newQuizLessons: QuizLessonInput[] = courseLessons.map((lesson) => ({
+      id: crypto.randomUUID(),
+      lessonId: lesson.id,
+      lessonTitle: lesson.title,
+      order: lesson.order,
+    }));
+
+    setEditingQuiz({
+      ...editingQuiz,
+      lessons: [...editingQuiz.lessons, ...newQuizLessons],
     });
   };
 
@@ -126,20 +146,6 @@ export function QuizSheet({
     const newLessons = [...editingQuiz.lessons];
     newLessons.splice(index, 1);
     setEditingQuiz({ ...editingQuiz, lessons: newLessons });
-  };
-
-  const handleLessonDragEnd = (event: DragEndEvent) => {
-    if (!editingQuiz) return;
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = editingQuiz.lessons.findIndex((l) => l.id === active.id);
-    const newIndex = editingQuiz.lessons.findIndex((l) => l.id === over.id);
-
-    if (oldIndex !== -1 && newIndex !== -1) {
-      let newLessons = arrayMove(editingQuiz.lessons, oldIndex, newIndex);
-      setEditingQuiz({ ...editingQuiz, lessons: newLessons });
-    }
   };
 
   return (
@@ -183,6 +189,7 @@ export function QuizSheet({
                       setEditingQuiz({
                         ...editingQuiz,
                         courseId: value,
+                        lessons: [],
                       })
                     }
                     dict={quizzesDict.course_combobox}
@@ -217,6 +224,7 @@ export function QuizSheet({
                       })
                     }
                     placeholder={quizzesDict.quiz_question_count_placeholder}
+                    disabled={isOrderedMode}
                   />
                 </div>
 
@@ -224,12 +232,27 @@ export function QuizSheet({
                   <Label>{quizzesDict.quiz_selection_mode_label}</Label>
                   <Select
                     value={editingQuiz.selectionMode}
-                    onValueChange={(value) =>
+                    onValueChange={(value) => {
+                      if (!editingQuiz) return;
+                      const newMode = value as QuizSelectionMode;
+                      const newLessons = editingQuiz.lessons.map((l) => {
+                        if (newMode === QuizSelectionMode.ORDERED) {
+                          return { ...l, questionsCount: undefined };
+                        } else if (newMode === QuizSelectionMode.SHUFFLED) {
+                          return {
+                            ...l,
+                            startIndex: undefined,
+                            endIndex: undefined,
+                          };
+                        }
+                        return l;
+                      });
                       setEditingQuiz({
                         ...editingQuiz,
-                        selectionMode: value as QuizSelectionMode,
-                      })
-                    }
+                        selectionMode: newMode,
+                        lessons: newLessons,
+                      });
+                    }}
                   >
                     <SelectTrigger>
                       <SelectValue
@@ -256,22 +279,31 @@ export function QuizSheet({
                     <Label className="text-base font-semibold">
                       {quizzesDict.lessons_label}
                     </Label>
-                    <LessonCombobox
-                      lessons={lessons.filter(
-                        (l) =>
-                          l.courseId === editingQuiz.courseId &&
-                          !editingQuiz.lessons.some(
-                            (el) => el.lessonId === l.id
-                          )
-                      )}
-                      value=""
-                      onValueChange={addLesson}
-                      icon={<PlusIcon className="w-4 h-4" />}
-                      dict={quizzesDict.lesson_combobox}
-                      placeholder={quizzesDict.add_lesson_button}
-                      align="end"
-                      disabled={!editingQuiz.courseId}
-                    />
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={addAllLessons}
+                        disabled={!editingQuiz.courseId}
+                      >
+                        {quizzesDict.add_all_lessons_button}
+                      </Button>
+                      <LessonCombobox
+                        lessons={lessons.filter(
+                          (l) =>
+                            l.courseId === editingQuiz.courseId &&
+                            !editingQuiz.lessons.some(
+                              (el) => el.lessonId === l.id
+                            )
+                        )}
+                        value=""
+                        onValueChange={addLesson}
+                        icon={<PlusIcon className="w-4 h-4" />}
+                        dict={quizzesDict.lesson_combobox}
+                        placeholder={quizzesDict.add_lesson_button}
+                        align="end"
+                        disabled={!editingQuiz.courseId}
+                      />
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-3">
@@ -280,30 +312,41 @@ export function QuizSheet({
                         {quizzesDict.no_lessons_message}
                       </div>
                     ) : (
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={handleLessonDragEnd}
-                      >
-                        <SortableContext
-                          items={editingQuiz.lessons.map((l) => l.id)}
-                          strategy={verticalListSortingStrategy}
-                        >
-                          <div className="flex flex-col gap-3">
-                            {editingQuiz.lessons.map((lesson, idx) => (
-                              <SortableQuizLessonItem
-                                key={lesson.id}
-                                lesson={lesson}
-                                onChange={(updated) =>
-                                  updateLesson(idx, updated)
-                                }
-                                onDelete={() => deleteLesson(idx)}
-                                dict={quizzesDict}
-                              />
-                            ))}
-                          </div>
-                        </SortableContext>
-                      </DndContext>
+                      <div className="flex flex-col gap-3">
+                        {(() => {
+                          const totalLessonsQuestions =
+                            editingQuiz.lessons.reduce(
+                              (sum, lesson) =>
+                                sum + (lesson.questionsCount ?? 0),
+                              0
+                            );
+
+                          return editingQuiz.lessons
+                            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                            .map((lesson, idx) => {
+                              const currentLessonCount =
+                                lesson.questionsCount ?? 0;
+                              const otherLessonsCount =
+                                totalLessonsQuestions - currentLessonCount;
+                              const maxForThisLesson =
+                                editingQuiz.questionCount - otherLessonsCount;
+
+                              return (
+                                <QuizLessonItem
+                                  key={lesson.id}
+                                  lesson={lesson}
+                                  onChange={(updated) =>
+                                    updateLesson(idx, updated)
+                                  }
+                                  onDelete={() => deleteLesson(idx)}
+                                  dict={quizzesDict}
+                                  selectionMode={editingQuiz.selectionMode}
+                                  maxQuestions={maxForThisLesson}
+                                />
+                              );
+                            });
+                        })()}
+                      </div>
                     )}
                   </div>
                 </div>

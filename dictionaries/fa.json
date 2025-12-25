@@ -437,8 +437,12 @@
         },
         "lessons_label": "درس های آزمون",
         "add_lesson_button": "افزودن درس",
+        "add_all_lessons_button": "افزودن همه درس‌ها",
         "no_lessons_message": "هنوز درسی اضافه نشده است.",
         "quiz_lesson_question_count_placeholder": "تعداد",
+        "quiz_lesson_start_index_placeholder": "شروع",
+        "quiz_lesson_end_index_placeholder": "پایان",
+        "quiz_lesson_use_custom_question_count_label": "تعداد سوال دلخواه",
         "lesson_combobox": {
           "select_lesson_placeholder": "انتخاب درس",
           "no_lesson_found_message": "درسی یافت نشد.",

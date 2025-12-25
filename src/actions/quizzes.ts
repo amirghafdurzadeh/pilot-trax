@@ -8,6 +8,9 @@ export type QuizLessonInput = {
   lessonId: string;
   lessonTitle: string;
   questionsCount?: number;
+  order?: number;
+  startIndex?: number;
+  endIndex?: number;
 };
 
 export type QuizInput = {

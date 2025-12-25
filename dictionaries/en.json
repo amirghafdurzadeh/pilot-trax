@@ -436,8 +436,12 @@
         },
         "lessons_label": "Quiz Lessons",
         "add_lesson_button": "Add Lesson",
+        "add_all_lessons_button": "Add all lessons",
         "no_lessons_message": "No lessons have been added yet.",
         "quiz_lesson_question_count_placeholder": "Count",
+        "quiz_lesson_start_index_placeholder": "Start",
+        "quiz_lesson_end_index_placeholder": "End",
+        "quiz_lesson_use_custom_question_count_label": "Custom question count",
         "lesson_combobox": {
           "select_lesson_placeholder": "Select a lesson",
           "no_lesson_found_message": "No lesson found.",

@@ -32,7 +32,7 @@ export function ThemeSwitcher({ dict }: Props) {
           <span className="sr-only">{dict.toggle_theme}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           {dict.light}
         </DropdownMenuItem>
