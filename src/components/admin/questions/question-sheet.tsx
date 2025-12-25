@@ -18,7 +18,11 @@ import {
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { type AnswerInput, type LessonOption, type QuestionInput } from "@/actions/questions";
+import {
+  type AnswerInput,
+  type LessonOption,
+  type QuestionInput,
+} from "@/actions/questions";
 import { LessonCombobox } from "@/components/admin/lesson-combobox";
 import { RichTextEditor } from "@/components/admin/rich-text";
 import { Button } from "@/components/ui/button";
@@ -38,7 +42,6 @@ import { Locale } from "@/lib/locales";
 import { SortableAnswerItem } from "./answer-item";
 
 type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
-type QuestionsDict = AppDict["admin"]["questions"];
 
 export function QuestionSheet({
   open,
@@ -147,7 +150,7 @@ export function QuestionSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
+    <Sheet open={open} onOpenChange={onOpenChange} modal>
       <SheetContent
         className="sm:max-w-2xl flex flex-col h-full w-full"
         side={lang === "fa" ? "left" : "right"}
@@ -224,9 +227,7 @@ export function QuestionSheet({
                         description: value,
                       })
                     }
-                    placeholder={
-                      questionsDict.question_description_placeholder
-                    }
+                    placeholder={questionsDict.question_description_placeholder}
                     minHeight="200px"
                     dictionary={dict.admin.rich_text_toolbar}
                   />
@@ -269,9 +270,7 @@ export function QuestionSheet({
                                   updateAnswer(idx, updated)
                                 }
                                 onDelete={() => deleteAnswer(idx)}
-                                onToggleCorrect={() =>
-                                  toggleAnswerCorrect(idx)
-                                }
+                                onToggleCorrect={() => toggleAnswerCorrect(idx)}
                                 dict={questionsDict}
                                 toolbarDictionary={dict.admin.rich_text_toolbar}
                               />
@@ -292,9 +291,7 @@ export function QuestionSheet({
                   : questionsDict.save_changes_button}
               </Button>
               <SheetClose asChild>
-                <Button variant="outline">
-                  {questionsDict.cancel_button}
-                </Button>
+                <Button variant="outline">{questionsDict.cancel_button}</Button>
               </SheetClose>
               <Button
                 type="button"

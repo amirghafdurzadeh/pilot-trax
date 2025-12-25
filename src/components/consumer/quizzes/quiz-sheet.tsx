@@ -151,7 +151,7 @@ export function QuizSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
+    <Sheet open={open} onOpenChange={onOpenChange} modal>
       <SheetContent
         className="sm:max-w-2xl flex flex-col h-full w-full"
         side={lang === "fa" ? "left" : "right"}

@@ -130,7 +130,7 @@ export function LessonCombobox({
   const selectedLesson = lessons.find((lesson) => lesson.id === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
