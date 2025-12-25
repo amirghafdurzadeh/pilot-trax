@@ -34,18 +34,19 @@ export function QuestionFilters({
   dict: QuestionsDict;
 }) {
   return (
-    <div className="w-full md:w-fit flex gap-2">
+    <>
       <CourseCombobox
         courses={courses}
         value={selectedCourseId}
         onValueChange={onCourseChange}
         dict={{
-          select_course_placeholder: dict.course_combobox.select_course_placeholder,
+          select_course_placeholder:
+            dict.course_combobox.select_course_placeholder,
           search_placeholder: dict.course_combobox.search_placeholder,
           no_course_found_message: dict.course_combobox.no_course_found_message,
         }}
         icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
-        triggerClassName="flex-1 w-fit"
+        triggerClassName="w-full md:w-fit"
       />
       <LessonCombobox
         lessons={lessons}
@@ -53,7 +54,7 @@ export function QuestionFilters({
         onValueChange={onLessonChange}
         dict={dict.lesson_combobox}
         icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
-        triggerClassName="flex-1 w-fit"
+        triggerClassName="w-full md:w-fit"
       />
       {hasActiveFilters && (
         <Button
@@ -65,6 +66,6 @@ export function QuestionFilters({
           <XIcon className="w-4 h-4" />
         </Button>
       )}
-    </div>
+    </>
   );
 }

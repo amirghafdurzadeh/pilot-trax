@@ -147,7 +147,7 @@ export function QuestionSheet({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
       <SheetContent
         className="sm:max-w-2xl flex flex-col h-full w-full"
         side={lang === "fa" ? "left" : "right"}
@@ -180,7 +180,6 @@ export function QuestionSheet({
                     }
                     dict={questionsDict.lesson_combobox}
                     triggerClassName="w-full"
-                    className="w-full"
                   />
                 </div>
 

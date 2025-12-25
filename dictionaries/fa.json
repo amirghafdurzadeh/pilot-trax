@@ -411,6 +411,40 @@
         "one_correct_answer_required_toast": "حداقل یک پاسخ صحیح الزامی است",
         "save_success_toast": "سوال با موفقیت ذخیره شد",
         "save_error_toast": "خطا در ذخیره سازی: "
+      },
+      "quizzes": {
+        "edit_quiz_sheet_title": "ویرایش آزمون",
+        "new_quiz_sheet_title": "آزمون جدید",
+        "sheet_description": "اطلاعات آزمون را اینجا وارد کنید. پس از اتمام روی دکمه ذخیره کلیک کنید.",
+        "quiz_title_label": "عنوان آزمون",
+        "quiz_title_placeholder": "عنوان آزمون را وارد کنید...",
+        "related_course_label": "دوره مربوطه",
+        "quiz_duration_label": "مدت زمان (دقیقه)",
+        "quiz_duration_placeholder": "مدت زمان را به دقیقه وارد کنید",
+        "quiz_question_count_label": "تعداد سوالات",
+        "quiz_question_count_placeholder": "تعداد سوالات را وارد کنید",
+        "quiz_selection_mode_label": "حالت انتخاب",
+        "quiz_selection_mode_placeholder": "یک حالت انتخاب کنید",
+        "quiz_selection_mode_shuffled": "درهم",
+        "quiz_selection_mode_ordered": "به ترتیب",
+        "saving_button": "در حال ذخیره...",
+        "save_changes_button": "ذخیره تغییرات",
+        "cancel_button": "لغو",
+        "reset_button": "بازنشانی",
+        "course_combobox": {
+          "select_course_placeholder": "انتخاب دوره",
+          "no_course_found_message": "دوره ای یافت نشد.",
+          "search_placeholder": "جستجوی دوره..."
+        },
+        "lessons_label": "درس های آزمون",
+        "add_lesson_button": "افزودن درس",
+        "no_lessons_message": "هنوز درسی اضافه نشده است.",
+        "quiz_lesson_question_count_placeholder": "تعداد",
+        "lesson_combobox": {
+          "select_lesson_placeholder": "انتخاب درس",
+          "no_lesson_found_message": "درسی یافت نشد.",
+          "search_placeholder": "جستجوی درس..."
+        }
       }
     },
     "userNav": {

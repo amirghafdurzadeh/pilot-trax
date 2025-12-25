@@ -73,7 +73,7 @@ export function CourseCombobox({
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0", className)} align="start">
+      <PopoverContent className={cn("p-0 w-80", className)} align="start">
         <Command>
           <CommandInput placeholder={dict.search_placeholder} />
           <CommandList>

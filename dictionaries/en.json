@@ -410,6 +410,40 @@
         "one_correct_answer_required_toast": "At least one correct answer is required",
         "save_success_toast": "Question saved successfully",
         "save_error_toast": "Error saving question: "
+      },
+      "quizzes": {
+        "edit_quiz_sheet_title": "Edit Quiz",
+        "new_quiz_sheet_title": "New Quiz",
+        "sheet_description": "Enter the quiz information here. Click save when you're done.",
+        "quiz_title_label": "Quiz Title",
+        "quiz_title_placeholder": "Enter the quiz title here...",
+        "related_course_label": "Related Course",
+        "quiz_duration_label": "Duration (minutes)",
+        "quiz_duration_placeholder": "Enter the duration in minutes",
+        "quiz_question_count_label": "Number of Questions",
+        "quiz_question_count_placeholder": "Enter the number of questions",
+        "quiz_selection_mode_label": "Selection Mode",
+        "quiz_selection_mode_placeholder": "Select a selection mode",
+        "quiz_selection_mode_shuffled": "Shuffled",
+        "quiz_selection_mode_ordered": "Ordered",
+        "saving_button": "Saving...",
+        "save_changes_button": "Save Changes",
+        "cancel_button": "Cancel",
+        "reset_button": "Reset",
+        "course_combobox": {
+          "select_course_placeholder": "Select a course",
+          "no_course_found_message": "No course found.",
+          "search_placeholder": "Search for a course..."
+        },
+        "lessons_label": "Quiz Lessons",
+        "add_lesson_button": "Add Lesson",
+        "no_lessons_message": "No lessons have been added yet.",
+        "quiz_lesson_question_count_placeholder": "Count",
+        "lesson_combobox": {
+          "select_lesson_placeholder": "Select a lesson",
+          "no_lesson_found_message": "No lesson found.",
+          "search_placeholder": "Search for a lesson..."
+        }
       }
     },
     "userNav": {
