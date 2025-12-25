@@ -31,7 +31,13 @@ interface QuizCardProps {
   onDelete: (quiz: Quizzes[number]) => void;
 }
 
-export function QuizCard({ quiz, dict, lang, onEdit, onDelete }: QuizCardProps) {
+export function QuizCard({
+  quiz,
+  dict,
+  lang,
+  onEdit,
+  onDelete,
+}: QuizCardProps) {
   const locales = { en: enUS, fa: faIR };
   const locale = locales[lang as keyof typeof locales];
 
@@ -64,13 +70,14 @@ export function QuizCard({ quiz, dict, lang, onEdit, onDelete }: QuizCardProps) 
                 <span>{dict.app.quizzes.edit}</span>
               </DropdownMenuItem>
               <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onDelete(quiz);
                 }}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4 text-inherit" />
                 <span>{dict.app.quizzes.delete}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -92,11 +99,12 @@ export function QuizCard({ quiz, dict, lang, onEdit, onDelete }: QuizCardProps) 
           </p>
           <p className="text-sm text-muted-foreground">
             {dict.app.quizzes.created_at}:{" "}
-                      {formatDistanceToNow(new Date(quiz.createdAt), {
-                        addSuffix: true,
-                        locale,
-                      })}
-                    </p>        </CardContent>
+            {formatDistanceToNow(new Date(quiz.createdAt), {
+              addSuffix: true,
+              locale,
+            })}
+          </p>{" "}
+        </CardContent>
       </Card>
     </Link>
   );
