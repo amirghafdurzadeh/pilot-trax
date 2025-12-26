@@ -1,6 +1,6 @@
 "use client";
 
-import { FilterIcon, PlusIcon } from "lucide-react";
+import { FilterIcon, PlusIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -72,6 +72,13 @@ export function ClientQuizzes({
       );
   };
 
+  const hasActiveFilters = searchQuery !== "" || selectedCourse !== "";
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCourse("");
+  };
+
   const handleAddQuiz = () => {
     setSelectedQuiz(null);
     setSheetOpen(true);
@@ -102,6 +109,38 @@ export function ClientQuizzes({
         return dict.app.quizzes.failed_to_save_quiz;
       },
     });
+  };
+
+  const renderQuizzes = (quizzes: Quizzes) => {
+    const filteredQuizzes = getFilteredQuizzes(quizzes);
+
+    if (filteredQuizzes.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+          <p className="text-lg">{dict.app.quizzes.no_quizzes_found}</p>
+          {hasActiveFilters && (
+            <Button variant="link" onClick={clearFilters}>
+              {dict.app.admin.questions.clear_filters_button}
+            </Button>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
+        {filteredQuizzes.map((quiz) => (
+          <QuizCard
+            key={quiz.id}
+            quiz={quiz}
+            dict={dict}
+            lang={lang}
+            onEdit={handleEditQuiz}
+            onDelete={handleDeleteQuiz}
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -146,35 +185,19 @@ export function ClientQuizzes({
               icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
               triggerClassName="w-full md:w-fit"
             />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={clearFilters}
+                title={dict.app.admin.questions.clear_filters_tooltip}
+              >
+                <XIcon className="w-4 h-4" />
+              </Button>
+            )}
           </div>
-          <TabsContent value="my">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
-              {getFilteredQuizzes(myQuizzes).map((quiz) => (
-                <QuizCard
-                  key={quiz.id}
-                  quiz={quiz}
-                  dict={dict}
-                  lang={lang}
-                  onEdit={handleEditQuiz}
-                  onDelete={handleDeleteQuiz}
-                />
-              ))}
-            </div>
-          </TabsContent>
-          <TabsContent value="public">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
-              {getFilteredQuizzes(publicQuizzes).map((quiz) => (
-                <QuizCard
-                  key={quiz.id}
-                  quiz={quiz}
-                  dict={dict}
-                  lang={lang}
-                  onEdit={handleEditQuiz}
-                  onDelete={handleDeleteQuiz}
-                />
-              ))}
-            </div>
-          </TabsContent>
+          <TabsContent value="my">{renderQuizzes(myQuizzes)}</TabsContent>
+          <TabsContent value="public">{renderQuizzes(publicQuizzes)}</TabsContent>
         </Tabs>
       </AppContent>
 

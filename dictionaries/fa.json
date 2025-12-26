@@ -482,6 +482,7 @@
 			"my_quizzes": "آزمون های من",
 			"public_quizzes": "آزمون های عمومی",
       "quiz_not_found": "آزمون یافت نشد.",
+      "no_quizzes_found": "هیچ آزمونی یافت نشد.",
       "public": "عمومی",
       "public_yes": "بله",
       "public_no": "خیر",
