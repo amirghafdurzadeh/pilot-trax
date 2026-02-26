@@ -4,19 +4,22 @@ import Link from "next/link";
 
 const QRPage = () => {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+    <main className="relative w-full h-full flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden">
+      <div className="absolute top-0 bottom-0 left-1/2 -ml-[400px] w-[1400px] h-[1400px] -z-10">
+        <div className="absolute inset-0 bg-grid-slate-700/10 bg-[length:20px_20px] [mask-image:linear-gradient(to_bottom,white_10%,transparent_50%)] dark:bg-grid-slate-100/10 dark:[mask-image:linear-gradient(to_bottom,white_10%,transparent_100%)]" />
+      </div>
       <div className="w-full max-w-sm mx-auto text-center">
-        <div className="mb-8">
+        <div className="mb-8 p-4">
           <Image
             src="/logo-full.svg"
             alt="Pilot Trax Logo"
             width={240}
             height={80}
-            className="mx-auto"
+            className="w-full"
           />
         </div>
         <div className="space-y-6">
-          <div className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="flex items-center justify-center p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl shadow-blue-500/10">
             <GlobeIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             <Link
               href="https://pilottrax.net"
@@ -27,7 +30,7 @@ const QRPage = () => {
               pilottrax.net
             </Link>
           </div>
-          <div className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="flex items-center justify-center p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl shadow-blue-500/10">
             <InstagramIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             <Link
               href="https://instagram.com/pilottrax"
@@ -38,7 +41,7 @@ const QRPage = () => {
               pilottrax
             </Link>
           </div>
-          <div className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="flex items-center justify-center p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl shadow-blue-500/10">
             <WhatsAppIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             <Link
               href="https://wa.me/989377710010"
@@ -50,7 +53,7 @@ const QRPage = () => {
               +98 937 771 0010
             </Link>
           </div>
-          <div className="flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="flex items-center justify-center p-6 bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl shadow-blue-500/10">
             <AtSign className="w-6 h-6 text-gray-500 dark:text-gray-400" />
             <Link
               href="mailto:pilottrax@gmail.com"
