@@ -1,5 +1,10 @@
 "use client";
-import { BookOpenIcon, HelpCircleIcon, HomeIcon } from "lucide-react";
+import {
+  BookOpenIcon,
+  FileSpreadsheet,
+  HelpCircleIcon,
+  HomeIcon,
+} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
 
@@ -40,6 +45,11 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"]) => [
     href: `/${lang}/app/questions`,
     icon: HelpCircleIcon,
   },
+  {
+    title: dict.excel,
+    href: `/${lang}/app/excel`,
+    icon: FileSpreadsheet,
+  },
 ];
 
 export function AppSidebar({
@@ -61,7 +71,7 @@ export function AppSidebar({
       if (isMobile) setOpenMobile(false);
       router.push(href);
     },
-    [isMobile, router, setOpen, setOpenMobile]
+    [isMobile, router, setOpen, setOpenMobile],
   );
 
   return (

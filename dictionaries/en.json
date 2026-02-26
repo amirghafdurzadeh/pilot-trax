@@ -297,6 +297,7 @@
       "dashboard": "Dashboard",
       "courses": "Courses",
       "questions": "Questions",
+      "excel": "Excel I/O",
       "brand": {
         "title": "Pilot Trax",
         "alt": "Pilot Trax"
