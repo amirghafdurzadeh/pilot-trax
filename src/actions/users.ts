@@ -6,7 +6,7 @@ import z from "zod";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
-import { readSession } from "@/lib/session";
+import { createSession, readSession } from "@/lib/session";
 
 type UsersGrowth = {
   month: string;
@@ -83,13 +83,14 @@ export async function updateUserProfile(
   }
 
   try {
-    await prisma.user.update({
+    const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         firstName: validatedFields.data.firstName,
         lastName: validatedFields.data.lastName,
       },
     });
+    await createSession(updatedUser);
   } catch (error) {
     return {
       success: false,
