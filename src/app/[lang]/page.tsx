@@ -6,8 +6,6 @@ import {
   Header,
   Hero,
   HowTo,
-  Plans,
-  Testimonials,
 } from "@/components/home";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
@@ -31,11 +29,11 @@ export default async function Page(props: PageProps<"/[lang]">) {
           steps={dict.home.howTo.steps}
           dict={dict.home.howTo}
         />
-        <Plans plans={dict.home.plans.items} dict={dict.home.plans} />
-        <Testimonials
+        {/* <Plans plans={dict.home.plans.items} dict={dict.home.plans} /> */}
+        {/* <Testimonials
           testimonials={dict.home.testimonials.items}
           dict={dict.home.testimonials}
-        />
+        /> */}
         <FAQ faqs={dict.home.faq.items} dict={dict.home.faq} />
         <Contact dict={dict.home.contact} />
         <Footer lang={lang} dict={dict} />
