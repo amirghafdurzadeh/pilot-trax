@@ -1,7 +1,8 @@
 "use client";
 
+import { PopoverContentProps } from "@radix-ui/react-popover";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import * as React from "react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +18,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { getDictionary } from "@/lib/dictionaries";
+import { cn } from "@/lib/utils";
 
-type QuestionsDict = Awaited<ReturnType<typeof getDictionary>>["app"]["admin"]["questions"];
+type QuestionsDict = Awaited<
+  ReturnType<typeof getDictionary>
+>["app"]["admin"]["questions"];
 type LessonComboboxDict = QuestionsDict["lesson_combobox"];
 
 export type LessonOption = {
@@ -40,6 +43,9 @@ interface LessonComboboxProps {
   className?: string;
   triggerClassName?: string;
   icon?: React.ReactNode;
+  align?: PopoverContentProps["align"];
+  placeholder?: string;
+  disabled?: boolean;
 }
 
 export function LessonCombobox({
@@ -50,11 +56,14 @@ export function LessonCombobox({
   className,
   triggerClassName,
   icon,
+  align = "start",
+  placeholder,
+  disabled,
 }: LessonComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   // Group lessons by course
-  const lessonsByCourse = React.useMemo(() => {
+  const lessonsByCourse = useMemo(() => {
     const grouped = lessons.reduce((acc, lesson) => {
       if (!acc[lesson.courseName]) {
         acc[lesson.courseName] = [];
@@ -69,7 +78,7 @@ export function LessonCombobox({
       const items = grouped[courseName];
 
       // Build map of nodes
-      const nodeMap = new Map<string, (LessonOption & { children: any[] })>();
+      const nodeMap = new Map<string, LessonOption & { children: any[] }>();
       items.forEach((it) => nodeMap.set(it.id, { ...it, children: [] } as any));
 
       const roots: (LessonOption & { children: any[] })[] = [];
@@ -121,26 +130,29 @@ export function LessonCombobox({
   const selectedLesson = lessons.find((lesson) => lesson.id === value);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
           className={cn("justify-between font-normal", triggerClassName)}
+          disabled={disabled}
         >
           <span className="flex items-center gap-2 truncate">
             {icon}
             {selectedLesson ? (
               <span className="truncate">{selectedLesson.title}</span>
             ) : (
-              <span className="text-muted-foreground">{dict.select_lesson_placeholder}</span>
+              <span className="text-muted-foreground">
+                {placeholder ?? dict.select_lesson_placeholder}
+              </span>
             )}
           </span>
           <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("p-0", className)} align="start">
+      <PopoverContent className={cn("p-0 w-80", className)} align={align}>
         <Command>
           <CommandInput placeholder={dict.search_placeholder} />
           <CommandList>

@@ -298,6 +298,7 @@
       "courses": "Courses",
       "questions": "Questions",
       "excel": "Excel I/O",
+      "quizzes": "Quizzes",
       "brand": {
         "title": "Pilot Trax",
         "alt": "Pilot Trax"
@@ -397,6 +398,11 @@
           "no_lesson_found_message": "No lesson found.",
           "search_placeholder": "Search for a lesson..."
         },
+        "course_combobox": {
+          "select_course_placeholder": "All Courses",
+          "no_course_found_message": "No course found.",
+          "search_placeholder": "Search for a course..."
+        },
         "delete_success_toast": "Question deleted successfully",
         "delete_error_toast": "Error deleting question",
         "title_required_toast": "Question title is required",
@@ -405,6 +411,58 @@
         "one_correct_answer_required_toast": "At least one correct answer is required",
         "save_success_toast": "Question saved successfully",
         "save_error_toast": "Error saving question: "
+      },
+      "quizzes": {
+        "edit_quiz_sheet_title": "Edit Quiz",
+        "new_quiz_sheet_title": "New Quiz",
+        "sheet_description": "Enter the quiz information here. Click save when you're done.",
+        "quiz_title_label": "Quiz Title",
+        "quiz_title_placeholder": "Enter the quiz title here...",
+        "related_course_label": "Related Course",
+        "quiz_duration_label": "Duration (minutes)",
+        "quiz_duration_placeholder": "Enter the duration in minutes",
+        "quiz_question_count_label": "Number of Questions",
+        "quiz_question_count_placeholder": "Enter the number of questions",
+        "quiz_selection_mode_label": "Selection Mode",
+        "quiz_selection_mode_placeholder": "Select a selection mode",
+        "quiz_selection_mode_shuffled": "Shuffled",
+        "quiz_selection_mode_ordered": "Ordered",
+        "saving_button": "Saving...",
+        "save_changes_button": "Save Changes",
+        "cancel_button": "Cancel",
+        "course_combobox": {
+          "select_course_placeholder": "Select a course",
+          "no_course_found_message": "No course found.",
+          "search_placeholder": "Search for a course..."
+        },
+        "lessons_label": "Quiz Lessons",
+        "add_lesson_button": "Add Lesson",
+        "add_all_lessons_button": "Add all lessons",
+        "no_lessons_message": "No lessons have been added yet.",
+        "quiz_lesson_question_count_placeholder": "Count",
+        "quiz_lesson_start_index_placeholder": "Start",
+        "quiz_lesson_end_index_placeholder": "End",
+        "quiz_lesson_use_custom_question_count_label": "Custom question count",
+        "lesson_combobox": {
+          "select_lesson_placeholder": "Select a lesson",
+          "no_lesson_found_message": "No lesson found.",
+          "search_placeholder": "Search for a lesson..."
+        },
+        "quiz_public_label": "Public Quiz",
+        "quiz_public_description": "Display the quiz in the public list."
+      },
+      "rich_text_toolbar": {
+        "bold": "Bold (Ctrl+B)",
+        "italic": "Italic (Ctrl+I)",
+        "rtl": "RTL",
+        "ltr": "LTR",
+        "auto": "Auto",
+        "align_left": "Align Left",
+        "align_center": "Align Center",
+        "align_right": "Align Right",
+        "align_justify": "Align Justify",
+        "insert_image": "Insert Image",
+        "insert_math": "Insert LaTeX Formula"
       }
     },
     "userNav": {
@@ -412,6 +470,35 @@
       "billing": "Billing",
       "logout": "Log out",
       "unnamedUser": "Unnamed User"
+    },
+    "quizzes": {
+      "search_placeholder": "Search quizzes...",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "questions": "Questions",
+      "selection_mode": "Selection Mode",
+      "attempts": "Attempts",
+      "created_at": "Created At",
+      "my_quizzes": "My Quizzes",
+      "public_quizzes": "Public Quizzes",
+      "quiz_not_found": "Quiz not found.",
+      "no_quizzes_found": "No quizzes found.",
+      "public": "Public",
+      "public_yes": "Yes",
+      "public_no": "No",
+      "lessons_label": "Lessons",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_dialog_title": "Are you sure you want to delete this quiz?",
+      "delete_dialog_description": "This action is irreversible and all data related to this quiz will be deleted.",
+      "delete_dialog_cancel": "Cancel",
+      "delete_dialog_confirm": "Delete",
+      "saving_quiz": "Saving quiz...",
+      "quiz_saved_successfully": "Quiz saved successfully.",
+      "failed_to_save_quiz": "Failed to save quiz.",
+      "deleting_quiz": "Deleting quiz...",
+      "quiz_deleted_successfully": "Quiz deleted successfully.",
+      "failed_to_delete_quiz": "Failed to delete quiz."
     }
   }
 }

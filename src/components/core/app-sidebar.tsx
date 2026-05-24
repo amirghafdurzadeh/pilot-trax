@@ -4,6 +4,7 @@ import {
   FileSpreadsheet,
   HelpCircleIcon,
   HomeIcon,
+  ClipboardCheck,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -49,6 +50,11 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"]) => [
     title: dict.excel,
     href: `/${lang}/app/excel`,
     icon: FileSpreadsheet,
+  },
+  {
+    title: dict.quizzes,
+    href: `/${lang}/app/quizzes`,
+    icon: ClipboardCheck,
   },
 ];
 

@@ -11,7 +11,7 @@ model Permission {
   id          String  @id
   description String?
 
-  roles RolePermission[]
+  rolePermissions RolePermission[]
 
   @@map("permissions")
 }
@@ -20,8 +20,8 @@ model Role {
   id          String  @id
   description String?
 
-  permissions RolePermission[]
-  users       UserRole[]
+  rolePermissions RolePermission[]
+  userRoles       UserRole[]
 
   @@map("roles")
 }
@@ -44,7 +44,9 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  roles UserRole[]
+  userRoles    UserRole[]
+  quizzes      Quiz[]
+  quizAttempts QuizAttempt[]
 
   @@index([phone])
   @@map("users")
@@ -76,58 +78,128 @@ model Course {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   lessons Lesson[]
+  quizzes Quiz[]
 
   @@map("courses")
 }
 
 model Lesson {
-  id    String @id @default(uuid())
-  title String
-  order Int    @default(0)
-
-  courseId String @map("course_id")
-  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  parentId String?  @map("parent_id")
-  parent   Lesson?  @relation("LessonToChildren", fields: [parentId], references: [id])
-  children Lesson[] @relation("LessonToChildren")
-
+  id        String   @id @default(uuid())
+  title     String
+  order     Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  questions Question[]
+  courseId    String       @map("course_id")
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  parentId    String?      @map("parent_id")
+  parent      Lesson?      @relation("LessonToChildren", fields: [parentId], references: [id])
+  children    Lesson[]     @relation("LessonToChildren")
+  questions   Question[]
+  quizLessons QuizLesson[]
 
   @@map("lessons")
 }
 
 model Question {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid())
   index       Int?
   title       String
   description String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  answers Answer[]
-
-  lessonId String @map("lesson_id")
-  lesson   Lesson @relation(fields: [lessonId], references: [id])
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  lessonId             String                @map("lesson_id")
+  lesson               Lesson                @relation(fields: [lessonId], references: [id])
+  answers              Answer[]
+  quizAttemptQuestions QuizAttemptQuestion[]
 
   @@map("questions")
 }
 
 model Answer {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   title     String
-  isCorrect Boolean @default(false)
-  order     Int     @default(0)
-
-  questionId String   @map("question_id")
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-
+  isCorrect Boolean  @default(false)
+  order     Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  questionId           String                @map("question_id")
+  question             Question              @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  quizAttemptQuestions QuizAttemptQuestion[]
+
   @@map("answers")
+}
+
+model Quiz {
+  id            String            @id @default(uuid())
+  title         String
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  duration      Int
+  questionCount Int               @map("question_count")
+  selectionMode QuizSelectionMode @default(SHUFFLED) @map("selection_mode")
+  isPublic      Boolean           @default(false) @map("is_public")
+
+  creatorId    String        @map("creator_id")
+  creator      User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  courseId     String        @map("course_id")
+  course       Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  quizLessons  QuizLesson[]
+  quizAttempts QuizAttempt[]
+
+  @@map("quizzes")
+}
+
+model QuizLesson {
+  quizId              String                   @map("quiz_id")
+  quiz                Quiz                     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  lessonId            String                   @map("lesson_id")
+  lesson              Lesson                   @relation(fields: [lessonId], references: [id])
+  questionsStartIndex Int?                     @map("questions_start_index")
+  questionsCount      Int?                     @map("questions_count")
+  selectionMode       QuizLessonSelectionMode? @map("selection_mode")
+
+  @@id([quizId, lessonId])
+  @@map("quiz_lessons")
+}
+
+enum QuizSelectionMode {
+  SHUFFLED @map("SHUFFLED")
+  ORDERED  @map("ORDERED")
+}
+
+enum QuizLessonSelectionMode {
+  SHUFFLED              @map("SHUFFLED")
+  SHUFFLED_CUSTOM_COUNT @map("SHUFFLED_CUSTOM_COUNT")
+  ORDERED               @map("ORDERED")
+}
+
+model QuizAttempt {
+  id        String    @id @default(uuid())
+  startedAt DateTime  @default(now()) @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+
+  userId               String                @map("user_id")
+  user                 User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizId               String                @map("quiz_id")
+  quiz                 Quiz                  @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizAttemptQuestions QuizAttemptQuestion[]
+
+  @@map("quiz_attempts")
+}
+
+model QuizAttemptQuestion {
+  id         String    @id @default(uuid())
+  answeredAt DateTime? @map("answered_at")
+
+  selectedAnswerId String?     @map("selected_answer_id")
+  selectedAnswer   Answer?     @relation(fields: [selectedAnswerId], references: [id], onDelete: SetNull)
+  quizAttemptId    String      @map("quiz_attempt_id")
+  quizAttempt      QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+  questionId       String      @map("question_id")
+  question         Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_attempt_questions")
 }

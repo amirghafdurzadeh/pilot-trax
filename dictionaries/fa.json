@@ -299,6 +299,7 @@
       "courses": "دوره‌ها",
       "questions": "سوالات",
       "excel": "ورودی/خروجی اکسل",
+      "quizzes": "آزمون‌ها",
       "brand": {
         "title": "پایلوت ترکس",
         "alt": "Pilot Trax - پایلوت ترکس"
@@ -398,6 +399,11 @@
           "no_lesson_found_message": "درسی یافت نشد.",
           "search_placeholder": "جستجوی درس..."
         },
+        "course_combobox": {
+          "select_course_placeholder": "همه دوره ها",
+          "no_course_found_message": "دوره ای یافت نشد.",
+          "search_placeholder": "جستجوی دوره..."
+        },
         "delete_success_toast": "سوال با موفقیت حذف شد",
         "delete_error_toast": "خطا در حذف سوال",
         "title_required_toast": "عنوان سوال الزامی است",
@@ -406,6 +412,58 @@
         "one_correct_answer_required_toast": "حداقل یک پاسخ صحیح الزامی است",
         "save_success_toast": "سوال با موفقیت ذخیره شد",
         "save_error_toast": "خطا در ذخیره سازی: "
+      },
+      "quizzes": {
+        "edit_quiz_sheet_title": "ویرایش آزمون",
+        "new_quiz_sheet_title": "آزمون جدید",
+        "sheet_description": "اطلاعات آزمون را اینجا وارد کنید. پس از اتمام روی دکمه ذخیره کلیک کنید.",
+        "quiz_title_label": "عنوان آزمون",
+        "quiz_title_placeholder": "عنوان آزمون را وارد کنید...",
+        "related_course_label": "دوره مربوطه",
+        "quiz_duration_label": "مدت زمان (دقیقه)",
+        "quiz_duration_placeholder": "مدت زمان را به دقیقه وارد کنید",
+        "quiz_question_count_label": "تعداد سوالات",
+        "quiz_question_count_placeholder": "تعداد سوالات را وارد کنید",
+        "quiz_selection_mode_label": "حالت انتخاب",
+        "quiz_selection_mode_placeholder": "یک حالت انتخاب کنید",
+        "quiz_selection_mode_shuffled": "درهم",
+        "quiz_selection_mode_ordered": "به ترتیب",
+        "saving_button": "در حال ذخیره...",
+        "save_changes_button": "ذخیره تغییرات",
+        "cancel_button": "لغو",
+        "course_combobox": {
+          "select_course_placeholder": "انتخاب دوره",
+          "no_course_found_message": "دوره ای یافت نشد.",
+          "search_placeholder": "جستجوی دوره..."
+        },
+        "lessons_label": "درس های آزمون",
+        "add_lesson_button": "افزودن درس",
+        "add_all_lessons_button": "افزودن همه درس‌ها",
+        "no_lessons_message": "هنوز درسی اضافه نشده است.",
+        "quiz_lesson_question_count_placeholder": "تعداد",
+        "quiz_lesson_start_index_placeholder": "شروع",
+        "quiz_lesson_end_index_placeholder": "پایان",
+        "quiz_lesson_use_custom_question_count_label": "تعداد سوال دلخواه",
+        "lesson_combobox": {
+          "select_lesson_placeholder": "انتخاب درس",
+          "no_lesson_found_message": "درسی یافت نشد.",
+          "search_placeholder": "جستجوی درس..."
+        },
+        "quiz_public_label": "آزمون عمومی",
+        "quiz_public_description": "آزمون در لیست عمومی نمایش داده شود."
+      },
+      "rich_text_toolbar": {
+        "bold": "ضخیم (Ctrl+B)",
+        "italic": "کج (Ctrl+I)",
+        "rtl": "راست‌چین",
+        "ltr": "چپ‌چین",
+        "auto": "خودکار",
+        "align_left": "تراز از چپ",
+        "align_center": "تراز وسط",
+        "align_right": "تراز از راست",
+        "align_justify": "تراز دو طرفه",
+        "insert_image": "درج تصویر",
+        "insert_math": "درج فرمول LaTeX"
       }
     },
     "userNav": {
@@ -413,6 +471,35 @@
       "billing": "صورتحساب",
       "logout": "خروج",
       "unnamedUser": "کاربر ناشناس"
+    },
+    "quizzes": {
+      "search_placeholder": "جستجوی آزمون...",
+      "duration": "مدت زمان",
+      "minutes": "دقیقه",
+      "questions": "تعداد سوالات",
+      "selection_mode": "حالت انتخاب",
+      "attempts": "تعداد تلاش‌ها",
+      "created_at": "تاریخ ایجاد",
+			"my_quizzes": "آزمون های من",
+			"public_quizzes": "آزمون های عمومی",
+      "quiz_not_found": "آزمون یافت نشد.",
+      "no_quizzes_found": "هیچ آزمونی یافت نشد.",
+      "public": "عمومی",
+      "public_yes": "بله",
+      "public_no": "خیر",
+      "lessons_label": "درس‌ها",
+      "edit": "ویرایش",
+      "delete": "حذف",
+      "delete_dialog_title": "آیا از حذف این آزمون اطمینان دارید؟",
+      "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این آزمون حذف خواهد شد.",
+      "delete_dialog_cancel": "انصراف",
+      "delete_dialog_confirm": "حذف",
+      "saving_quiz": "در حال ذخیره آزمون...",
+      "quiz_saved_successfully": "آزمون با موفقیت ذخیره شد.",
+      "failed_to_save_quiz": "خطا در ذخیره آزمون.",
+      "deleting_quiz": "در حال حذف آزمون...",
+      "quiz_deleted_successfully": "آزمون با موفقیت حذف شد.",
+      "failed_to_delete_quiz": "خطا در حذف آزمون."
     }
   }
 }

@@ -200,6 +200,30 @@ export async function saveCourse(lang: Locale, course: CourseInput) {
   }
 }
 
+
+export type CourseOption = {
+  id: string;
+  title: string;
+};
+
+export async function getCourseOptions(): Promise<CourseOption[]> {
+  try {
+    const courses = await prisma.course.findMany({
+      select: {
+        id: true,
+        title: true,
+      },
+      orderBy: {
+        title: "asc",
+      },
+    });
+    return courses;
+  } catch (error) {
+    console.error("Failed to get course options", error);
+    return [];
+  }
+}
+
 export async function deleteCourseAction(lang: Locale, id: string) {
   const dictionary = await getDictionary(lang);
   try {

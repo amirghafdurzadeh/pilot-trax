@@ -6,7 +6,7 @@ import { RichTextEditorContent } from "./editor-content";
 import { useRichTextEditor } from "./hooks";
 import { InsertImageDialog } from "./insert-image-dialog";
 import { InsertMathDialog } from "./insert-math-dialog";
-import { Toolbar } from "./toolbar";
+import { Toolbar, ToolbarDictionary } from "./toolbar";
 import { cn } from "@/lib/utils";
 
 interface RichTextEditorProps {
@@ -15,6 +15,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   className?: string;
   minHeight?: string;
+  dictionary: ToolbarDictionary;
 }
 
 export function RichTextEditor({
@@ -23,6 +24,7 @@ export function RichTextEditor({
   placeholder = "متن را وارد کنید...",
   className,
   minHeight = "80px",
+  dictionary,
 }: RichTextEditorProps) {
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
   const [mathDialogOpen, setMathDialogOpen] = useState(false);
@@ -64,38 +66,39 @@ export function RichTextEditor({
     setMathDialogOpen(true);
   };
 
-  if (!editor) {
-    return null;
-  }
-
   return (
     <div
       className={cn(
         "border rounded-md overflow-hidden bg-background transition-colors",
-        editor.isFocused &&
+        editor?.isFocused &&
           "ring-2 ring-ring ring-offset-2 ring-offset-background",
         className
       )}
     >
-      <Toolbar
-        editor={editor}
-        onInsertImage={handleInsertImage}
-        onInsertMath={handleInsertMath}
-      />
+      {editor && (
+        <>
+          <Toolbar
+            editor={editor}
+            onInsertImage={handleInsertImage}
+            onInsertMath={handleInsertMath}
+            dictionary={dictionary}
+          />
 
-      <RichTextEditorContent editor={editor} placeholder={placeholder} />
+          <RichTextEditorContent editor={editor} placeholder={placeholder} />
 
-      <InsertImageDialog
-        open={imageDialogOpen}
-        onOpenChange={setImageDialogOpen}
-        onApply={applyCallbackRef.current}
-      />
-      <InsertMathDialog
-        open={mathDialogOpen}
-        onOpenChange={setMathDialogOpen}
-        initialValue={dialogValue}
-        onApply={applyCallbackRef.current}
-      />
+          <InsertImageDialog
+            open={imageDialogOpen}
+            onOpenChange={setImageDialogOpen}
+            onApply={applyCallbackRef.current}
+          />
+          <InsertMathDialog
+            open={mathDialogOpen}
+            onOpenChange={setMathDialogOpen}
+            initialValue={dialogValue}
+            onApply={applyCallbackRef.current}
+          />
+        </>
+      )}
     </div>
   );
 }
