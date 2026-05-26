@@ -1,3 +1,4 @@
+export * from "./airplane-section";
 export * from "./feature";
 export * from "./plan";
 export * from "./testimonial";

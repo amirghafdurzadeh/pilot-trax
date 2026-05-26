@@ -1,4 +1,5 @@
 import {
+  AirplaneSection,
   Contact,
   FAQ,
   Features,
@@ -18,6 +19,7 @@ export default async function Page(props: PageProps<"/[lang]">) {
       <div className="mx-auto min-h-screen">
         <Header lang={lang} dict={dict} />
         <Hero dict={dict.home.hero} />
+        <AirplaneSection />
         <Features
           features={dict.home.features.items}
           title={dict.home.features.title}
