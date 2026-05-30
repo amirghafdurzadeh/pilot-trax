@@ -4,6 +4,8 @@ import { JWTPayload, SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 import { User } from "@/generated/prisma/client";
+import prisma from "@/lib/prisma";
+
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -56,3 +58,15 @@ export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete("session");
 }
+
+export async function getUserRole(userId: string): Promise<"admin" | "premium" | null> {
+  const userRoles = await prisma.userRole.findMany({
+    where: { userId },
+    select: { roleId: true },
+  });
+  const roleIds = userRoles.map((ur) => ur.roleId);
+  if (roleIds.includes("admin")) return "admin";
+  if (roleIds.includes("premium")) return "premium";
+  return null;
+}
+

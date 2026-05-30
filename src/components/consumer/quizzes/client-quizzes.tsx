@@ -35,13 +35,16 @@ interface ClientQuizzesProps {
   quizzes: Quizzes;
   dict: Dictionary;
   userId: string;
+  isAdmin: boolean;
 }
+
 
 export function ClientQuizzes({
   lang,
   quizzes,
   dict,
   userId,
+  isAdmin,
 }: ClientQuizzesProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -211,6 +214,7 @@ export function ClientQuizzes({
         lessons={lessons}
         lang={lang}
         dict={dict.app}
+        isAdmin={isAdmin}
       />
       <DeleteQuizDialog
         open={deleteDialogOpen}

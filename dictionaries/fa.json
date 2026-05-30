@@ -300,6 +300,7 @@
       "questions": "سوالات",
       "excel": "ورودی/خروجی اکسل",
       "quizzes": "آزمون‌ها",
+      "users": "کاربران",
       "brand": {
         "title": "پایلوت ترکس",
         "alt": "Pilot Trax - پایلوت ترکس"
@@ -451,6 +452,24 @@
         },
         "quiz_public_label": "آزمون عمومی",
         "quiz_public_description": "آزمون در لیست عمومی نمایش داده شود."
+      },
+      "users": {
+        "title": "مدیریت کاربران",
+        "search_placeholder": "جستجو بر اساس نام یا شماره تلفن...",
+        "phone": "تلفن",
+        "name": "نام",
+        "roles": "نقش‌ها",
+        "actions": "عملیات",
+        "admin": "مدیر",
+        "premium": "ویژه",
+        "basic": "عادی",
+        "make_admin": "ارتقا به مدیر",
+        "revoke_admin": "لغو مدیریت",
+        "make_premium": "ارتقا به ویژه",
+        "revoke_premium": "لغو ویژه",
+        "role_updated": "نقش کاربر با موفقیت بروزرسانی شد.",
+        "failed_to_update": "بروزرسانی نقش کاربر ناموفق بود.",
+        "cannot_revoke_self": "شما نمی‌توانید نقش مدیریت خود را لغو کنید."
       },
       "rich_text_toolbar": {
         "bold": "ضخیم (Ctrl+B)",

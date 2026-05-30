@@ -6,7 +6,8 @@ import z from "zod";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
-import { createSession, readSession } from "@/lib/session";
+import { createSession, readSession, getUserRole } from "@/lib/session";
+
 
 type UsersGrowth = {
   month: string;
@@ -108,3 +109,93 @@ export async function updateUserProfile(
     data: { redirectURL: validatedFields.data.redirectURL },
   };
 }
+
+export async function getAllUsersAction(query?: string) {
+  const currentUser = await readSession();
+  if (!currentUser) {
+    throw new Error("Unauthorized");
+  }
+  const currentRole = await getUserRole(currentUser.id);
+  if (currentRole !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  const users = await prisma.user.findMany({
+    where: query
+      ? {
+          OR: [
+            { phone: { contains: query, mode: "insensitive" } },
+            { firstName: { contains: query, mode: "insensitive" } },
+            { lastName: { contains: query, mode: "insensitive" } },
+          ],
+        }
+      : undefined,
+    include: {
+      userRoles: {
+        select: {
+          roleId: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return users.map((user) => ({
+    ...user,
+    roles: user.userRoles.map((ur) => ur.roleId),
+  }));
+}
+
+export async function updateUserRoleAction(
+  targetUserId: string,
+  roleId: "admin" | "premium",
+  action: "add" | "remove",
+  lang: string
+) {
+  const currentUser = await readSession();
+  if (!currentUser) {
+    throw new Error("Unauthorized");
+  }
+  const currentRole = await getUserRole(currentUser.id);
+  if (currentRole !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  // Prevent users from revoking their own admin access to avoid lockout!
+  if (currentUser.id === targetUserId && roleId === "admin" && action === "remove") {
+    throw new Error("Cannot revoke your own admin permissions");
+  }
+
+  if (action === "add") {
+    await prisma.userRole.upsert({
+      where: {
+        userId_roleId: {
+          userId: targetUserId,
+          roleId,
+        },
+      },
+      create: {
+        userId: targetUserId,
+        roleId,
+      },
+      update: {},
+    });
+  } else {
+    try {
+      await prisma.userRole.delete({
+        where: {
+          userId_roleId: {
+            userId: targetUserId,
+            roleId,
+          },
+        },
+      });
+    } catch (e) {
+      // Ignore if record already doesn't exist
+    }
+  }
+
+  revalidatePath(`/${lang}/app/users`);
+  return { success: true };
+}
+

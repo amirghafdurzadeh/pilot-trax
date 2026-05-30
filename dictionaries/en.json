@@ -299,6 +299,7 @@
       "questions": "Questions",
       "excel": "Excel I/O",
       "quizzes": "Quizzes",
+      "users": "Users",
       "brand": {
         "title": "Pilot Trax",
         "alt": "Pilot Trax"
@@ -450,6 +451,24 @@
         },
         "quiz_public_label": "Public Quiz",
         "quiz_public_description": "Display the quiz in the public list."
+      },
+      "users": {
+        "title": "User Management",
+        "search_placeholder": "Search by name or phone...",
+        "phone": "Phone",
+        "name": "Name",
+        "roles": "Roles",
+        "actions": "Actions",
+        "admin": "Admin",
+        "premium": "Premium",
+        "basic": "Basic",
+        "make_admin": "Make Admin",
+        "revoke_admin": "Revoke Admin",
+        "make_premium": "Make Premium",
+        "revoke_premium": "Revoke Premium",
+        "role_updated": "User role updated successfully.",
+        "failed_to_update": "Failed to update user role.",
+        "cannot_revoke_self": "You cannot revoke your own admin role."
       },
       "rich_text_toolbar": {
         "bold": "Bold (Ctrl+B)",

@@ -5,6 +5,7 @@ import {
   HelpCircleIcon,
   HomeIcon,
   ClipboardCheck,
+  UsersIcon,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -30,47 +31,69 @@ import { ThemeSwitcher } from "./theme-switcher";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>;
 
-const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"]) => [
-  {
-    title: dict.dashboard,
-    href: `/${lang}/app`,
-    icon: HomeIcon,
-  },
-  {
-    title: dict.courses,
-    href: `/${lang}/app/courses`,
-    icon: BookOpenIcon,
-  },
-  {
-    title: dict.questions,
-    href: `/${lang}/app/questions`,
-    icon: HelpCircleIcon,
-  },
-  {
-    title: dict.excel,
-    href: `/${lang}/app/excel`,
-    icon: FileSpreadsheet,
-  },
-  {
+const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "admin" | "premium" | null) => {
+  const items = [
+    {
+      title: dict.dashboard,
+      href: `/${lang}/app`,
+      icon: HomeIcon,
+    },
+  ];
+
+  if (role === "admin") {
+    items.push(
+      {
+        title: dict.courses,
+        href: `/${lang}/app/courses`,
+        icon: BookOpenIcon,
+      },
+      {
+        title: dict.questions,
+        href: `/${lang}/app/questions`,
+        icon: HelpCircleIcon,
+      },
+      {
+        title: dict.excel,
+        href: `/${lang}/app/excel`,
+        icon: FileSpreadsheet,
+      }
+    );
+  }
+
+  items.push({
     title: dict.quizzes,
     href: `/${lang}/app/quizzes`,
     icon: ClipboardCheck,
-  },
-];
+  });
+
+  if (role === "admin") {
+    items.push({
+      title: (dict as any).users || "Users",
+      href: `/${lang}/app/users`,
+      icon: UsersIcon,
+    });
+  }
+
+  return items;
+};
+
 
 export function AppSidebar({
   lang,
   dict,
   session,
+  role,
 }: {
   lang: string;
   dict: Dict;
   session: User;
+  role: "admin" | "premium" | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
-  const sidebarItems = getSidebarItems(lang, dict.app.sidebar);
+  const sidebarItems = getSidebarItems(lang, dict.app.sidebar, role);
+
 
   const handleClick = useCallback(
     (href: string) => {

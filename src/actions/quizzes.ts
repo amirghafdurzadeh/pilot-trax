@@ -2,8 +2,9 @@
 
 import { QuizSelectionMode } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
-import { readSession } from "@/lib/session";
+import { readSession, getUserRole } from "@/lib/session";
 import { revalidatePath } from "next/cache";
+
 
 export type QuizLessonInput = {
   id: string; // for dnd
@@ -110,6 +111,12 @@ export async function saveQuiz(quiz: QuizInput, lang: string) {
   if (!user) {
     throw new Error("User not authenticated");
   }
+
+  const role = await getUserRole(user.id);
+  if (quiz.isPublic && role !== "admin") {
+    throw new Error("Only admin users can define public quizzes");
+  }
+
 
   const { id, lessons, ...data } = quiz;
 

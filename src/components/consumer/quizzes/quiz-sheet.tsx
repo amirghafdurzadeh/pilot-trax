@@ -44,6 +44,7 @@ export function QuizSheet({
   lessons,
   lang,
   dict,
+  isAdmin,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -54,6 +55,7 @@ export function QuizSheet({
   lessons: LessonOption[];
   lang: Locale;
   dict: Dictionary["app"];
+  isAdmin?: boolean;
 }) {
   const [editingQuiz, setEditingQuiz] = useState<QuizInput | null>(quiz);
   const quizzesDict = dict.admin.quizzes;
@@ -274,24 +276,26 @@ export function QuizSheet({
                   </Select>
                 </div>
 
-                <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-md border p-3 has-aria-checked:border-blue-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-blue-900 dark:has-aria-checked:bg-blue-950 cursor-pointer">
-                  <Checkbox
-                    id="isPublic"
-                    checked={editingQuiz.isPublic}
-                    onCheckedChange={(checked) =>
-                      setEditingQuiz({ ...editingQuiz, isPublic: !!checked })
-                    }
-                    className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
-                  />
-                  <div className="grid gap-1.5 font-normal">
-                    <p className="text-sm leading-none font-medium">
-                      {quizzesDict.quiz_public_label}
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      {quizzesDict.quiz_public_description}
-                    </p>
-                  </div>
-                </Label>
+                {isAdmin && (
+                  <Label className="hover:bg-accent/50 flex items-start gap-3 rounded-md border p-3 has-aria-checked:border-blue-600 has-aria-checked:bg-blue-50 dark:has-aria-checked:border-blue-900 dark:has-aria-checked:bg-blue-950 cursor-pointer">
+                    <Checkbox
+                      id="isPublic"
+                      checked={editingQuiz.isPublic}
+                      onCheckedChange={(checked) =>
+                        setEditingQuiz({ ...editingQuiz, isPublic: !!checked })
+                      }
+                      className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                    />
+                    <div className="grid gap-1.5 font-normal">
+                      <p className="text-sm leading-none font-medium">
+                        {quizzesDict.quiz_public_label}
+                      </p>
+                      <p className="text-muted-foreground text-sm">
+                        {quizzesDict.quiz_public_description}
+                      </p>
+                    </div>
+                  </Label>
+                )}
 
                 <Separator />
 
