@@ -101,10 +101,13 @@ export function AirplaneSection() {
   }, [airplane]);
 
   return (
-    <div ref={containerRef} className="fixed inset-0 w-full h-full pointer-events-none opacity-0">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full h-full pointer-events-none opacity-0"
+    >
       <Canvas
         camera={{ position: [0, 0, 0], fov: 50 }}
-        className="pointer-events-none"
+        style={{ pointerEvents: "none" }}
       >
         <ambientLight intensity={1.5} />
 
