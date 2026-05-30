@@ -1,7 +1,6 @@
 "use client";
 import {
   BookOpenIcon,
-  FileSpreadsheet,
   HelpCircleIcon,
   HomeIcon,
   ClipboardCheck,
@@ -51,11 +50,6 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "syst
         title: dict.questions,
         href: `/${lang}/app/questions`,
         icon: HelpCircleIcon,
-      },
-      {
-        title: dict.excel,
-        href: `/${lang}/app/excel`,
-        icon: FileSpreadsheet,
       }
     );
   }

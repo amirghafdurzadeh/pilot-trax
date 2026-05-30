@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import prisma from "@/lib/prisma";
+import * as XLSX from "xlsx";
 
 export type AnswerInput = {
   id: string;
@@ -284,5 +285,110 @@ export async function deleteQuestion(lang: Locale, id: string) {
   } catch (error) {
     console.error("Delete question failed", error);
     return { success: false, error: dictionary.e_db_error };
+  }
+}
+
+export async function importQuestionsFromExcel(lang: Locale, formData: FormData) {
+  const dictionary = await getDictionary(lang);
+  const questionsDict = dictionary.app.admin.questions;
+  const file = formData.get("file") as File;
+
+  if (!file) {
+    return { success: false, error: questionsDict.no_file_selected_error };
+  }
+
+  const fileName = file.name;
+  const parts = fileName.split(".");
+  if (parts.length < 3) {
+    return { success: false, error: questionsDict.invalid_filename_error };
+  }
+
+  const courseTitle = parts[0];
+  const lessonTitle = parts[1].replace(/_/g, " ");
+
+  try {
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+
+    await prisma.$transaction(async (tx) => {
+      const course = await tx.course.findFirst({
+        where: { title: { equals: courseTitle, mode: "insensitive" } },
+      });
+
+      if (!course) {
+        throw new Error(questionsDict.course_not_found_error.replace("{course}", courseTitle));
+      }
+
+      const lesson = await tx.lesson.findFirst({
+        where: {
+          title: { equals: lessonTitle, mode: "insensitive" },
+          courseId: course.id,
+        },
+      });
+
+      if (!lesson) {
+        throw new Error(
+          questionsDict.lesson_not_found_error
+            .replace("{lesson}", lessonTitle)
+            .replace("{course}", courseTitle)
+        );
+      }
+
+      for (const row of rows) {
+        if (!row || row.length < 2) continue;
+
+        const firstCol = String(row[0] || "");
+        if (!firstCol.trim()) continue;
+
+        // Column 1: index and title (e.g., "1- Where can you find...")
+        const dashIndex = firstCol.indexOf("-");
+        let qIndex: number | null = null;
+        let qTitle = firstCol;
+
+        if (dashIndex !== -1) {
+          const indexPart = firstCol.substring(0, dashIndex).trim();
+          if (!isNaN(Number(indexPart))) {
+            qIndex = Number(indexPart);
+            qTitle = firstCol.substring(dashIndex + 1).trim();
+          }
+        }
+
+        // Answers are column 2 to 5 (index 1 to 4)
+        const answers = [];
+        for (let i = 1; i <= 4; i++) {
+          const answerText = String(row[i] || "").trim();
+          if (answerText) {
+            answers.push({
+              title: answerText,
+              isCorrect: answers.length === 0, // First answer is always correct
+              order: answers.length,
+            });
+          }
+        }
+
+        if (answers.length < 2) continue;
+
+        await tx.question.create({
+          data: {
+            title: qTitle,
+            description: "",
+            index: qIndex,
+            lessonId: lesson.id,
+            answers: {
+              create: answers,
+            },
+          },
+        });
+      }
+    });
+
+    revalidatePath("/app/questions");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Excel import failed", error);
+    return { success: false, error: error.message || dictionary.e_db_error };
   }
 }

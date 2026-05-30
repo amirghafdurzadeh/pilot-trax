@@ -136,7 +136,7 @@
             "Basic performance reporting",
             "Regular priority support"
           ],
-          "price": "$49,000",
+          "price": "9,000",
           "priceLabel": "per month",
           "buttonText": "Buy Standard"
         },
@@ -149,7 +149,7 @@
             "Offline courses and notes for download",
             "Priority support and dedicated guidance"
           ],
-          "price": "$199,000",
+          "price": "99,000",
           "priceLabel": "per month",
           "buttonText": "Coming soon"
         }
@@ -411,7 +411,14 @@
         "one_answer_required_toast": "At least one answer is required",
         "one_correct_answer_required_toast": "At least one correct answer is required",
         "save_success_toast": "Question saved successfully",
-        "save_error_toast": "Error saving question: "
+        "save_error_toast": "Error saving question: ",
+        "import_excel_button": "Import Excel",
+        "import_success_toast": "Excel file imported successfully",
+        "import_error_toast": "Error importing Excel: ",
+        "invalid_filename_error": "Invalid filename format. Expected COURSE.LESSON.xlsx",
+        "course_not_found_error": "Course '{course}' not found",
+        "lesson_not_found_error": "Lesson '{lesson}' not found in course '{course}'",
+        "no_file_selected_error": "No file selected"
       },
       "quizzes": {
         "edit_quiz_sheet_title": "Edit Quiz",

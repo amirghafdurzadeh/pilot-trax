@@ -412,7 +412,14 @@
         "one_answer_required_toast": "حداقل یک پاسخ الزامی است",
         "one_correct_answer_required_toast": "حداقل یک پاسخ صحیح الزامی است",
         "save_success_toast": "سوال با موفقیت ذخیره شد",
-        "save_error_toast": "خطا در ذخیره سازی: "
+        "save_error_toast": "خطا در ذخیره سازی: ",
+        "import_excel_button": "ورود از اکسل",
+        "import_success_toast": "فایل اکسل با موفقیت وارد شد",
+        "import_error_toast": "خطا در ورود اکسل: ",
+        "invalid_filename_error": "فرمت نام فایل نامعتبر است. انتظار می‌رود COURSE.LESSON.xlsx باشد",
+        "course_not_found_error": "دوره '{course}' یافت نشد",
+        "lesson_not_found_error": "درس '{lesson}' در دوره '{course}' یافت نشد",
+        "no_file_selected_error": "فایلی انتخاب نشده است"
       },
       "quizzes": {
         "edit_quiz_sheet_title": "ویرایش آزمون",

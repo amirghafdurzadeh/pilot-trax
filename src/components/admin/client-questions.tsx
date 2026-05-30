@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
 import { DeleteQuestionDialog } from "./questions/delete-question-dialog";
+import { ExcelImportButton } from "./questions/excel-import-button";
 import { QuestionCard } from "./questions/question-card";
 import { QuestionFilters } from "./questions/question-filters";
 import { QuestionSheet } from "./questions/question-sheet";
@@ -250,6 +251,11 @@ export default function QuestionsPageClient({
             <PlusIcon className="w-4 h-4" />
             {questionsDict.add_question_button}
           </Button>
+          <ExcelImportButton
+            lang={lang}
+            dict={questionsDict}
+            onSuccess={reloadQuestions}
+          />
           <QuestionFilters
             courses={courses}
             lessons={filteredLessons}
