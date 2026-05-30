@@ -359,8 +359,11 @@ export async function importQuestionsFromExcel(lang: Locale, formData: FormData)
         // Answers are column 2 to 5 (index 1 to 4)
         const answers = [];
         for (let i = 1; i <= 4; i++) {
-          const answerText = String(row[i] || "").trim();
+          let answerText = String(row[i] || "").trim();
           if (answerText) {
+            // Remove prefix like "A) ", "B) ", etc.
+            answerText = answerText.replace(/^[A-D]\)\s*/i, "");
+
             answers.push({
               title: answerText,
               isCorrect: answers.length === 0, // First answer is always correct
