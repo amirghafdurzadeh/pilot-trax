@@ -418,7 +418,14 @@
         "invalid_filename_error": "Invalid filename format. Expected COURSE.LESSON.xlsx",
         "course_not_found_error": "Course '{course}' not found",
         "lesson_not_found_error": "Lesson '{lesson}' not found in course '{course}'",
-        "no_file_selected_error": "No file selected"
+        "no_file_selected_error": "No file selected",
+        "pagination": {
+          "previous": "Previous",
+          "next": "Next",
+          "page": "Page",
+          "of": "of",
+          "per_page": "per page"
+        }
       },
       "quizzes": {
         "edit_quiz_sheet_title": "Edit Quiz",

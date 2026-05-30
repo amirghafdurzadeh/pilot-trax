@@ -7,7 +7,7 @@ export default async function Page(props: PageProps<"/[lang]/app/questions">) {
   const lang = (await props.params).lang;
   const dict = await getDictionary(lang);
   const [questionsResult, lessons, courses] = await Promise.all([
-    getQuestions({}),
+    getQuestions({ limit: 10 }),
     getLessonsForFilter(),
     getCourseOptions(),
   ]);
@@ -15,7 +15,7 @@ export default async function Page(props: PageProps<"/[lang]/app/questions">) {
   return (
     <QuestionsPageClient
       initialQuestions={questionsResult.questions}
-      initialNextCursor={questionsResult.nextCursor}
+      initialTotalPages={questionsResult.totalPages}
       initialLessons={lessons}
       initialCourses={courses}
       lang={lang}

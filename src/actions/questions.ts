@@ -88,16 +88,18 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
 }
 
 export async function getQuestions(params: {
-  cursor?: string;
+  page?: number;
   limit?: number;
   lessonId?: string;
   courseId?: string;
   search?: string;
 }): Promise<{
   questions: QuestionWithDetails[];
-  nextCursor: string | null;
+  totalPages: number;
+  totalCount: number;
 }> {
-  const { cursor, limit = 20, lessonId, courseId, search } = params;
+  const { page = 1, limit = 10, lessonId, courseId, search } = params;
+  const skip = (page - 1) * limit;
 
   try {
     const where: any = {};
@@ -117,33 +119,29 @@ export async function getQuestions(params: {
       };
     }
 
-    const questions = await prisma.question.findMany({
-      where,
-      take: limit + 1,
-      ...(cursor && {
-        skip: 1,
-        cursor: { id: cursor },
-      }),
-      orderBy: [{ index: "asc" }, { createdAt: "desc" }],
-      include: {
-        answers: {
-          orderBy: { order: "asc" },
-        },
-        lesson: {
-          include: {
-            course: {
-              select: { title: true },
+    const [questions, totalCount] = await Promise.all([
+      prisma.question.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy: [{ index: "asc" }, { createdAt: "desc" }],
+        include: {
+          answers: {
+            orderBy: { order: "asc" },
+          },
+          lesson: {
+            include: {
+              course: {
+                select: { title: true },
+              },
             },
           },
         },
-      },
-    });
+      }),
+      prisma.question.count({ where }),
+    ]);
 
-    let nextCursor: string | null = null;
-    if (questions.length > limit) {
-      const nextItem = questions.pop();
-      nextCursor = nextItem!.id;
-    }
+    const totalPages = Math.ceil(totalCount / limit);
 
     const formattedQuestions: QuestionWithDetails[] = questions.map(
       (q: any) => ({
@@ -166,11 +164,12 @@ export async function getQuestions(params: {
 
     return {
       questions: formattedQuestions,
-      nextCursor,
+      totalPages,
+      totalCount,
     };
   } catch (error) {
     console.error("Failed to get questions", error);
-    return { questions: [], nextCursor: null };
+    return { questions: [], totalPages: 0, totalCount: 0 };
   }
 }
 

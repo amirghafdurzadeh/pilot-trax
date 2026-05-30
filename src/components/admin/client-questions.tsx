@@ -2,7 +2,6 @@
 
 import { PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 
 import { type CourseOption } from "@/actions/courses";
@@ -17,6 +16,7 @@ import {
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { AppSearch } from "@/components/core/app-search";
+import { AppPagination } from "@/components/core/app-pagination";
 import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
@@ -31,21 +31,23 @@ type AppDict = Awaited<ReturnType<typeof getDictionary>>["app"];
 
 export default function QuestionsPageClient({
   initialQuestions,
-  initialNextCursor,
+  initialTotalPages,
   initialLessons,
   initialCourses,
   lang,
   dict,
 }: {
   initialQuestions: QuestionWithDetails[];
-  initialNextCursor: string | null;
+  initialTotalPages: number;
   initialLessons: LessonOption[];
   initialCourses: CourseOption[];
   lang: Locale;
   dict: AppDict;
 }) {
   const [questions, setQuestions] = useState(initialQuestions);
-  const [nextCursor, setNextCursor] = useState(initialNextCursor);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [lessons] = useState(initialLessons);
   const [courses] = useState(initialCourses);
@@ -64,8 +66,6 @@ export default function QuestionsPageClient({
 
   const [questionToDelete, setQuestionToDelete] = useState<string | null>(null);
 
-  const { ref: loadMoreRef, inView } = useInView();
-
   const filteredLessons = useMemo(() => {
     if (!selectedCourseId) {
       return lessons;
@@ -83,62 +83,20 @@ export default function QuestionsPageClient({
   const reloadQuestions = useCallback(async () => {
     setIsLoading(true);
     const result = await getQuestions({
+      page: currentPage,
+      limit: pageSize,
       courseId: selectedCourseId || undefined,
       lessonId: selectedLessonId || undefined,
       search: debouncedSearch || undefined,
     });
     setQuestions(result.questions);
-    setNextCursor(result.nextCursor);
+    setTotalPages(result.totalPages);
     setIsLoading(false);
-  }, [selectedCourseId, selectedLessonId, debouncedSearch]);
-
+  }, [currentPage, pageSize, selectedCourseId, selectedLessonId, debouncedSearch]);
 
   useEffect(() => {
-    if (debouncedSearch || selectedLessonId || selectedCourseId) {
-      reloadQuestions();
-    } else if (
-      debouncedSearch === "" &&
-      selectedLessonId === "" &&
-      selectedCourseId === ""
-    ) {
-      setQuestions(initialQuestions);
-      setNextCursor(initialNextCursor);
-    }
-  }, [
-    debouncedSearch,
-    selectedLessonId,
-    selectedCourseId,
-    initialQuestions,
-    initialNextCursor,
-    reloadQuestions
-  ]);
-
-  const loadMore = useCallback(async () => {
-    if (!nextCursor || isLoading) return;
-
-    setIsLoading(true);
-    const result = await getQuestions({
-      cursor: nextCursor,
-      courseId: selectedCourseId || undefined,
-      lessonId: selectedLessonId || undefined,
-      search: debouncedSearch || undefined,
-    });
-    setQuestions((prev) => [...prev, ...result.questions]);
-    setNextCursor(result.nextCursor);
-    setIsLoading(false);
-  }, [
-    nextCursor,
-    isLoading,
-    selectedCourseId,
-    selectedLessonId,
-    debouncedSearch,
-  ]);
-
-  useEffect(() => {
-    if (inView) {
-      loadMore();
-    }
-  }, [inView, loadMore]);
+    reloadQuestions();
+  }, [reloadQuestions]);
 
   const handleAddNew = () => {
     setEditingQuestion({
@@ -175,7 +133,7 @@ export default function QuestionsPageClient({
     if (questionToDelete) {
       const result = await deleteQuestion(lang, questionToDelete);
       if (result.success) {
-        setQuestions((prev) => prev.filter((q) => q.id !== questionToDelete));
+        reloadQuestions();
         toast.success(questionsDict.delete_success_toast);
       } else {
         toast.error(questionsDict.delete_error_toast);
@@ -222,12 +180,19 @@ export default function QuestionsPageClient({
   const handleCourseChange = (courseId: string) => {
     setSelectedCourseId(courseId);
     setSelectedLessonId("");
+    setCurrentPage(1);
+  };
+
+  const handleLessonChange = (lessonId: string) => {
+    setSelectedLessonId(lessonId);
+    setCurrentPage(1);
   };
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCourseId("");
     setSelectedLessonId("");
+    setCurrentPage(1);
   };
 
   const hasActiveFilters =
@@ -239,53 +204,72 @@ export default function QuestionsPageClient({
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder={questionsDict.search_placeholder}
           />
         </div>
       </AppHeader>
 
       <AppContent>
-        <div className="w-full flex flex-col md:flex-row gap-2">
-          <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
-            <PlusIcon className="w-4 h-4" />
-            {questionsDict.add_question_button}
-          </Button>
-          <ExcelImportButton
-            lang={lang}
-            dict={questionsDict}
-            onSuccess={reloadQuestions}
-          />
-          <QuestionFilters
-            courses={courses}
-            lessons={filteredLessons}
-            selectedCourseId={selectedCourseId}
-            onCourseChange={handleCourseChange}
-            selectedLessonId={selectedLessonId}
-            onLessonChange={setSelectedLessonId}
-            hasActiveFilters={hasActiveFilters}
-            onClearFilters={clearFilters}
-            dict={questionsDict}
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {questions.map((question) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              onEdit={() => handleEdit(question)}
-              onDelete={() => handleDelete(question.id)}
+        <div className="w-full flex flex-col xl:flex-row gap-2 items-center justify-between mb-4">
+          <div className="flex flex-col md:flex-row gap-2 w-full xl:w-fit items-center">
+            <Button onClick={handleAddNew} className="w-full md:w-fit gap-2">
+              <PlusIcon className="w-4 h-4" />
+              {questionsDict.add_question_button}
+            </Button>
+            <ExcelImportButton
+              lang={lang}
+              dict={questionsDict}
+              onSuccess={reloadQuestions}
+            />
+            <QuestionFilters
+              courses={courses}
+              lessons={filteredLessons}
+              selectedCourseId={selectedCourseId}
+              onCourseChange={handleCourseChange}
+              selectedLessonId={selectedLessonId}
+              onLessonChange={handleLessonChange}
+              hasActiveFilters={hasActiveFilters}
+              onClearFilters={clearFilters}
               dict={questionsDict}
             />
-          ))}
+          </div>
 
-          {isLoading && (
+          <AppPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={(val) => {
+              setPageSize(val);
+              setCurrentPage(1);
+            }}
+            isLoading={isLoading}
+            dict={questionsDict.pagination}
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {isLoading ? (
             <>
               <QuestionSkeleton />
               <QuestionSkeleton />
               <QuestionSkeleton />
               <QuestionSkeleton />
             </>
+          ) : (
+            questions.map((question) => (
+              <QuestionCard
+                key={question.id}
+                question={question}
+                onEdit={() => handleEdit(question)}
+                onDelete={() => handleDelete(question.id)}
+                dict={questionsDict}
+              />
+            ))
           )}
         </div>
 
@@ -299,8 +283,6 @@ export default function QuestionsPageClient({
             )}
           </div>
         )}
-
-        {nextCursor && !isLoading && <div ref={loadMoreRef} className="h-10" />}
       </AppContent>
 
       <QuestionSheet
