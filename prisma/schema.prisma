@@ -93,7 +93,7 @@ model Lesson {
   courseId    String       @map("course_id")
   course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   parentId    String?      @map("parent_id")
-  parent      Lesson?      @relation("LessonToChildren", fields: [parentId], references: [id])
+  parent      Lesson?      @relation("LessonToChildren", fields: [parentId], references: [id], onDelete: Cascade)
   children    Lesson[]     @relation("LessonToChildren")
   questions   Question[]
   quizLessons QuizLesson[]
@@ -110,7 +110,7 @@ model Question {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   lessonId             String                @map("lesson_id")
-  lesson               Lesson                @relation(fields: [lessonId], references: [id])
+  lesson               Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   answers              Answer[]
   quizAttemptQuestions QuizAttemptQuestion[]
 
@@ -156,7 +156,7 @@ model QuizLesson {
   quizId              String                   @map("quiz_id")
   quiz                Quiz                     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   lessonId            String                   @map("lesson_id")
-  lesson              Lesson                   @relation(fields: [lessonId], references: [id])
+  lesson              Lesson                   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   questionsStartIndex Int?                     @map("questions_start_index")
   questionsCount      Int?                     @map("questions_count")
   selectionMode       QuizLessonSelectionMode? @map("selection_mode")
