@@ -13,7 +13,7 @@ export default async function AdminLayout({ children, params }: Props) {
   const session = await authentication(lang);
   const role = await getUserRole(session.id);
 
-  if (role !== "admin") {
+  if (role !== "admin" && role !== "system_user") {
     redirect(`/${lang}/app`);
   }
 

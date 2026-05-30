@@ -31,7 +31,7 @@ import { ThemeSwitcher } from "./theme-switcher";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>;
 
-const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "admin" | "premium" | null) => {
+const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "system_user" | "admin" | "premium" | null) => {
   const items = [
     {
       title: dict.dashboard,
@@ -40,7 +40,7 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "admi
     },
   ];
 
-  if (role === "admin") {
+  if (role === "admin" || role === "system_user") {
     items.push(
       {
         title: dict.courses,
@@ -66,7 +66,7 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "admi
     icon: ClipboardCheck,
   });
 
-  if (role === "admin") {
+  if (role === "admin" || role === "system_user") {
     items.push({
       title: (dict as any).users || "Users",
       href: `/${lang}/app/users`,
@@ -87,7 +87,7 @@ export function AppSidebar({
   lang: string;
   dict: Dict;
   session: User;
-  role: "admin" | "premium" | null;
+  role: "system_user" | "admin" | "premium" | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();

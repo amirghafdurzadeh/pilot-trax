@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldCheck, ShieldAlert, Sparkles, Award, Search, User } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Sparkles, Award, Search, User, Crown } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -28,11 +28,14 @@ export default function UsersPageClient({
   initialUsers,
   lang,
   dict,
+  currentRole,
 }: {
   initialUsers: UserItem[];
   lang: Locale;
   dict: AppDict;
+  currentRole: "system_user" | "admin" | "premium" | null;
 }) {
+  const isSystemUser = currentRole === "system_user";
   const [users, setUsers] = useState<UserItem[]>(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -51,9 +54,11 @@ export default function UsersPageClient({
     revoke_admin: lang === "fa" ? "لغو مدیریت" : "Revoke Admin",
     make_premium: lang === "fa" ? "ارتقا به ویژه" : "Make Premium",
     revoke_premium: lang === "fa" ? "لغو ویژه" : "Revoke Premium",
+    system_user: lang === "fa" ? "مدیر سیستم" : "System User",
     role_updated: lang === "fa" ? "نقش کاربر با موفقیت بروزرسانی شد" : "User role updated successfully",
     failed_to_update: lang === "fa" ? "بروزرسانی نقش کاربر ناموفق بود" : "Failed to update user role",
     cannot_revoke_self: lang === "fa" ? "شما نمی‌توانید نقش مدیریت خود را لغو کنید" : "You cannot revoke your own admin role",
+    only_system_user: lang === "fa" ? "فقط مدیر سیستم می‌تواند نقش مدیر را مدیریت کند" : "Only system user can manage admin roles",
   };
 
   const filteredUsers = users.filter(
@@ -137,9 +142,10 @@ export default function UsersPageClient({
                     </tr>
                   ) : (
                     filteredUsers.map((user) => {
+                      const isSystemUserRole = user.roles.includes("system_user");
                       const isAdminUser = user.roles.includes("admin");
                       const isPremiumUser = user.roles.includes("premium");
-                      const isBasicUser = !isAdminUser && !isPremiumUser;
+                      const isBasicUser = !isAdminUser && !isPremiumUser && !isSystemUserRole;
 
                       return (
                         <tr
@@ -163,6 +169,12 @@ export default function UsersPageClient({
                           </td>
                           <td className="p-4 align-middle">
                             <div className="flex flex-wrap gap-1.5">
+                              {isSystemUserRole && (
+                                <Badge className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 font-medium flex items-center gap-1">
+                                  <Crown className="w-3 h-3" />
+                                  {uDict.system_user}
+                                </Badge>
+                              )}
                               {isAdminUser && (
                                 <Badge className="bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20 font-medium flex items-center gap-1">
                                   <ShieldCheck className="w-3 h-3" />
@@ -184,45 +196,49 @@ export default function UsersPageClient({
                           </td>
                           <td className="p-4 align-middle text-right rtl:text-left">
                             <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                variant={isAdminUser ? "destructive" : "outline"}
-                                className="gap-1.5 transition-all text-xs h-8 cursor-pointer"
-                                onClick={() => handleToggleRole(user.id, "admin", isAdminUser)}
-                                disabled={isPending}
-                              >
-                                {isAdminUser ? (
-                                  <>
-                                    <ShieldAlert className="w-3.5 h-3.5" />
-                                    {uDict.revoke_admin}
-                                  </>
-                                ) : (
-                                  <>
-                                    <ShieldCheck className="w-3.5 h-3.5" />
-                                    {uDict.make_admin}
-                                  </>
-                                )}
-                              </Button>
+                              {isSystemUser && !isSystemUserRole && (
+                                <Button
+                                  size="sm"
+                                  variant={isAdminUser ? "destructive" : "outline"}
+                                  className="gap-1.5 transition-all text-xs h-8 cursor-pointer"
+                                  onClick={() => handleToggleRole(user.id, "admin", isAdminUser)}
+                                  disabled={isPending}
+                                >
+                                  {isAdminUser ? (
+                                    <>
+                                      <ShieldAlert className="w-3.5 h-3.5" />
+                                      {uDict.revoke_admin}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <ShieldCheck className="w-3.5 h-3.5" />
+                                      {uDict.make_admin}
+                                    </>
+                                  )}
+                                </Button>
+                              )}
 
-                              <Button
-                                size="sm"
-                                variant={isPremiumUser ? "destructive" : "outline"}
-                                className="gap-1.5 transition-all text-xs h-8 border-amber-500/30 hover:bg-amber-500/5 hover:text-amber-600 cursor-pointer"
-                                onClick={() => handleToggleRole(user.id, "premium", isPremiumUser)}
-                                disabled={isPending}
-                              >
-                                {isPremiumUser ? (
-                                  <>
-                                    <Award className="w-3.5 h-3.5" />
-                                    {uDict.revoke_premium}
-                                  </>
-                                ) : (
-                                  <>
-                                    <Sparkles className="w-3.5 h-3.5" />
-                                    {uDict.make_premium}
-                                  </>
-                                )}
-                              </Button>
+                              {!isSystemUserRole && (
+                                <Button
+                                  size="sm"
+                                  variant={isPremiumUser ? "destructive" : "outline"}
+                                  className="gap-1.5 transition-all text-xs h-8 border-amber-500/30 hover:bg-amber-500/5 hover:text-amber-600 cursor-pointer"
+                                  onClick={() => handleToggleRole(user.id, "premium", isPremiumUser)}
+                                  disabled={isPending}
+                                >
+                                  {isPremiumUser ? (
+                                    <>
+                                      <Award className="w-3.5 h-3.5" />
+                                      {uDict.revoke_premium}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Sparkles className="w-3.5 h-3.5" />
+                                      {uDict.make_premium}
+                                    </>
+                                  )}
+                                </Button>
+                              )}
                             </div>
                           </td>
                         </tr>

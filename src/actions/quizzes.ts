@@ -113,7 +113,7 @@ export async function saveQuiz(quiz: QuizInput, lang: string) {
   }
 
   const role = await getUserRole(user.id);
-  if (quiz.isPublic && role !== "admin") {
+  if (quiz.isPublic && role !== "admin" && role !== "system_user") {
     throw new Error("Only admin users can define public quizzes");
   }
 

@@ -116,7 +116,7 @@ export async function getAllUsersAction(query?: string) {
     throw new Error("Unauthorized");
   }
   const currentRole = await getUserRole(currentUser.id);
-  if (currentRole !== "admin") {
+  if (currentRole !== "admin" && currentRole !== "system_user") {
     throw new Error("Unauthorized");
   }
 
@@ -157,11 +157,16 @@ export async function updateUserRoleAction(
     throw new Error("Unauthorized");
   }
   const currentRole = await getUserRole(currentUser.id);
-  if (currentRole !== "admin") {
+  if (currentRole !== "admin" && currentRole !== "system_user") {
     throw new Error("Unauthorized");
   }
 
-  // Prevent users from revoking their own admin access to avoid lockout!
+  // Only system_user can manage admin roles
+  if (roleId === "admin" && currentRole !== "system_user") {
+    throw new Error("Only system user can manage admin roles");
+  }
+
+  // Prevent system_user from revoking their own system_user access
   if (currentUser.id === targetUserId && roleId === "admin" && action === "remove") {
     throw new Error("Cannot revoke your own admin permissions");
   }

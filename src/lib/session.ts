@@ -59,12 +59,13 @@ export async function deleteSession() {
   cookieStore.delete("session");
 }
 
-export async function getUserRole(userId: string): Promise<"admin" | "premium" | null> {
+export async function getUserRole(userId: string): Promise<"system_user" | "admin" | "premium" | null> {
   const userRoles = await prisma.userRole.findMany({
     where: { userId },
     select: { roleId: true },
   });
   const roleIds = userRoles.map((ur) => ur.roleId);
+  if (roleIds.includes("system_user")) return "system_user";
   if (roleIds.includes("admin")) return "admin";
   if (roleIds.includes("premium")) return "premium";
   return null;
