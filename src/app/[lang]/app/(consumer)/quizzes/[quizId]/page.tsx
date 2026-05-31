@@ -1,11 +1,7 @@
-import { getQuiz } from "@/actions/quizzes";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { getQuiz, getActiveQuizAttempt } from "@/actions/quizzes";
 import { getDictionary } from "@/lib/dictionaries";
+import { QuizSession } from "@/components/consumer/quizzes/quiz-session";
+import { Locale } from "@/lib/locales";
 
 export default async function Page(
   props: PageProps<"/[lang]/app/quizzes/[quizId]">
@@ -16,42 +12,28 @@ export default async function Page(
   };
   const dict = await getDictionary(lang as "fa" | "en");
   const quiz = await getQuiz(quizId);
+  const activeAttempt = await getActiveQuizAttempt(quizId);
 
   if (!quiz) {
-    return <div>{dict.app.quizzes.quiz_not_found}</div>;
+    return <div className="p-4">{dict.app.quizzes.quiz_not_found}</div>;
   }
+
+  // Pre-fill quiz fields on the mock attempt if no active attempt exists so the card can show metadata
+  const initialAttempt = activeAttempt ? activeAttempt : {
+    quiz: {
+      title: quiz.title,
+      duration: quiz.duration,
+      questionCount: quiz.questionCount,
+    }
+  };
 
   return (
     <div className="p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>{quiz.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            {dict.app.quizzes.duration}: {quiz.duration}{" "}
-            {dict.app.quizzes.minutes}
-          </p>
-          <p>
-            {dict.app.quizzes.questions}: {quiz.questionCount}
-          </p>
-          <p>
-            {dict.app.quizzes.selection_mode}: {quiz.selectionMode}
-          </p>
-          <p>
-            {dict.app.quizzes.public}:{" "}
-            {quiz.isPublic
-              ? dict.app.quizzes.public_yes
-              : dict.app.quizzes.public_no}
-          </p>
-          <h3 className="font-bold mt-4">{dict.app.quizzes.lessons_label}</h3>
-          <ul>
-            {quiz.lessons.map((lesson) => (
-              <li key={lesson.lessonId}>{lesson.lessonTitle}</li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+      <QuizSession
+        quizId={quizId}
+        lang={lang as Locale}
+        initialAttempt={initialAttempt}
+      />
     </div>
   );
 }

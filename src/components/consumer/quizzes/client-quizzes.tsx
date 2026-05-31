@@ -11,6 +11,8 @@ import {
   getQuiz,
   getQuizzes,
   saveQuiz,
+  getHardestQuestions,
+  saveQuestionInteraction,
   type QuizInput,
 } from "@/actions/quizzes";
 import { CourseCombobox } from "@/components/admin/course-combobox";
@@ -24,6 +26,8 @@ import { Locale } from "@/lib/locales";
 import { DeleteQuizDialog } from "./delete-quiz-dialog";
 import { QuizCard } from "./quiz-card";
 import { QuizSheet } from "./quiz-sheet";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShieldCheck, Check, X, AlertTriangle } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -56,6 +60,8 @@ export function ClientQuizzes({
   const [isSaving, setIsSaving] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [activeTab, setActiveTab] = useState("my");
+  const [hardestQuestions, setHardestQuestions] = useState<any[]>([]);
+  const [isLoadingHardest, setIsLoadingHardest] = useState(false);
 
   const myQuizzes = quizzes.filter((quiz) => quiz.creator?.id === userId);
   const publicQuizzes = quizzes.filter((quiz) => quiz.isPublic);
@@ -64,6 +70,28 @@ export function ClientQuizzes({
     getCourseOptions().then(setCourses);
     getLessonsForFilter().then(setLessons);
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "hardest") {
+      setIsLoadingHardest(true);
+      getHardestQuestions()
+        .then(setHardestQuestions)
+        .finally(() => setIsLoadingHardest(false));
+    }
+  }, [activeTab]);
+
+  const handleSaveInteraction = async (questionId: string, state: string) => {
+    setHardestQuestions((prev) =>
+      prev.map((q) => (q.id === questionId ? { ...q, interactionState: state } : q))
+    );
+    try {
+      await saveQuestionInteraction(questionId, state);
+      toast.success(lang === "fa" ? "ذخیره شد" : "Saved");
+    } catch (err) {
+      console.error(err);
+      toast.error(lang === "fa" ? "خطا در ذخیره وضعیت" : "Failed to save state");
+    }
+  };
 
   const getFilteredQuizzes = (quizzes: Quizzes) => {
     return quizzes
@@ -173,6 +201,9 @@ export function ClientQuizzes({
               <TabsTrigger value="public" className="flex-1">
                 {dict.app.quizzes.public_quizzes}
               </TabsTrigger>
+              <TabsTrigger value="hardest" className="flex-1">
+                {lang === "fa" ? "نقاط ضعف" : "Weaknesses"}
+              </TabsTrigger>
             </TabsList>
             {activeTab === "my" && (
               <Button onClick={handleAddQuiz} className="w-full md:w-fit gap-2">
@@ -201,6 +232,93 @@ export function ClientQuizzes({
           </div>
           <TabsContent value="my">{renderQuizzes(myQuizzes)}</TabsContent>
           <TabsContent value="public">{renderQuizzes(publicQuizzes)}</TabsContent>
+          <TabsContent value="hardest">
+            {isLoadingHardest ? (
+              <div className="flex justify-center items-center py-12">
+                <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></span>
+              </div>
+            ) : hardestQuestions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+                <p className="text-lg">
+                  {lang === "fa"
+                    ? "هنوز هیچ سوال دشواری ثبت نشده است."
+                    : "No hardest questions recorded yet."}
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                {hardestQuestions.map((q) => {
+                  const state = q.interactionState || null;
+                  return (
+                    <Card key={q.id} className="border border-border/40 shadow-sm flex flex-col bg-card hover:border-border transition-all">
+                      <CardHeader className="py-4 border-b border-border/10 flex flex-row items-center justify-between gap-3">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+                            {q.lesson?.course?.title} / {q.lesson?.title}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleSaveInteraction(q.id, "MASTERED")}
+                            className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                              state === "MASTERED"
+                                ? "bg-green-600 border-green-600 text-white shadow-sm"
+                                : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                            }`}
+                            title={lang === "fa" ? "تسلط کامل" : "Mastered"}
+                          >
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleSaveInteraction(q.id, "UNSURE")}
+                            className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                              state === "UNSURE"
+                                ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                                : "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                            }`}
+                            title={lang === "fa" ? "شک دارم" : "Unsure"}
+                          >
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleSaveInteraction(q.id, "CONFUSED")}
+                            className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                              state === "CONFUSED"
+                                ? "bg-red-600 border-red-600 text-white shadow-sm"
+                                : "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                            }`}
+                            title={lang === "fa" ? "نیاز به بررسی" : "Confused"}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-4 flex-1 space-y-4">
+                        <div className="font-semibold text-base leading-relaxed text-foreground select-none">
+                          {q.title}
+                        </div>
+                        {q.description && (
+                          <div className="p-3 bg-muted/40 rounded-lg text-xs text-muted-foreground border border-border/10 leading-relaxed">
+                            {q.description}
+                          </div>
+                        )}
+                        <div className="flex gap-4 text-xs font-medium text-muted-foreground pt-2">
+                          <span>
+                            {lang === "fa" ? "نادرست: " : "Incorrect: "}
+                            <strong className="text-red-500 font-mono">{q.incorrectCount}</strong>
+                          </span>
+                          <span>
+                            {lang === "fa" ? "کل پاسخ‌ها: " : "Total Attempts: "}
+                            <strong className="font-mono">{q.totalAttempts}</strong>
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
       </AppContent>
 

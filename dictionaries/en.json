@@ -474,6 +474,7 @@
         "roles": "Roles",
         "actions": "Actions",
         "admin": "Admin",
+        "system_user": "System User",
         "premium": "Premium",
         "basic": "Basic",
         "make_admin": "Make Admin",

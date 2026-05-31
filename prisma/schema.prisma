@@ -44,9 +44,10 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userRoles    UserRole[]
-  quizzes      Quiz[]
-  quizAttempts QuizAttempt[]
+  userRoles            UserRole[]
+  quizzes              Quiz[]
+  quizAttempts         QuizAttempt[]
+  questionInteractions QuestionInteraction[]
 
   @@index([phone])
   @@map("users")
@@ -113,6 +114,7 @@ model Question {
   lesson               Lesson                @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   answers              Answer[]
   quizAttemptQuestions QuizAttemptQuestion[]
+  questionInteractions QuestionInteraction[]
 
   @@map("questions")
 }
@@ -202,4 +204,16 @@ model QuizAttemptQuestion {
   question         Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@map("quiz_attempt_questions")
+}
+
+model QuestionInteraction {
+  userId     String              @map("user_id")
+  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId String              @map("question_id")
+  question   Question            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  state      String              // "MASTERED", "UNSURE", "CONFUSED"
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+
+  @@id([userId, questionId])
+  @@map("question_interactions")
 }
