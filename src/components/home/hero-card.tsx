@@ -22,8 +22,8 @@ type Props = {
 export function HeroCard({ dict }: Props) {
   return (
     <div className="order-first lg:order-last">
-      <div className="w-full aspect-4/3 bg-white dark:bg-neutral-800 rounded-3xl shadow-2xl shadow-blue-500/10 flex items-center justify-center p-6">
-        <Card className="w-full border-none shadow-none bg-transparent">
+      <div className="relative w-full aspect-4/3 bg-white dark:bg-neutral-800 rounded-3xl shadow-2xl shadow-blue-500/10 flex items-center justify-center p-6 overflow-hidden">
+        <Card className="w-full border-none shadow-none bg-transparent z-20">
           <CardHeader className="text-center p-0">
             <CardTitle className="font-extrabold text-2xl">
               {dict.title}
@@ -50,6 +50,17 @@ export function HeroCard({ dict }: Props) {
             </Badge>
           </CardContent>
         </Card>
+        <div className="absolute inset-0 z-10 bg-linear-to-t from-white/80 to-white/60 dark:from-neutral-950/92 dark:to-neutral-950/80" />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ borderRadius: "calc(1.5rem + 1px)" }}
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
       </div>
     </div>
   );
