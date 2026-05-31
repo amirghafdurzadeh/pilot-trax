@@ -3,19 +3,21 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Check, X, AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, Clock, ShieldCheck, HelpCircle } from "lucide-react";
+import { Check, X, AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, Clock, ShieldCheck, HelpCircle, Eye, History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { startQuizAttempt, getActiveQuizAttempt, submitQuizAnswer, finishQuizAttempt, saveQuestionInteraction } from "@/actions/quizzes";
+import { startQuizAttempt, submitQuizAnswer, finishQuizAttempt, saveQuestionInteraction } from "@/actions/quizzes";
 import { Locale } from "@/lib/locales";
 
 interface QuizSessionProps {
   quizId: string;
   lang: Locale;
   initialAttempt: any;
+  pastAttempts?: any[];
+  isPremium?: boolean;
 }
 
-export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) {
+export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], isPremium = false }: QuizSessionProps) {
   const router = useRouter();
   const [attempt, setAttempt] = useState<any>(initialAttempt);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -23,6 +25,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [interactions, setInteractions] = useState<{ [qId: string]: string }>({});
+  const [showDescriptions, setShowDescriptions] = useState<{ [qId: string]: boolean }>({});
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const isFa = lang === "fa";
@@ -52,6 +55,11 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     unansweredWarning: isFa ? "برخی از سوالات بی‌پاسخ هستند. آیا مطمئنید؟" : "Some questions are unanswered. Are you sure?",
     saving: isFa ? "در حال ثبت..." : "Saving...",
     quizCompleted: isFa ? "آزمون به پایان رسید" : "Quiz finished",
+    history: isFa ? "تاریخچه تلاش‌ها" : "Attempt History",
+    date: isFa ? "تاریخ" : "Date",
+    viewResult: isFa ? "مشاهده نتیجه" : "View Result",
+    showDescription: isFa ? "مشاهده توضیح" : "Show Description",
+    premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
   };
 
   // Start countdown if attempt is active
@@ -66,7 +74,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
         setRemainingTime(remaining);
 
         if (remaining <= 0) {
-          clearInterval(timerRef.current!);
+          if (timerRef.current) clearInterval(timerRef.current);
           handleAutoSubmit();
         }
       };
@@ -83,7 +91,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     // Load initial interactions if we are viewing results
     if (attempt && attempt.endedAt) {
       const initialInteractions: { [qId: string]: string } = {};
-      attempt.quizAttemptQuestions.forEach((aq: any) => {
+      attempt.quizAttemptQuestions?.forEach((aq: any) => {
         const userInter = aq.question.questionInteractions?.[0];
         if (userInter) {
           initialInteractions[aq.questionId] = userInter.state;
@@ -134,8 +142,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     if (!attempt) return;
     setIsSubmitting(true);
     try {
-      const finished = await finishQuizAttempt(attempt.id);
-      // Reload attempt to show results
+      await finishQuizAttempt(attempt.id);
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -158,9 +165,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     try {
       await finishQuizAttempt(attempt.id);
       toast.success(t.quizCompleted);
-      // Refresh to get results view
       router.refresh();
-      // Fetch latest finished state
       window.location.reload();
     } catch (err) {
       console.error(err);
@@ -171,7 +176,6 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
   };
 
   const handleSaveInteraction = async (questionId: string, state: string) => {
-    // Optimistically update local state
     setInteractions((prev) => ({ ...prev, [questionId]: state }));
     try {
       await saveQuestionInteraction(questionId, state);
@@ -182,7 +186,14 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     }
   };
 
-  // Format remaining time
+  const toggleDescription = (qId: string) => {
+    if (!isPremium) {
+      toast.info(t.premiumOnly);
+      return;
+    }
+    setShowDescriptions(prev => ({ ...prev, [qId]: !prev[qId] }));
+  };
+
   const formatTime = (ms: number) => {
     const totalSecs = Math.floor(ms / 1000);
     const mins = Math.floor(totalSecs / 60);
@@ -190,10 +201,48 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // If no attempt has been started yet
+  const renderHistory = () => {
+    if (pastAttempts.length === 0) return null;
+
+    return (
+      <div className="space-y-4 mt-8 pt-8 border-t border-border/20">
+        <h3 className="text-xl font-bold flex items-center gap-2">
+          <History className="w-5 h-5" />
+          {t.history}
+        </h3>
+        <div className="grid gap-3">
+          {pastAttempts.map((pa) => {
+            const paCorrect = pa.quizAttemptQuestions.filter((aq: any) => aq.selectedAnswer?.isCorrect).length;
+            const paTotal = pa.quizAttemptQuestions.length;
+            const paScore = Math.round((paCorrect / paTotal) * 100);
+            return (
+              <Card key={pa.id} className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => router.push(`?attemptId=${pa.id}`)}>
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{new Date(pa.startedAt).toLocaleString(isFa ? "fa-IR" : "en-US")}</span>
+                    <span className="text-xs text-muted-foreground">{paTotal} {isFa ? "سوال" : "questions"}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex flex-col items-end">
+                      <span className={`text-sm font-bold ${paScore >= 70 ? "text-green-600" : paScore >= 40 ? "text-yellow-600" : "text-red-600"}`}>{paScore}%</span>
+                      <span className="text-[10px] text-muted-foreground uppercase">{t.score}</span>
+                    </div>
+                    <Button variant="ghost" size="sm">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   if (!attempt || !attempt.id) {
     return (
-      <div className="max-w-2xl mx-auto py-8 px-4">
+      <div className="max-w-4xl mx-auto py-8 px-4 space-y-8">
         <Card className="border border-border/40 shadow-xl bg-card/60 backdrop-blur-md">
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
@@ -234,6 +283,8 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
             </Button>
           </CardFooter>
         </Card>
+
+        {renderHistory()}
       </div>
     );
   }
@@ -282,14 +333,25 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
                 {t.question} {currentQuestionIndex + 1}
               </span>
             </CardTitle>
+            {currentAq.question.description && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleDescription(currentAq.questionId)}
+                className="text-xs text-muted-foreground gap-1"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                {t.showDescription}
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
             <div className="text-xl font-semibold leading-relaxed text-foreground select-none">
               {currentAq.question.title}
             </div>
 
-            {currentAq.question.description && (
-              <div className="p-4 bg-muted/40 rounded-lg text-sm text-muted-foreground border border-border/10 leading-relaxed">
+            {showDescriptions[currentAq.questionId] && currentAq.question.description && (
+              <div className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
                 {currentAq.question.description}
               </div>
             )}
@@ -326,7 +388,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
                 onClick={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
                 disabled={currentQuestionIndex === 0}
               >
-                {lang === "fa" ? <ArrowRight className="w-4 h-4 me-2" /> : <ArrowLeft className="w-4 h-4 me-2" />}
+                {isFa ? <ArrowRight className="w-4 h-4 me-2" /> : <ArrowLeft className="w-4 h-4 me-2" />}
                 {t.previous}
               </Button>
               <Button
@@ -335,7 +397,7 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
                 disabled={currentQuestionIndex === totalQuestions - 1}
               >
                 {t.next}
-                {lang === "fa" ? <ArrowLeft className="w-4 h-4 ms-2" /> : <ArrowRight className="w-4 h-4 ms-2" />}
+                {isFa ? <ArrowLeft className="w-4 h-4 ms-2" /> : <ArrowRight className="w-4 h-4 ms-2" />}
               </Button>
             </div>
 
@@ -401,7 +463,6 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 space-y-6">
-      {/* Result score board */}
       <Card className="border border-border/40 shadow-2xl bg-card overflow-hidden">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 p-8 text-white text-center space-y-3 relative">
           <div className="absolute top-4 left-4">
@@ -460,10 +521,19 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
             <RotateCcw className="w-4 h-4 me-2" />
             {t.startNewAttempt}
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              router.push(`/${lang}/app/quizzes/${quizId}`);
+              setAttempt(null);
+            }}
+          >
+            <History className="w-4 h-4 me-2" />
+            {t.history}
+          </Button>
         </CardFooter>
       </Card>
 
-      {/* Review details */}
       <div className="space-y-4">
         <h3 className="text-xl font-bold text-foreground ps-1">
           {isFa ? "مرور سوالات و وضعیت تسلط" : "Questions Review & Mastery"}
@@ -479,9 +549,19 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
                   <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-lg text-sm font-semibold font-mono">
                     {t.question} {idx + 1}
                   </span>
+                  {aq.question.description && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleDescription(aq.questionId)}
+                      className="text-xs text-muted-foreground gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      {t.showDescription}
+                    </Button>
+                  )}
                 </div>
 
-                {/* Mastery status selector - Green, Yellow, Red buttons */}
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleSaveInteraction(aq.questionId, "MASTERED")}
@@ -524,13 +604,12 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
                   {aq.question.title}
                 </div>
 
-                {aq.question.description && (
-                  <div className="p-3 bg-muted/40 rounded-lg text-xs text-muted-foreground border border-border/10 leading-relaxed">
+                {showDescriptions[aq.questionId] && aq.question.description && (
+                  <div className="p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-xs text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
                     {aq.question.description}
                   </div>
                 )}
 
-                {/* Answers visualization */}
                 <div className="grid gap-2.5">
                   {aq.question.answers.map((answer: any) => {
                     const isSelected = aq.selectedAnswerId === answer.id;
@@ -573,6 +652,8 @@ export function QuizSession({ quizId, lang, initialAttempt }: QuizSessionProps) 
           );
         })}
       </div>
+
+      {renderHistory()}
     </div>
   );
 }

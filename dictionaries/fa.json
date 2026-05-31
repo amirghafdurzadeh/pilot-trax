@@ -1,5 +1,5 @@
 {
-  "test": "این یک متن است.",
+  "test": "این یک متن آزمایشی است.",
   "v_otp_login": {
     "phone_invalid": "شماره موبایل نامعتبر است.",
     "otp_invalid": "کد تایید نامعتبر است."
@@ -7,35 +7,35 @@
   "v_otp_send": {
     "phone_invalid": "شماره موبایل نامعتبر است."
   },
-  "e_login_failed": "ورود انجام نشد. لطفا اطلاعات خود را بررسی کرده و مجددا تلاش کنید.",
-  "e_something_went_wrong": "خطایی رخ داده است، لطفا در زمان دیگری مجددا تلاش نمایید.",
-  "e_course_id_missing": "شناسه دوره وجود ندارد.",
-  "e_db_error": "خطای پایگاه داده.",
-  "e_lesson_required": "انتخاب درس الزامی است.",
-  "e_title_required": "عنوان الزامی است.",
-  "e_at_least_one_answer": "حداقل یک پاسخ الزامی است.",
-  "e_at_least_one_correct_answer": "حداقل یک پاسخ صحیح الزامی است.",
+  "e_login_failed": "ورود ناموفق بود. لطفا اطلاعات خود را بررسی کرده و دوباره تلاش کنید.",
+  "e_something_went_wrong": "مشکلی پیش آمده است، لطفا بعدا دوباره تلاش کنید.",
+  "e_course_id_missing": "شناسه دوره یافت نشد",
+  "e_db_error": "خطای پایگاه داده",
+  "e_lesson_required": "انتخاب درس الزامی است",
+  "e_title_required": "عنوان الزامی است",
+  "e_at_least_one_answer": "حداقل یک پاسخ الزامی است",
+  "e_at_least_one_correct_answer": "حداقل یک پاسخ صحیح الزامی است",
   "home": {
     "header": {
       "brand": {
-        "title": "پایلوت ترکس",
-        "description": "منبع اصلی آماده‌سازی آزمون‌های خلبانی و هوانوردی",
-        "alt": "Pilot Trax - پایلوت ترکس"
+        "title": "پایلوت تراکس",
+        "description": "منبع اصلی آمادگی برای آزمون‌های خلبانی و هوانوردی",
+        "alt": "Pilot Trax"
       },
       "nav": {
         "features": "ویژگی‌ها",
-        "how_it_works": "روش کار",
+        "how_it_works": "نحوه کار",
         "plans": "پلن‌ها",
         "start_free": "شروع رایگان"
       }
     },
     "hero": {
-      "title_1": "آماده‌سازی آزمون‌های خلبانی با",
-      "title_2": "رویکردی هوشمندانه و هدفمند",
-      "description": "سوالات واقعی بوکلت‌ها را با <strong>توضیح دقیق</strong>، <strong> ارزیابی شخصی</strong> و <strong> برنامه‌ریزی مرور هوشمند </strong> تجربه کنید. همه‌چیز برای قبولی حتمی در آزمون‌های مدرسه و سازمان در یک پلتفرم.",
-      "cta1": "شروع رایگان",
-      "cta2": "مشاهده دموی محصول",
-      "subtitle": "مناسب برای خلبانان داخل کشور و مهاجر.",
+      "title_1": "آمادگی برای آزمون‌های خلبانی با",
+      "title_2": "رویکردی هوشمند و هدفمند",
+      "description": "تجربه سوالات واقعی بوکلت‌ها همراه با <strong>پاسخ تشریحی</strong>، <strong>ارزیابی شخصی</strong> و <strong>زمان‌بندی هوشمند مرور</strong>. هر آنچه برای موفقیت تضمینی در آزمون‌های آموزشگاه و سازمان نیاز دارید در یک پلتفرم.",
+      "cta1": "رایگان شروع کنید",
+      "cta2": "مشاهده دمو محصول",
+      "subtitle": "مناسب برای خلبانان داخلی و مهاجر.",
       "card": {
         "title": "شبیه‌ساز آزمون",
         "description": "محیطی با توضیح کامل هر سوال + سه سطح ارزیابی — برای یادگیری سریع‌تر و مرور هدفمند.",
@@ -51,12 +51,12 @@
       "description": "تجربه یادگیری بهتر با ابزارهای هوشمند و طراحی مدرن",
       "items": [
         {
-          "title": "توضیح سوال",
-          "text": "هر سوال با تحلیل کامل گزینه‌ها و دلایل درست/نادرست بودن آن‌ها همراه است."
+          "title": "پاسخ تشریحی سوالات",
+          "text": "هر سوال همراه با تحلیل کامل گزینه‌ها و دلایل درستی/نادرستی آن‌ها ارائه می‌شود."
         },
         {
           "title": "ارزیابی شخصی رنگی",
-          "text": "انتخاب سبز/زرد/قرمز باعث می‌شود سیستم سطح یادگیری شما را بشناسد."
+          "text": "انتخاب وضعیت سبز/زرد/قرمز به سیستم اجازه می‌دهد سطح یادگیری شما را تشخیص دهد."
         },
         {
           "title": "برنامه مرور هوشمند",
@@ -65,22 +65,22 @@
       ]
     },
     "howTo": {
-      "image_alt": "لوگوی کامل پایلوت ترکس",
-      "title": "پایلوت ترکس چگونه کار می‌کند؟ — سریع، هوشمند و هدفمند",
-      "description": "ترکیبی از سوالات واقعی، توضیحات تحلیلی و برنامه مرور شخصی‌سازی‌شده برای رسیدن به بیشترین بازدهی در کمترین زمان. هر مرحله طوری طراحی شده که یادگیری شما را سیستماتیک و قابل اندازه‌گیری کند.",
-      "cta1": "شروع رایگان",
+      "image_alt": "لوگوی کامل پایلوت تراکس",
+      "title": "پایلوت تراکس چگونه کار می‌کند؟ — سریع، هوشمند و هدفمند",
+      "description": "ترکیبی از سوالات واقعی، توضیحات تحلیلی و برنامه مرور اختصاصی برای دستیابی به حداکثر بازدهی در کوتاه‌ترین زمان. هر مرحله برای سیستمی کردن یادگیری و اندازه‌گیری پیشرفت شما طراحی شده است.",
+      "cta1": "رایگان شروع کنید",
       "cta2": "مشاهده پلن‌ها",
-      "quality_assurance": "تضمین کیفیت: بروزرسانی مستمر سوالات و پشتیبانی آموزشی برای بهبود نمره شما.",
-      "steps_title": "مراحل سریع و واضح",
-      "steps_description": "هر قدم همراه با نکات عملی و انتظارات زمانی تا رسیدن به هدف.",
+      "quality_assurance": "تضمین کیفیت: به‌روزرسانی مداوم سوالات و پشتیبانی آموزشی برای ارتقای نمره شما.",
+      "steps_title": "مراحل سریع و شفاف",
+      "steps_description": "هر مرحله با نکات کاربردی و انتظار زمانی برای رسیدن به هدف همراه است.",
       "highlights": [
         {
           "title": "سوالات واقعی",
-          "subtitle": "بوکلت‌های امتحانی"
+          "subtitle": "بوکلت‌های آزمون"
         },
         {
           "title": "تحلیل دقیق",
-          "subtitle": "دلایل درست/نادرست"
+          "subtitle": "دلایل درستی/نادرستی"
         },
         {
           "title": "مرور هوشمند",
@@ -90,23 +90,23 @@
       "steps": [
         {
           "title": "شبیه‌ساز با سوالات واقعی",
-          "duration": "۵–۱۵ دقیقه",
-          "description": "تست‌زدن در محیطی شبیه آزمون اصلی با توضیحات مرحله‌به‌مرحله برای هر گزینه تا فهم دقیق‌تر مفاهیم."
+          "duration": "۵ تا ۱۵ دقیقه",
+          "description": "در محیطی مشابه آزمون اصلی، تست بزنید و توضیحات مرحله‌به‌مرحله هر گزینه را برای درک دقیق‌تر مفاهیم مشاهده کنید."
         },
         {
-          "title": "ارزیابی رنگی شخصی",
-          "duration": "سبز/زرد/قرمز",
-          "description": "با تگ‌گذاری ساده، سیستم نقاط قوت و ضعف را شناسایی می‌کند و خروجی بصری برای تمرکز روی مباحث حساس ارائه می‌دهد."
+          "title": "ارزیابی شخصی‌سازی شده رنگی",
+          "duration": "سبز / زرد / قرمز",
+          "description": "با تگ‌گذاری ساده، سیستم نقاط قوت و ضعف را شناسایی کرده و خروجی بصری برای تمرکز روی مباحث حساس ارائه می‌دهد."
         },
         {
           "title": "برنامه مرور هوشمند",
-          "duration": "هفته‌ای با تمرکز پویا",
-          "description": "الگوریتم ما با توجه به ارزیابی شما، جلسات مرور اولویت‌بندی‌شده می‌سازد تا بیشترین پیشرفت در کوتاه‌ترین زمان حاصل شود."
+          "duration": "هفتگی با تمرکز پویا",
+          "description": "الگوریتم ما بر اساس ارزیابی‌های شما، جلسات مرور اولویت‌بندی شده ایجاد می‌کند تا بیشترین پیشرفت در کمترین زمان حاصل شود."
         },
         {
-          "title": "دنبال‌کردن پیشرفت و گزارش‌ها",
-          "duration": "آنالیز و پیشنهاد",
-          "description": "گزارش‌های تحلیلی، نمودار پیشرفت و پیشنهاد‌های عملی به شما نشان می‌دهند کجا بیشترین زمان را قرار دهید تا نتیجه قطعی حاصل شود."
+          "title": "پیگیری پیشرفت و گزارش‌ها",
+          "duration": "تحلیل و پیشنهاد",
+          "description": "گزارش‌های تحلیلی، نمودارهای پیشرفت و پیشنهادهای کاربردی به شما نشان می‌دهند کجا بیشترین زمان را بگذارید تا نتیجه قطعی بگیرید."
         }
       ]
     },
@@ -115,42 +115,42 @@
       "items": [
         {
           "title": "رایگان",
-          "description": "مناسب برای مبتدیان و کسانی که می‌خواهند با پلتفرم آشنا شوند. امکانات پایه برای ارزیابی اولیه و تست آشنایی.",
+          "description": "مناسب برای تازه‌کارها و کسانی که می‌خواهند با پلتفرم آشنا شوند. امکانات پایه برای ارزیابی اولیه و تست‌زنی مقدماتی.",
           "features": [
             "دسترسی محدود به سوالات منتخب",
-            "شبیه‌ساز تست (نسخه دمو)",
-            "مشاهده نمونه توضیحات برای چند سوال",
-            "پروفایل و ذخیره پیشرفت پایه"
+            "شبیه‌ساز آزمون (نسخه دمو)",
+            "مشاهده نمونه پاسخ تشریحی برای چند سوال",
+            "پروفایل کاربری و ذخیره پیشرفت پایه"
           ],
           "price": "رایگان",
           "priceLabel": "بدون هزینه",
-          "buttonText": "شروع رایگان"
+          "buttonText": "رایگان شروع کنید"
         },
         {
           "title": "استاندارد",
-          "description": "مناسب برای دانشجویانی که نیاز به دسترسی کامل به بانک سوال و مرور هوشمند دارند. تعادل قیمت و امکانات برای مطالعه جدی.",
+          "description": "مناسب برای دانشجویانی که نیاز به دسترسی کامل به بانک سوالات و مرور هوشمند دارند. تعادلی میان قیمت و امکانات برای مطالعه جدی.",
           "features": [
             "دسترسی کامل به بانک سوالات",
-            "توضیحات نامحدود برای سوالات",
+            "پاسخ‌های تشریحی نامحدود برای سوالات",
             "برنامه مرور هوشمند",
-            "گزارش‌گیری پایه از عملکرد",
-            "اولویت پشتیبانی معمولی"
+            "گزارش‌دهی پایه عملکرد",
+            "پشتیبانی اولویت‌دار معمولی"
           ],
-          "price": "۴۹,۰۰۰ تومان",
-          "priceLabel": "در ماه",
-          "buttonText": "خرید استاندارد"
+          "price": "۹,۰۰۰",
+          "priceLabel": "تومان / ماهانه",
+          "buttonText": "خرید پلن استاندارد"
         },
         {
           "title": "حرفه‌ای",
-          "description": "مناسب برای حرفه‌ای‌ها و مراکزی که نیاز به گزارش‌های پیشرفته، دوره‌های آفلاین و پشتیبانی اولویت‌دار دارند.",
+          "description": "مناسب برای متخصصان و مراکزی که نیاز به گزارش‌های پیشرفته، دوره‌های آفلاین و پشتیبانی ویژه دارند.",
           "features": [
-            "همه امکانات استاندارد + امکانات پیشرفته",
-            "گزارش‌گیری تحلیلی و خروجی گزارش",
-            "دوره‌ها و جزوات آفلاین برای دانلود",
-            "اولویت پشتیبانی و راهنمایی اختصاصی"
+            "تمامی امکانات استاندارد + قابلیت‌های پیشرفته",
+            "گزارش‌دهی تحلیلی و خروجی گزارش",
+            "دوره‌های آفلاین و جزوات قابل دانلود",
+            "پشتیبانی ویژه و راهنمایی اختصاصی"
           ],
-          "price": "۱۹۹,۰۰۰ تومان",
-          "priceLabel": "در ماه",
+          "price": "۹۹,۰۰۰",
+          "priceLabel": "تومان / ماهانه",
           "buttonText": "به زودی"
         }
       ]
@@ -159,19 +159,19 @@
       "title": "اعتماد دانشجویان",
       "items": [
         {
-          "name": "رضا .م",
+          "name": "رضا م.",
           "role": "دانشجوی خلبانی",
-          "testimonial": "«با پایلوت ترکس تونستم ظرف دو ماه برای آزمون سازمان آماده بشم. توضیح سوالات عالی بود و هر گزینه به تفصیل توضیح داده شده بود.»"
+          "testimonial": "“با پایلوت تراکس تونستم در دو ماه برای آزمون سازمان آماده بشم. توضیح سوالات عالی بود و هر گزینه رو با جزئیات شکافته بود.”"
         },
         {
-          "name": "سارا .ک",
+          "name": "سارا ک.",
           "role": "دانشجوی دیسپچ",
-          "testimonial": "«سیستم مرور رنگی دقیقاً چیزی بود که لازم داشتم. باعث شد سریع نقاط ضعفم رو پیدا کنم و فقط روی مباحث حساس تمرکز کنم.»"
+          "testimonial": "“سیستم مرور رنگی دقیقا چیزی بود که نیاز داشتم. کمک کرد سریع نقاط ضعفم رو پیدا کنم و فقط روی مباحث حساس تمرکز کنم.”"
         },
         {
-          "name": "آرین .د",
+          "name": "آرین د.",
           "role": "مهندسی هوافضا",
-          "testimonial": "«بانک سوالات کامل و واقعی بود. تجربه تست‌زدن دقیقاً مثل آزمون اصلی بود و من با اعتماد به امتحان رفتم.»"
+          "testimonial": "“بانک سوالات کامل و واقع‌گرایانه بود. تجربه تست‌زنی دقیقا مثل آزمون اصلی بود و با اعتماد به نفس رفتم سر جلسه.”"
         }
       ]
     },
@@ -179,95 +179,95 @@
       "title": "سوالات متداول",
       "items": [
         {
-          "question": "Are the questions real and up-to-date?",
-          "answer": "Yes, the questions are collected from real booklets and are constantly updated."
+          "question": "آیا سوالات واقعی و به‌روز هستند؟",
+          "answer": "بله، سوالات از بوکلت‌های واقعی جمع‌آوری شده و به صورت مداوم آپدیت می‌شوند."
         },
         {
-          "question": "How does smart review work?",
-          "answer": "By selecting the green/yellow/red status, the system creates a special review program for you to focus on your weaknesses."
+          "question": "مرور هوشمند چگونه کار می‌کند؟",
+          "answer": "با انتخاب وضعیت سبز/زرد/قرمز، سیستم برنامه مروری ویژه‌ای برای شما ایجاد می‌کند تا روی نقاط ضعف خود تمرکز کنید."
         },
         {
-          "question": "Is there a free trial?",
-          "answer": "Yes, after signing up, you will receive a free test to get acquainted with the platform's functionality."
+          "question": "آیا امکان تست رایگان وجود دارد؟",
+          "answer": "بله، پس از ثبت‌نام یک آزمون رایگان برای آشنایی با عملکرد پلتفرم به شما هدیه داده می‌شود."
         },
         {
-          "question": "Can I track my progress?",
-          "answer": "Yes, detailed reports and progress charts help you to check your performance."
+          "question": "آیا می‌توانم پیشرفت خود را پیگیری کنم؟",
+          "answer": "بله، گزارش‌های دقیق و نمودارهای پیشرفت به شما کمک می‌کنند تا عملکرد خود را بررسی کنید."
         },
         {
-          "question": "What educational support is there?",
-          "answer": "Our support team is ready to answer questions and guide you to make the best use of the platform."
+          "question": "چه پشتیبانی آموزشی وجود دارد؟",
+          "answer": "تیم پشتیبانی ما آماده پاسخگویی به سوالات و راهنمایی شما برای استفاده بهتر از پلتفرم است."
         },
         {
-          "question": "Is it suitable for immigrants?",
-          "answer": "Yes, our resources are designed for both domestic and immigrant pilots."
+          "question": "آیا برای مهاجران هم مناسب است؟",
+          "answer": "بله، منابع ما برای هر دو دسته خلبانان داخلی و مهاجر طراحی شده است."
         },
         {
-          "question": "Can I cancel my subscription?",
-          "answer": "Yes, you can cancel your subscription at any time without any additional penalty."
+          "question": "آیا می‌توانم اشتراک خود را لغو کنم؟",
+          "answer": "بله، شما در هر زمان می‌توانید اشتراک خود را بدون جریمه اضافی لغو کنید."
         },
         {
-          "question": "How much time is needed to see results?",
-          "answer": "It depends on your effort and initial level, but most students see significant results in 2-3 months."
+          "question": "چه مدت زمان برای دیدن نتیجه نیاز است؟",
+          "answer": "بستگی به تلاش و سطح اولیه شما دارد، اما اکثر دانشجویان در ۲-۳ ماه نتیجه قابل توجهی می‌گیرند."
         }
       ]
     },
     "contact": {
       "start": {
-        "title": "Want to get started?",
-        "description": "Sign up now and start your first free test.",
-        "cta": "Start for free",
-        "placeholder": "09123456789"
+        "title": "می‌خواهید شروع کنید؟",
+        "description": "همین حالا ثبت‌نام کنید و اولین تست رایگان خود را بزنید.",
+        "cta": "رایگان شروع کنید",
+        "placeholder": "۰۹۱۲۳۴۵۶۷۸۹"
       },
       "info": {
-        "title": "Contact us",
-        "email": "Email: support@yourdomain.com",
-        "address": "Address: Tehran"
+        "title": "ارتباط با ما",
+        "email": "ایمیل: support@yourdomain.com",
+        "address": "آدرس: تهران"
       }
     },
     "footer": {
-      "copyright": "© {year} Pilot Trax — All rights reserved.",
+      "copyright": "© {year} پایلوت تراکس — تمامی حقوق محفوظ است.",
       "nav": {
-        "pilot_trax": "Pilot Trax",
-        "about_us": "About Us",
-        "terms": "Terms and Conditions",
-        "faq": "FAQ",
-        "legal": "Legal",
-        "privacy_policy": "Privacy Policy"
+        "pilot_trax": "پایلوت تراکس",
+        "about_us": "درباره ما",
+        "terms": "قوانین و مقررات",
+        "faq": "سوالات متداول",
+        "legal": "حقوقی",
+        "privacy_policy": "حریم خصوصی"
       },
       "support": {
-        "text": "Proudly supported by",
-        "name": "DIBANAM"
+        "text": "با افتخار پشتیبانی شده توسط",
+        "name": "دیبانام"
       }
     },
     "metadata": {
-      "title": "Pilot Trax | Pilot & Aviation Exam Preparation",
-      "description": "Pilot Trax is an intelligent platform for preparing for pilot exams with detailed explanations of questions, smart review, and personalized scheduling.",
+      "title": "پایلوت تراکس | آمادگی آزمون‌های خلبانی و هوانوردی",
+      "description": "پایلوت تراکس پلتفرم هوشمند آمادگی برای آزمون‌های خلبانی با پاسخ تشریحی سوالات، مرور هوشمند و زمان‌بندی اختصاصی.",
       "keywords": [
-        "Pilot Exam",
-        "Aviation",
-        "Aviation Booklet",
-        "Pilot Test",
-        "Dispatch",
-        "Organization Exam",
-        "Flight Training"
+        "آزمون خلبانی",
+        "هوانوردی",
+        "بوکلت هوانوردی",
+        "تست خلبانی",
+        "دیسپچ",
+        "آزمون سازمان",
+        "آموزش پرواز"
       ],
       "openGraph": {
-        "title": "Pilot Trax | Smart Simulator for Pilot Exams",
-        "description": "Prepare for pilot exams faster with a simulator of real questions, color-coded review, and professional analysis of questions."
+        "title": "پایلوت تراکس | شبیه‌ساز هوشمند آزمون‌های خلبانی",
+        "description": "با شبیه‌ساز سوالات واقعی، مرور رنگی و تحلیل حرفه‌ای سوالات، سریع‌تر برای آزمون‌های خلبانی آماده شوید."
       }
     }
   },
   "login": {
     "phone": {
-      "title": "ورود",
+      "title": "ورود به حساب",
       "description": "برای ورود شماره موبایل خود را وارد کنید.",
       "label": "شماره موبایل",
-      "placeholder": "09123456789",
+      "placeholder": "۰۹۱۲۳۴۵۶۷۸۹",
       "button": "ورود"
     },
     "otp": {
-      "title": "ورود",
+      "title": "تایید کد",
       "description": "کد تایید ارسال شده به شماره موبایل خود را وارد کنید.",
       "phone_label": "شماره موبایل",
       "edit_button": "ویرایش",
@@ -278,64 +278,66 @@
   },
   "e_unauthorized": "شما مجاز به انجام این عملیات نیستید.",
   "v_update_profile": {
-    "first_name_min": "نام باید حداقل ۲ حرف داشته باشد.",
-    "last_name_min": "نام خانوادگی باید حداقل ۲ حرف داشته باشد."
+    "first_name_min": "نام باید حداقل ۲ کاراکتر باشد.",
+    "last_name_min": "نام خانوادگی باید حداقل ۲ کاراکتر باشد."
   },
   "complete_profile": {
     "title": "تکمیل پروفایل",
-    "description": "لطفا برای ادامه، نام و نام خانوادگی خود را وارد کنید.",
+    "description": "لطفا نام و نام خانوادگی خود را برای ادامه وارد کنید.",
     "firstName_label": "نام",
     "firstName_placeholder": "نام خود را وارد کنید",
     "lastName_label": "نام خانوادگی",
     "lastName_placeholder": "نام خانوادگی خود را وارد کنید",
     "save_button": "ذخیره و ادامه",
     "saving_button": "در حال ذخیره...",
-    "skip_button": "رد شدن"
+    "skip_button": "رد کردن"
   },
   "app": {
     "sidebar": {
       "dashboard": "داشبورد",
       "courses": "دوره‌ها",
       "questions": "سوالات",
-      "excel": "ورودی/خروجی اکسل",
+      "excel": "اکسل",
       "quizzes": "آزمون‌ها",
+      "weaknesses": "نقاط ضعف",
       "users": "کاربران",
+
       "brand": {
-        "title": "پایلوت ترکس",
-        "alt": "Pilot Trax - پایلوت ترکس"
+        "title": "پایلوت تراکس",
+        "alt": "پایلوت تراکس"
       }
     },
     "theme_switcher": {
-      "toggle_theme": "تغییر پوسته",
+      "toggle_theme": "تغییر تم",
       "light": "روشن",
       "dark": "تاریک",
       "system": "سیستم"
     },
     "dashboard": {
       "user_chart_title": "رشد کاربران",
-      "user_chart_description": "نمایش رشد کاربران در 12 ماه گذشته",
+      "user_chart_description": "نمایش رشد کاربران در ۱۲ ماه اخیر",
       "user_chart_label": "تعداد کاربران",
       "selling_chart_title": "رشد فروش",
-      "selling_chart_description": "نمایش رشد فروش در 12 ماه گذشته",
+      "selling_chart_description": "نمایش رشد فروش در ۱۲ ماه اخیر",
       "selling_chart_label": "درآمد"
     },
     "admin": {
       "courses": {
         "new_lesson": "درس جدید",
         "lesson_title_placeholder": "عنوان درس",
-        "add_sub_lesson_tooltip": "افزودن زیرمجموعه",
+        "add_sub_lesson_tooltip": "افزودن زیر‌درس",
         "delete_lesson_tooltip": "حذف درس",
         "delete_course_success": "دوره با موفقیت حذف شد",
         "delete_course_error": "خطا در حذف دوره",
         "title_required": "عنوان الزامی است",
         "save_course_success": "دوره با موفقیت ذخیره شد",
-        "save_course_error": "خطا در ذخیره سازی",
+        "save_course_error": "خطا در ذخیره",
         "new_module": "ماژول جدید",
         "search_placeholder": "جستجوی دوره",
         "add_course_button": "افزودن دوره",
         "edit_button": "ویرایش",
         "delete_button": "حذف",
-        "no_description": "توضیحی ارائه نشده است.",
+        "no_description": "توضیحاتی ارائه نشده است.",
         "questions_count": "{count} سوال",
         "modules_count": "{count} ماژول",
         "edit_course_sheet_title": "ویرایش دوره",
@@ -344,23 +346,23 @@
         "title_label": "عنوان",
         "course_title_placeholder": "عنوان دوره",
         "description_label": "توضیحات",
-        "description_placeholder": "توضیح مختصر...",
+        "description_placeholder": "توضیحات کوتاه...",
         "lesson_structure_label": "ساختار دروس",
         "add_module_button": "افزودن ماژول",
-        "collapse_all_tooltip": "جمع‌کردن همه",
+        "collapse_all_tooltip": "بستن همه",
         "close_all_button": "بستن همه",
         "no_lessons_message": "هنوز درسی اضافه نشده است.",
         "saving_button": "در حال ذخیره...",
         "save_changes_button": "ذخیره تغییرات",
-        "cancel_button": "لغو",
+        "cancel_button": "انصراف",
         "delete_dialog_title": "آیا از حذف این دوره اطمینان دارید؟",
-        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این دوره حذف خواهد شد.",
+        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام داده‌های مربوط به این دوره حذف خواهند شد.",
         "delete_dialog_cancel": "انصراف",
         "delete_dialog_confirm": "حذف"
       },
       "questions": {
         "correct_answer_tooltip": "پاسخ صحیح",
-        "mark_as_correct_tooltip": "علامت‌گذاری به عنوان پاسخ صحیح",
+        "mark_as_correct_tooltip": "انتخاب به عنوان پاسخ صحیح",
         "correct_answer_badge": "پاسخ صحیح",
         "delete_answer_tooltip": "حذف پاسخ",
         "answer_placeholder": "متن پاسخ را اینجا وارد کنید...",
@@ -375,12 +377,12 @@
         "clear_filters_button": "پاک کردن فیلترها",
         "edit_question_sheet_title": "ویرایش سوال",
         "new_question_sheet_title": "سوال جدید",
-        "sheet_description": "اطلاعات سوال را اینجا وارد کنید. پس از اتمام روی دکمه ذخیره کلیک کنید.",
-        "related_lesson_label": "درس مربوطه",
+        "sheet_description": "اطلاعات سوال را اینجا وارد کنید. پس از اتمام روی ذخیره کلیک کنید.",
+        "related_lesson_label": "درس مرتبط",
         "question_text_label": "متن سوال",
-        "question_text_placeholder": "متن سوال را وارد کنید...",
+        "question_text_placeholder": "متن سوال را اینجا وارد کنید...",
         "question_description_label": "توضیحات سوال (اختیاری)",
-        "question_description_placeholder": "توضیحات بیشتر در مورد سوال را اینجا وارد کنید...",
+        "question_description_placeholder": "جزئیات بیشتر درباره سوال را اینجا وارد کنید...",
         "question_index_label": "ترتیب سوال",
         "question_index_placeholder": "ترتیب نمایش سوال (اختیاری)",
         "answers_label": "پاسخ‌ها",
@@ -388,10 +390,10 @@
         "no_answers_message": "هنوز پاسخی اضافه نشده است.",
         "saving_button": "در حال ذخیره...",
         "save_changes_button": "ذخیره تغییرات",
-        "cancel_button": "لغو",
+        "cancel_button": "انصراف",
         "reset_button": "بازنشانی",
         "delete_dialog_title": "آیا از حذف این سوال اطمینان دارید؟",
-        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام پاسخ‌های مربوط به این سوال نیز حذف خواهد شد.",
+        "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام پاسخ‌های مربوط به این سوال نیز حذف خواهند شد.",
         "delete_dialog_cancel": "انصراف",
         "delete_dialog_confirm": "حذف",
         "lesson_combobox": {
@@ -400,22 +402,22 @@
           "search_placeholder": "جستجوی درس..."
         },
         "course_combobox": {
-          "select_course_placeholder": "همه دوره ها",
-          "no_course_found_message": "دوره ای یافت نشد.",
+          "select_course_placeholder": "همه دوره‌ها",
+          "no_course_found_message": "دوره‌ای یافت نشد.",
           "search_placeholder": "جستجوی دوره..."
         },
         "delete_success_toast": "سوال با موفقیت حذف شد",
         "delete_error_toast": "خطا در حذف سوال",
         "title_required_toast": "عنوان سوال الزامی است",
-        "lesson_required_toast": "انتخاب درس الزامی است",
+        "lesson_required_toast": "یک درس باید انتخاب شود",
         "one_answer_required_toast": "حداقل یک پاسخ الزامی است",
         "one_correct_answer_required_toast": "حداقل یک پاسخ صحیح الزامی است",
         "save_success_toast": "سوال با موفقیت ذخیره شد",
-        "save_error_toast": "خطا در ذخیره سازی: ",
-        "import_excel_button": "ورود از اکسل",
+        "save_error_toast": "خطا در ذخیره سوال: ",
+        "import_excel_button": "وارد کردن اکسل",
         "import_success_toast": "فایل اکسل با موفقیت وارد شد",
-        "import_error_toast": "خطا در ورود اکسل: ",
-        "invalid_filename_error": "فرمت نام فایل نامعتبر است. انتظار می‌رود COURSE.LESSON.xlsx باشد",
+        "import_error_toast": "خطا در وارد کردن اکسل: ",
+        "invalid_filename_error": "فرمت نام فایل نامعتبر است. نمونه: COURSE.LESSON.xlsx",
         "course_not_found_error": "دوره '{course}' یافت نشد",
         "lesson_not_found_error": "درس '{lesson}' در دوره '{course}' یافت نشد",
         "no_file_selected_error": "فایلی انتخاب نشده است",
@@ -424,51 +426,51 @@
           "next": "بعدی",
           "page": "صفحه",
           "of": "از",
-          "per_page": "تعداد در صفحه"
+          "per_page": "در هر صفحه"
         }
       },
       "quizzes": {
         "edit_quiz_sheet_title": "ویرایش آزمون",
         "new_quiz_sheet_title": "آزمون جدید",
-        "sheet_description": "اطلاعات آزمون را اینجا وارد کنید. پس از اتمام روی دکمه ذخیره کلیک کنید.",
+        "sheet_description": "اطلاعات آزمون را اینجا وارد کنید. پس از اتمام روی ذخیره کلیک کنید.",
         "quiz_title_label": "عنوان آزمون",
-        "quiz_title_placeholder": "عنوان آزمون را وارد کنید...",
-        "related_course_label": "دوره مربوطه",
+        "quiz_title_placeholder": "عنوان آزمون را اینجا وارد کنید...",
+        "related_course_label": "دوره مرتبط",
         "quiz_duration_label": "مدت زمان (دقیقه)",
         "quiz_duration_placeholder": "مدت زمان را به دقیقه وارد کنید",
         "quiz_question_count_label": "تعداد سوالات",
-        "quiz_question_count_placeholder": "تعداد سوالات را وارد کنید",
-        "quiz_selection_mode_label": "حالت انتخاب",
+        "quiz_question_count_placeholder": "تعداد کل سوالات آزمون",
+        "quiz_selection_mode_label": "نحوه انتخاب سوالات",
         "quiz_selection_mode_placeholder": "یک حالت انتخاب کنید",
-        "quiz_selection_mode_shuffled": "درهم",
+        "quiz_selection_mode_shuffled": "تصادفی",
         "quiz_selection_mode_ordered": "به ترتیب",
         "saving_button": "در حال ذخیره...",
         "save_changes_button": "ذخیره تغییرات",
-        "cancel_button": "لغو",
+        "cancel_button": "انصراف",
         "course_combobox": {
           "select_course_placeholder": "انتخاب دوره",
-          "no_course_found_message": "دوره ای یافت نشد.",
+          "no_course_found_message": "دوره‌ای یافت نشد.",
           "search_placeholder": "جستجوی دوره..."
         },
-        "lessons_label": "درس های آزمون",
+        "lessons_label": "دروس آزمون",
         "add_lesson_button": "افزودن درس",
-        "add_all_lessons_button": "افزودن همه درس‌ها",
+        "add_all_lessons_button": "افزودن همه دروس",
         "no_lessons_message": "هنوز درسی اضافه نشده است.",
         "quiz_lesson_question_count_placeholder": "تعداد",
         "quiz_lesson_start_index_placeholder": "شروع",
         "quiz_lesson_end_index_placeholder": "پایان",
-        "quiz_lesson_use_custom_question_count_label": "تعداد سوال دلخواه",
+        "quiz_lesson_use_custom_question_count_label": "تعداد سوال سفارشی",
         "lesson_combobox": {
           "select_lesson_placeholder": "انتخاب درس",
           "no_lesson_found_message": "درسی یافت نشد.",
           "search_placeholder": "جستجوی درس..."
         },
         "quiz_public_label": "آزمون عمومی",
-        "quiz_public_description": "آزمون در لیست عمومی نمایش داده شود."
+        "quiz_public_description": "نمایش آزمون در لیست عمومی برای همه کاربران."
       },
       "users": {
         "title": "مدیریت کاربران",
-        "search_placeholder": "جستجو بر اساس نام یا شماره تلفن...",
+        "search_placeholder": "جستجو با نام یا تلفن...",
         "phone": "تلفن",
         "name": "نام",
         "roles": "نقش‌ها",
@@ -478,53 +480,53 @@
         "premium": "ویژه",
         "basic": "عادی",
         "make_admin": "ارتقا به مدیر",
-        "revoke_admin": "لغو مدیریت",
+        "revoke_admin": "سلب مدیریت",
         "make_premium": "ارتقا به ویژه",
-        "revoke_premium": "لغو ویژه",
-        "role_updated": "نقش کاربر با موفقیت بروزرسانی شد.",
-        "failed_to_update": "بروزرسانی نقش کاربر ناموفق بود.",
-        "cannot_revoke_self": "شما نمی‌توانید نقش مدیریت خود را لغو کنید."
+        "revoke_premium": "سلب ویژگی",
+        "role_updated": "نقش کاربر با موفقیت تغییر کرد.",
+        "failed_to_update": "خطا در تغییر نقش کاربر.",
+        "cannot_revoke_self": "شما نمی‌توانید نقش مدیریت خود را سلب کنید."
       },
       "rich_text_toolbar": {
         "bold": "ضخیم (Ctrl+B)",
-        "italic": "کج (Ctrl+I)",
-        "rtl": "راست‌چین",
-        "ltr": "چپ‌چین",
+        "italic": "مورب (Ctrl+I)",
+        "rtl": "راست به چپ",
+        "ltr": "چپ به راست",
         "auto": "خودکار",
-        "align_left": "تراز از چپ",
+        "align_left": "تراز چپ",
         "align_center": "تراز وسط",
-        "align_right": "تراز از راست",
-        "align_justify": "تراز دو طرفه",
+        "align_right": "تراز راست",
+        "align_justify": "تراز کامل",
         "insert_image": "درج تصویر",
-        "insert_math": "درج فرمول LaTeX"
+        "insert_math": "درج فرمول لاتک"
       }
     },
     "userNav": {
       "account": "حساب کاربری",
-      "billing": "صورتحساب",
+      "billing": "پرداخت‌ها",
       "logout": "خروج",
-      "unnamedUser": "کاربر ناشناس"
+      "unnamedUser": "کاربر بدون نام"
     },
     "quizzes": {
-      "search_placeholder": "جستجوی آزمون...",
+      "search_placeholder": "جستجوی آزمون‌ها...",
       "duration": "مدت زمان",
       "minutes": "دقیقه",
-      "questions": "تعداد سوالات",
+      "questions": "سوال",
       "selection_mode": "حالت انتخاب",
-      "attempts": "تعداد تلاش‌ها",
+      "attempts": "تعداد تلاش",
       "created_at": "تاریخ ایجاد",
-			"my_quizzes": "آزمون های من",
-			"public_quizzes": "آزمون های عمومی",
+      "my_quizzes": "آزمون‌های من",
+      "public_quizzes": "آزمون‌های عمومی",
       "quiz_not_found": "آزمون یافت نشد.",
-      "no_quizzes_found": "هیچ آزمونی یافت نشد.",
+      "no_quizzes_found": "آزمونی یافت نشد.",
       "public": "عمومی",
       "public_yes": "بله",
       "public_no": "خیر",
-      "lessons_label": "درس‌ها",
+      "lessons_label": "دروس",
       "edit": "ویرایش",
       "delete": "حذف",
       "delete_dialog_title": "آیا از حذف این آزمون اطمینان دارید؟",
-      "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام اطلاعات مربوط به این دوره حذف خواهد شد.",
+      "delete_dialog_description": "این عملیات غیرقابل بازگشت است و تمام داده‌های مربوط به این آزمون حذف خواهند شد.",
       "delete_dialog_cancel": "انصراف",
       "delete_dialog_confirm": "حذف",
       "saving_quiz": "در حال ذخیره آزمون...",

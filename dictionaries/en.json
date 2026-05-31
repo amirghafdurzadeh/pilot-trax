@@ -299,7 +299,9 @@
       "questions": "Questions",
       "excel": "Excel I/O",
       "quizzes": "Quizzes",
+      "weaknesses": "Weaknesses",
       "users": "Users",
+
       "brand": {
         "title": "Pilot Trax",
         "alt": "Pilot Trax"

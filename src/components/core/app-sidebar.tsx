@@ -5,6 +5,7 @@ import {
   HomeIcon,
   ClipboardCheck,
   UsersIcon,
+  ShieldAlert,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -58,6 +59,12 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "syst
     title: dict.quizzes,
     href: `/${lang}/app/quizzes`,
     icon: ClipboardCheck,
+  });
+
+  items.push({
+    title: dict.weaknesses,
+    href: `/${lang}/app/weaknesses`,
+    icon: ShieldAlert,
   });
 
   if (role === "admin" || role === "system_user") {

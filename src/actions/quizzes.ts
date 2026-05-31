@@ -414,6 +414,31 @@ export async function saveQuestionInteraction(questionId: string, state: string)
   return interaction;
 }
 
+export async function getQuizAttempts(quizId: string) {
+  const user = await readSession();
+  if (!user) return [];
+
+  const attempts = await prisma.quizAttempt.findMany({
+    where: {
+      userId: user.id,
+      quizId: quizId,
+      endedAt: { not: null }
+    },
+    include: {
+      quizAttemptQuestions: {
+        include: {
+          selectedAnswer: true
+        }
+      }
+    },
+    orderBy: {
+      startedAt: "desc"
+    }
+  });
+
+  return attempts;
+}
+
 export async function getHardestQuestions() {
   const user = await readSession();
   if (!user) return [];
