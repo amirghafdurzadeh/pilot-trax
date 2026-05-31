@@ -10,6 +10,8 @@ import {
   Eye,
   FilterIcon,
   XIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +20,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { saveQuestionInteraction } from "@/actions/quizzes";
 import { Locale } from "@/lib/locales";
@@ -50,6 +51,7 @@ export function ClientWeaknesses({
   const [showDescriptions, setShowDescriptions] = useState<{
     [qId: string]: boolean;
   }>({});
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
 
   const questionsDict = dict.app.admin.questions;
   const isFa = lang === "fa";
@@ -79,6 +81,10 @@ export function ClientWeaknesses({
     description: isFa ? "مرور سوالاتی که در آن‌ها چالش داشتید" : "Review questions you've struggled with",
     noStatusFound: isFa ? "وضعیتی یافت نشد." : "No status found.",
     searchStatusPlaceholder: isFa ? "جستجوی وضعیت..." : "Search status...",
+    next: isFa ? "بعدی" : "Next",
+    previous: isFa ? "قبلی" : "Previous",
+    of: isFa ? "از" : "of",
+    question: isFa ? "سوال" : "Question",
   };
 
   const coursesData = useMemo(() => {
@@ -182,6 +188,20 @@ export function ClientWeaknesses({
     setHardnessFilter("all");
   };
 
+  const handleNext = () => {
+    if (selectedQuestionIndex !== null && selectedQuestionIndex < filteredQuestions.length - 1) {
+      setSelectedQuestionIndex(selectedQuestionIndex + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (selectedQuestionIndex !== null && selectedQuestionIndex > 0) {
+      setSelectedQuestionIndex(selectedQuestionIndex - 1);
+    }
+  };
+
+  const currentQuestion = selectedQuestionIndex !== null ? filteredQuestions[selectedQuestionIndex] : null;
+
   const hasActiveFilters =
     search !== "" || selectedCourseId !== "" || selectedLessonId !== "" || hardnessFilter !== "all";
 
@@ -264,7 +284,7 @@ export function ClientWeaknesses({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredQuestions.map((q) => {
+            {filteredQuestions.map((q, index) => {
               const state = q.interactionState || null;
               return (
                 <Card
@@ -294,7 +314,7 @@ export function ClientWeaknesses({
                         className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
                           state === "UNSURE"
                             ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                            : "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                            : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
                         }`}
                         title={t.unsure}
                       >
@@ -305,7 +325,7 @@ export function ClientWeaknesses({
                         className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
                           state === "CONFUSED"
                             ? "bg-red-600 border-red-600 text-white shadow-sm"
-                            : "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                            : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
                         }`}
                         title={t.confused}
                       >
@@ -314,9 +334,10 @@ export function ClientWeaknesses({
                     </div>
                   </CardHeader>
                   <CardContent className="pt-4 flex-1 space-y-4">
-                    <div className="font-semibold text-base leading-relaxed text-foreground select-none">
-                      {q.title}
-                    </div>
+                    <div 
+                      className="font-semibold text-base leading-relaxed text-foreground select-none"
+                      dangerouslySetInnerHTML={{ __html: q.title }}
+                    />
 
                     <div className="flex justify-between items-center">
                       <div className="flex gap-4 text-xs font-medium text-muted-foreground pt-2">
@@ -334,76 +355,15 @@ export function ClientWeaknesses({
                         </span>
                       </div>
 
-                      <Dialog
-                        onOpenChange={(open) => {
-                          if (!open)
-                            setShowDescriptions((prev) => ({
-                              ...prev,
-                              [q.id]: false,
-                            }));
-                        }}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1.5 h-8 text-xs"
+                        onClick={() => setSelectedQuestionIndex(index)}
                       >
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="gap-1.5 h-8 text-xs"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                            {t.viewDetails}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent
-                          className="max-w-2xl max-h-[90vh] overflow-y-auto text-start"
-                          dir={lang === "fa" ? "rtl" : "ltr"}
-                        >
-                          <DialogHeader>
-                            <DialogTitle className="flex items-center justify-between gap-2">
-                              <span>{t.questionDetails}</span>
-                              {q.description && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => toggleDescription(q.id)}
-                                  className="text-xs text-muted-foreground gap-1"
-                                >
-                                  <Eye className="w-3.5 h-3.5" />
-                                  {t.showDescription}
-                                </Button>
-                              )}
-                            </DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-4 pt-4">
-                            <div className="text-lg font-semibold leading-relaxed">
-                              {q.title}
-                            </div>
-
-                            {showDescriptions[q.id] && q.description && (
-                              <div className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
-                                {q.description}
-                              </div>
-                            )}
-
-                            <div className="grid gap-2">
-                              {q.answers.map((answer: any) => (
-                                <div
-                                  key={answer.id}
-                                  className={`flex items-center p-3 rounded-lg border text-sm font-medium ${
-                                    answer.isCorrect
-                                      ? "border-green-600 bg-green-50/20 text-green-900 dark:text-green-100 ring-1 ring-green-500/30"
-                                      : "border-border/60"
-                                  }`}
-                                >
-                                  <span>{answer.title}</span>
-                                  {answer.isCorrect && (
-                                    <Check className="ms-auto w-4 h-4 text-green-600 shrink-0" />
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                        <Eye className="w-3.5 h-3.5" />
+                        {t.viewDetails}
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -411,6 +371,174 @@ export function ClientWeaknesses({
             })}
           </div>
         )}
+
+        <Dialog
+          open={selectedQuestionIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedQuestionIndex(null);
+              setShowDescriptions({});
+            }
+          }}
+        >
+          <DialogContent
+            className="max-w-none w-screen h-screen flex flex-col p-0 gap-0 border-none rounded-none outline-none"
+            dir={isFa ? "rtl" : "ltr"}
+            showCloseButton={false}
+          >
+            <div className="flex items-center justify-between p-4 border-b bg-card shrink-0">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setSelectedQuestionIndex(null)}
+                >
+                  <XIcon className="w-5 h-5" />
+                </Button>
+                <div className="flex flex-col">
+                  <DialogTitle className="text-lg font-bold">
+                    {t.questionDetails}
+                  </DialogTitle>
+                  <span className="text-xs text-muted-foreground">
+                    {t.question} {selectedQuestionIndex !== null ? selectedQuestionIndex + 1 : 0} {t.of} {filteredQuestions.length}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {currentQuestion && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleSaveInteraction(currentQuestion.id, "MASTERED")}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        currentQuestion.interactionState === "MASTERED"
+                          ? "bg-green-600 border-green-600 text-white shadow-sm"
+                          : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                      }`}
+                      title={t.mastered}
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleSaveInteraction(currentQuestion.id, "UNSURE")}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        currentQuestion.interactionState === "UNSURE"
+                          ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                          : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                      }`}
+                      title={t.unsure}
+                    >
+                      <AlertTriangle className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleSaveInteraction(currentQuestion.id, "CONFUSED")}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        currentQuestion.interactionState === "CONFUSED"
+                          ? "bg-red-600 border-red-600 text-white shadow-sm"
+                          : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                      }`}
+                      title={t.confused}
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+                {currentQuestion?.description && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleDescription(currentQuestion.id)}
+                    className="text-xs gap-1.5"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    {t.showDescription}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 max-w-4xl mx-auto w-full">
+              {currentQuestion && (
+                <>
+                  <div className="space-y-4">
+                    <div className="text-[10px] uppercase font-bold text-primary/70 tracking-wider">
+                      {currentQuestion.lesson?.course?.title} / {currentQuestion.lesson?.title}
+                    </div>
+                    <h3 
+                      className="text-2xl md:text-3xl font-bold leading-tight"
+                      dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
+                    />
+
+                    {showDescriptions[currentQuestion.id] && currentQuestion.description && (
+                      <div 
+                        className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl text-base text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
+                        dangerouslySetInnerHTML={{ __html: currentQuestion.description }}
+                      />
+                    )}
+                  </div>
+
+                  <div className="grid gap-3">
+                    {currentQuestion.answers.map((answer: any) => (
+                      <div
+                        key={answer.id}
+                        className={`flex items-center p-4 rounded-xl border-2 text-lg font-medium transition-all ${
+                          answer.isCorrect
+                            ? "border-green-600 bg-green-50/20 text-green-900 dark:text-green-100 ring-4 ring-green-500/10"
+                            : "border-border/60 bg-card"
+                        }`}
+                      >
+                        <span className="flex-1" dangerouslySetInnerHTML={{ __html: answer.title }} />
+                        {answer.isCorrect && (
+                          <div className="bg-green-600 text-white p-1 rounded-full">
+                            <Check className="w-5 h-5 shrink-0" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex gap-6 text-sm font-medium text-muted-foreground pt-4 border-t">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] uppercase text-muted-foreground/60">{t.incorrect}</span>
+                      <strong className="text-red-500 text-xl font-mono">
+                        {currentQuestion.incorrectCount}
+                      </strong>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] uppercase text-muted-foreground/60">{t.totalAttempts}</span>
+                      <strong className="text-foreground text-xl font-mono">
+                        {currentQuestion.totalAttempts}
+                      </strong>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="p-4 border-t bg-card shrink-0">
+              <div className="max-w-4xl mx-auto w-full flex items-center justify-between">
+                <Button
+                  variant="outline"
+                  onClick={handlePrev}
+                  disabled={selectedQuestionIndex === 0}
+                  className="gap-2 px-6"
+                >
+                  {isFa ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                  {t.previous}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleNext}
+                  disabled={selectedQuestionIndex === filteredQuestions.length - 1}
+                  className="gap-2 px-6"
+                >
+                  {t.next}
+                  {isFa ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </AppContent>
     </>
   );

@@ -1,11 +1,18 @@
-import { getQuiz, getActiveQuizAttempt, getQuizAttempts, getQuizAttempt } from "@/actions/quizzes";
+import {
+  getQuiz,
+  getActiveQuizAttempt,
+  getQuizAttempts,
+  getQuizAttempt,
+} from "@/actions/quizzes";
 import { getDictionary } from "@/lib/dictionaries";
 import { QuizSession } from "@/components/consumer/quizzes/quiz-session";
 import { Locale } from "@/lib/locales";
 import { readSession, getUserRole } from "@/lib/session";
+import { AppHeader } from "@/components/core/app-header";
+import { AppContent } from "@/components/core/app-content";
 
 export default async function Page(
-  props: PageProps<"/[lang]/app/quizzes/[quizId]">
+  props: PageProps<"/[lang]/app/quizzes/[quizId]">,
 ) {
   const { lang, quizId } = await props.params;
   const searchParams = await props.searchParams;
@@ -13,7 +20,8 @@ export default async function Page(
 
   const user = await readSession();
   const role = user ? await getUserRole(user.id) : null;
-  const isPremium = role === "admin" || role === "system_user" || role === "premium";
+  const isPremium =
+    role === "admin" || role === "system_user" || role === "premium";
 
   const dict = await getDictionary(lang as "fa" | "en");
   const quiz = await getQuiz(quizId);
@@ -30,23 +38,28 @@ export default async function Page(
   }
 
   // Pre-fill quiz fields on the mock attempt if no active attempt exists so the card can show metadata
-  const initialAttempt = viewingAttempt ? viewingAttempt : {
-    quiz: {
-      title: quiz.title,
-      duration: quiz.duration,
-      questionCount: quiz.questionCount,
-    }
-  };
+  const initialAttempt = viewingAttempt
+    ? viewingAttempt
+    : {
+        quiz: {
+          title: quiz.title,
+          duration: quiz.duration,
+          questionCount: quiz.questionCount,
+        },
+      };
 
   return (
-    <div className="p-4">
-      <QuizSession
-        quizId={quizId}
-        lang={lang as Locale}
-        initialAttempt={initialAttempt}
-        pastAttempts={pastAttempts}
-        isPremium={isPremium}
-      />
-    </div>
+    <>
+      <AppHeader lang={lang} dict={dict.app} />
+      <AppContent>
+        <QuizSession
+          quizId={quizId}
+          lang={lang as Locale}
+          initialAttempt={initialAttempt}
+          pastAttempts={pastAttempts}
+          isPremium={isPremium}
+        />
+      </AppContent>
+    </>
   );
 }

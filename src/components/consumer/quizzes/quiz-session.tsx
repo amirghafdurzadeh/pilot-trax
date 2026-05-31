@@ -346,14 +346,16 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
             )}
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
-            <div className="text-xl font-semibold leading-relaxed text-foreground select-none">
-              {currentAq.question.title}
-            </div>
+            <div 
+              className="text-xl font-semibold leading-relaxed text-foreground select-none"
+              dangerouslySetInnerHTML={{ __html: currentAq.question.title }}
+            />
 
             {showDescriptions[currentAq.questionId] && currentAq.question.description && (
-              <div className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
-                {currentAq.question.description}
-              </div>
+              <div 
+                className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
+                dangerouslySetInnerHTML={{ __html: currentAq.question.description }}
+              />
             )}
 
             <div className="grid gap-3 pt-2">
@@ -374,7 +376,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                     }`}>
                       {isSelected && <span className="w-2 h-2 bg-white rounded-full" />}
                     </span>
-                    <span className="font-medium">{answer.title}</span>
+                    <span className="font-medium" dangerouslySetInnerHTML={{ __html: answer.title }} />
                   </button>
                 );
               })}
@@ -579,7 +581,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 transition-all ${
                       state === "UNSURE"
                         ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                        : "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                        : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
                     }`}
                   >
                     <AlertTriangle className="w-3.5 h-3.5" />
@@ -590,7 +592,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 transition-all ${
                       state === "CONFUSED"
                         ? "bg-red-600 border-red-600 text-white shadow-sm"
-                        : "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                        : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
                     }`}
                   >
                     <X className="w-3.5 h-3.5" />
@@ -600,14 +602,16 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
               </CardHeader>
 
               <CardContent className="pt-4 space-y-4">
-                <div className="font-semibold text-lg leading-relaxed text-foreground select-none">
-                  {aq.question.title}
-                </div>
+                <div 
+                  className="font-semibold text-lg leading-relaxed text-foreground select-none"
+                  dangerouslySetInnerHTML={{ __html: aq.question.title }}
+                />
 
                 {showDescriptions[aq.questionId] && aq.question.description && (
-                  <div className="p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-xs text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
-                    {aq.question.description}
-                  </div>
+                  <div 
+                    className="p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-xs text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
+                    dangerouslySetInnerHTML={{ __html: aq.question.description }}
+                  />
                 )}
 
                 <div className="grid gap-2.5">
@@ -641,7 +645,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                         key={answer.id}
                         className={`flex items-center p-3 rounded-lg border text-sm font-medium ${bgBorderClass}`}
                       >
-                        <span className="me-2 text-foreground font-sans">{answer.title}</span>
+                        <span className="me-2 text-foreground font-sans" dangerouslySetInnerHTML={{ __html: answer.title }} />
                         {badge}
                       </div>
                     );
