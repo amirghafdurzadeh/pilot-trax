@@ -8,18 +8,11 @@ import {
   X,
   AlertTriangle,
   Eye,
-  Search,
+  FilterIcon,
+  XIcon,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +25,9 @@ import { Locale } from "@/lib/locales";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { AppSearch } from "@/components/core/app-search";
+import { CourseCombobox } from "@/components/core/course-combobox";
+import { LessonCombobox } from "@/components/core/lesson-combobox";
+import { StatusCombobox } from "@/components/core/status-combobox";
 
 interface ClientWeaknessesProps {
   lang: Locale;
@@ -48,14 +44,16 @@ export function ClientWeaknesses({
 }: ClientWeaknessesProps) {
   const [questions, setQuestions] = useState(initialQuestions);
   const [search, setSearch] = useState("");
-  const [courseFilter, setCourseFilter] = useState("all");
-  const [lessonFilter, setLessonFilter] = useState("all");
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  const [selectedLessonId, setSelectedLessonId] = useState<string>("");
   const [hardnessFilter, setHardnessFilter] = useState("all");
   const [showDescriptions, setShowDescriptions] = useState<{
     [qId: string]: boolean;
   }>({});
 
+  const questionsDict = dict.app.admin.questions;
   const isFa = lang === "fa";
+  
   const t = {
     showDescription: isFa ? "مشاهده توضیح" : "Show Description",
     premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
@@ -76,27 +74,68 @@ export function ClientWeaknesses({
     questionDetails: isFa ? "جزئیات سوال" : "Question Details",
     saved: isFa ? "ذخیره شد" : "Saved",
     failedToSave: isFa ? "خطا در ذخیره وضعیت" : "Failed to save state",
+    clearFiltersTooltip: isFa ? "پاک کردن فیلترها" : "Clear Filters",
+    title: isFa ? "نقاط ضعف و سوالات دشوار" : "Weaknesses & Hard Questions",
+    description: isFa ? "مرور سوالاتی که در آن‌ها چالش داشتید" : "Review questions you've struggled with",
+    noStatusFound: isFa ? "وضعیتی یافت نشد." : "No status found.",
+    searchStatusPlaceholder: isFa ? "جستجوی وضعیت..." : "Search status...",
   };
 
-  const courses = useMemo(() => {
-    const cMap = new Map<string, Set<string>>();
+  const coursesData = useMemo(() => {
+    const courseMap = new Map<string, { id: string; title: string }>();
     initialQuestions.forEach((q) => {
-      const cTitle = q.lesson?.course?.title;
-      const lTitle = q.lesson?.title;
-      if (cTitle && lTitle) {
-        if (!cMap.has(cTitle)) {
-          cMap.set(cTitle, new Set());
-        }
-        cMap.get(cTitle)!.add(lTitle);
+      const course = q.lesson?.course;
+      if (course && !courseMap.has(course.id)) {
+        courseMap.set(course.id, { id: course.id, title: course.title });
       }
     });
-    return cMap;
+    return Array.from(courseMap.values());
   }, [initialQuestions]);
 
-  const availableLessons = useMemo(() => {
-    if (courseFilter === "all") return [];
-    return Array.from(courses.get(courseFilter) || []);
-  }, [courses, courseFilter]);
+  const lessonsData = useMemo(() => {
+    const lessonMap = new Map<string, any>();
+    initialQuestions.forEach((q) => {
+      const lesson = q.lesson;
+      if (lesson && !lessonMap.has(lesson.id)) {
+        lessonMap.set(lesson.id, {
+          id: lesson.id,
+          title: lesson.title,
+          courseId: lesson.courseId,
+          courseName: lesson.course?.title || "",
+          depth: 0,
+        });
+      }
+    });
+    return Array.from(lessonMap.values());
+  }, [initialQuestions]);
+
+  const filteredLessons = useMemo(() => {
+    if (!selectedCourseId) {
+      return lessonsData;
+    }
+    return lessonsData.filter((lesson) => lesson.courseId === selectedCourseId);
+  }, [selectedCourseId, lessonsData]);
+
+  const statusesData = useMemo(() => [
+    { 
+      id: "MASTERED", 
+      title: t.mastered, 
+      icon: <ShieldCheck className="w-4 h-4 text-green-600" />,
+      className: "text-green-600 dark:text-green-400"
+    },
+    { 
+      id: "UNSURE", 
+      title: t.unsure, 
+      icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />,
+      className: "text-yellow-600 dark:text-yellow-400"
+    },
+    { 
+      id: "CONFUSED", 
+      title: t.confused, 
+      icon: <X className="w-4 h-4 text-red-600" />,
+      className: "text-red-600 dark:text-red-400"
+    },
+  ], [t.mastered, t.unsure, t.confused]);
 
   const filteredQuestions = useMemo(() => {
     return questions.filter((q) => {
@@ -104,14 +143,14 @@ export function ClientWeaknesses({
         .toLowerCase()
         .includes(search.toLowerCase());
       const matchesCourse =
-        courseFilter === "all" || q.lesson?.course?.title === courseFilter;
+        !selectedCourseId || q.lesson?.course?.id === selectedCourseId;
       const matchesLesson =
-        lessonFilter === "all" || q.lesson?.title === lessonFilter;
+        !selectedLessonId || q.lesson?.id === selectedLessonId;
       const matchesHardness =
         hardnessFilter === "all" || q.interactionState === hardnessFilter;
       return matchesSearch && matchesCourse && matchesLesson && matchesHardness;
     });
-  }, [questions, search, courseFilter, lessonFilter, hardnessFilter]);
+  }, [questions, search, selectedCourseId, selectedLessonId, hardnessFilter]);
 
   const handleSaveInteraction = async (questionId: string, state: string) => {
     setQuestions((prev) =>
@@ -136,6 +175,16 @@ export function ClientWeaknesses({
     setShowDescriptions((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setSelectedCourseId("");
+    setSelectedLessonId("");
+    setHardnessFilter("all");
+  };
+
+  const hasActiveFilters =
+    search !== "" || selectedCourseId !== "" || selectedLessonId !== "" || hardnessFilter !== "all";
+
   return (
     <>
       <AppHeader lang={lang} dict={dict.app}>
@@ -150,67 +199,68 @@ export function ClientWeaknesses({
       <AppContent>
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {isFa ? "نقاط ضعف و سوالات دشوار" : "Weaknesses & Hard Questions"}
+            {t.title}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {isFa
-              ? "مرور سوالاتی که در آن‌ها چالش داشتید"
-              : "Review questions you've struggled with"}
+            {t.description}
           </p>
         </div>
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <Select
-            value={courseFilter}
-            onValueChange={(v) => {
-              setCourseFilter(v);
-              setLessonFilter("all");
-            }}
-          >
-            <SelectTrigger className="w-full md:w-60">
-              <SelectValue placeholder={t.allCourses} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t.allCourses}</SelectItem>
-              {Array.from(courses.keys()).map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={lessonFilter}
-            onValueChange={setLessonFilter}
-            disabled={courseFilter === "all"}
-          >
-            <SelectTrigger className="w-full md:w-120">
-              <SelectValue placeholder={t.allLessons} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t.allLessons}</SelectItem>
-              {availableLessons.map((l) => (
-                <SelectItem key={l} value={l}>
-                  {l}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={hardnessFilter} onValueChange={setHardnessFilter}>
-            <SelectTrigger className="w-full md:w-60">
-              <SelectValue placeholder={t.statusFilter} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t.allStatuses}</SelectItem>
-              <SelectItem value="MASTERED">{t.mastered}</SelectItem>
-              <SelectItem value="UNSURE">{t.unsure}</SelectItem>
-              <SelectItem value="CONFUSED">{t.confused}</SelectItem>
-            </SelectContent>
-          </Select>
+
+        <div className="w-full flex flex-col xl:flex-row gap-2 items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row gap-2 w-full xl:w-fit items-center">
+            <CourseCombobox
+              courses={coursesData}
+              value={selectedCourseId}
+              onValueChange={(v) => {
+                setSelectedCourseId(v);
+                setSelectedLessonId("");
+              }}
+              dict={questionsDict.course_combobox}
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="w-full md:w-fit"
+            />
+            <LessonCombobox
+              lessons={filteredLessons}
+              value={selectedLessonId}
+              onValueChange={setSelectedLessonId}
+              dict={questionsDict.lesson_combobox}
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="w-full md:w-fit md:min-w-[200px]"
+              disabled={!selectedCourseId && filteredLessons.length === 0}
+            />
+            <StatusCombobox
+              statuses={statusesData}
+              value={hardnessFilter}
+              onValueChange={setHardnessFilter}
+              dict={{
+                select_status_placeholder: t.allStatuses,
+                search_placeholder: t.searchStatusPlaceholder,
+                no_status_found_message: t.noStatusFound,
+              }}
+              icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
+              triggerClassName="w-full md:w-fit md:min-w-[150px]"
+            />
+            {hasActiveFilters && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={clearFilters}
+                title={t.clearFiltersTooltip}
+              >
+                <XIcon className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
         {filteredQuestions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-muted-foreground border-2 border-dashed rounded-xl">
             <p className="text-lg">{t.noQuestionsFound}</p>
+            {hasActiveFilters && (
+              <Button variant="link" onClick={clearFilters}>
+                {questionsDict.clear_filters_button}
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

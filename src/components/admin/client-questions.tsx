@@ -268,6 +268,7 @@ export default function QuestionsPageClient({
                 onEdit={() => handleEdit(question)}
                 onDelete={() => handleDelete(question.id)}
                 dict={questionsDict}
+                showDescription={false}
               />
             ))
           )}

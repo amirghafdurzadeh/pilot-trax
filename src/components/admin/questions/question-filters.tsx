@@ -4,8 +4,8 @@ import { FilterIcon, XIcon } from "lucide-react";
 
 import { type CourseOption } from "@/actions/courses";
 import { type LessonOption } from "@/actions/questions";
-import { CourseCombobox } from "@/components/admin/course-combobox";
-import { LessonCombobox } from "@/components/admin/lesson-combobox";
+import { CourseCombobox } from "@/components/core/course-combobox";
+import { LessonCombobox } from "@/components/core/lesson-combobox";
 import { Button } from "@/components/ui/button";
 import { getDictionary } from "@/lib/dictionaries";
 

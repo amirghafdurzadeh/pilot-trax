@@ -26,11 +26,13 @@ export function QuestionCard({
   onEdit,
   onDelete,
   dict,
+  showDescription = true,
 }: {
   question: QuestionWithDetails;
   onEdit: () => void;
   onDelete: () => void;
   dict: QuestionsDict;
+  showDescription?: boolean;
 }) {
   const correctAnswersCount = question.answers.filter(
     (a) => a.isCorrect
@@ -76,7 +78,7 @@ export function QuestionCard({
           dangerouslySetInnerHTML={{ __html: question.title }}
         />
 
-        {question.description && (
+        {showDescription && question.description && (
           <div
             className="prose prose-sm max-w-none dark:prose-invert text-muted-foreground line-clamp-2"
             dangerouslySetInnerHTML={{ __html: question.description }}

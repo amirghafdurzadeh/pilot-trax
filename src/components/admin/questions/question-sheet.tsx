@@ -23,7 +23,7 @@ import {
   type LessonOption,
   type QuestionInput,
 } from "@/actions/questions";
-import { LessonCombobox } from "@/components/admin/lesson-combobox";
+import { LessonCombobox } from "@/components/core/lesson-combobox";
 import { RichTextEditor } from "@/components/admin/rich-text";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";

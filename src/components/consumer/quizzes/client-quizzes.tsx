@@ -13,7 +13,7 @@ import {
   saveQuiz,
   type QuizInput,
 } from "@/actions/quizzes";
-import { CourseCombobox } from "@/components/admin/course-combobox";
+import { CourseCombobox } from "@/components/core/course-combobox";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { AppSearch } from "@/components/core/app-search";
