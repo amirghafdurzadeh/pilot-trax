@@ -55,6 +55,7 @@ export default async function Page(
         <QuizSession
           quizId={quizId}
           lang={lang as Locale}
+          dict={dict}
           initialAttempt={initialAttempt}
           pastAttempts={pastAttempts}
           isPremium={isPremium}

@@ -2,9 +2,8 @@
 
 import { QuizSelectionMode } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
-import { readSession, getUserRole } from "@/lib/session";
-import { revalidatePath } from "next/cache";
-
+import { getUserRole, readSession } from "@/lib/session";
+import { cacheTag, revalidatePath, updateTag } from "next/cache";
 
 export type QuizLessonInput = {
   id: string; // for dnd
@@ -98,9 +97,13 @@ export async function getQuiz(id: string) {
     order: ql.lesson.order ?? undefined,
     questionsCount: ql.questionsCount ?? undefined,
     startIndex: ql.questionsStartIndex ?? undefined,
-    endIndex: ql.questionsStartIndex !== null && ql.questionsStartIndex !== undefined && ql.questionsCount !== null && ql.questionsCount !== undefined
-      ? (ql.questionsStartIndex + ql.questionsCount - 1)
-      : undefined,
+    endIndex:
+      ql.questionsStartIndex !== null &&
+      ql.questionsStartIndex !== undefined &&
+      ql.questionsCount !== null &&
+      ql.questionsCount !== undefined
+        ? ql.questionsStartIndex + ql.questionsCount - 1
+        : undefined,
   }));
 
   return {
@@ -120,7 +123,6 @@ export async function saveQuiz(quiz: QuizInput, lang: string) {
   if (quiz.isPublic && role !== "admin" && role !== "system_user") {
     throw new Error("Only admin users can define public quizzes");
   }
-
 
   const { id, lessons, ...data } = quiz;
 
@@ -146,9 +148,10 @@ export async function saveQuiz(quiz: QuizInput, lang: string) {
     });
 
     for (const lesson of lessons) {
-      const qCount = lesson.endIndex !== undefined && lesson.startIndex !== undefined
-        ? (lesson.endIndex - lesson.startIndex + 1)
-        : lesson.questionsCount;
+      const qCount =
+        lesson.endIndex !== undefined && lesson.startIndex !== undefined
+          ? lesson.endIndex - lesson.startIndex + 1
+          : lesson.questionsCount;
 
       await tx.quizLesson.upsert({
         where: {
@@ -201,10 +204,10 @@ export async function startQuizAttempt(quizId: string) {
     include: {
       quizLessons: {
         include: {
-          lesson: true
-        }
-      }
-    }
+          lesson: true,
+        },
+      },
+    },
   });
 
   if (!quiz) {
@@ -217,15 +220,12 @@ export async function startQuizAttempt(quizId: string) {
   for (const ql of quiz.quizLessons) {
     const lessonQuestions = await prisma.question.findMany({
       where: { lessonId: ql.lessonId },
-      orderBy: [
-        { index: "asc" },
-        { createdAt: "asc" }
-      ],
+      orderBy: [{ index: "asc" }, { createdAt: "asc" }],
       include: {
         answers: {
-          orderBy: { order: "asc" }
-        }
-      }
+          orderBy: { order: "asc" },
+        },
+      },
     });
 
     if (lessonQuestions.length === 0) continue;
@@ -267,9 +267,9 @@ export async function startQuizAttempt(quizId: string) {
       startedAt: new Date(),
       quizAttemptQuestions: {
         create: finalQuestions.map((q) => ({
-          questionId: q.id
-        }))
-      }
+          questionId: q.id,
+        })),
+      },
     },
     include: {
       quiz: true,
@@ -277,12 +277,12 @@ export async function startQuizAttempt(quizId: string) {
         include: {
           question: {
             include: {
-              answers: true
-            }
-          }
-        }
-      }
-    }
+              answers: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return attempt;
@@ -305,17 +305,17 @@ export async function getActiveQuizAttempt(quizId: string) {
           question: {
             include: {
               answers: {
-                orderBy: { order: "asc" }
-              }
-            }
+                orderBy: { order: "asc" },
+              },
+            },
           },
-          selectedAnswer: true
-        }
-      }
+          selectedAnswer: true,
+        },
+      },
     },
     orderBy: {
-      startedAt: "desc"
-    }
+      startedAt: "desc",
+    },
   });
 
   if (!attempt) return null;
@@ -325,7 +325,12 @@ export async function getActiveQuizAttempt(quizId: string) {
   if (elapsedMinutes >= attempt.quiz.duration) {
     await prisma.quizAttempt.update({
       where: { id: attempt.id },
-      data: { endedAt: new Date(new Date(attempt.startedAt).getTime() + attempt.quiz.duration * 60 * 1000) }
+      data: {
+        endedAt: new Date(
+          new Date(attempt.startedAt).getTime() +
+            attempt.quiz.duration * 60 * 1000,
+        ),
+      },
     });
     return null;
   }
@@ -346,23 +351,31 @@ export async function getQuizAttempt(attemptId: string) {
           question: {
             include: {
               answers: {
-                orderBy: { order: "asc" }
+                orderBy: { order: "asc" },
               },
               questionInteractions: {
-                where: { userId: user.id }
-              }
-            }
+                where: { userId: user.id },
+              },
+              lesson: {
+                include: {
+                  course: true,
+                },
+              },
+            },
           },
-          selectedAnswer: true
-        }
-      }
-    }
+          selectedAnswer: true,
+        },
+      },
+    },
   });
 
   return attempt;
 }
 
-export async function submitQuizAnswer(attemptQuestionId: string, answerId: string | null) {
+export async function submitQuizAnswer(
+  attemptQuestionId: string,
+  answerId: string | null,
+) {
   const user = await readSession();
   if (!user) throw new Error("Not authenticated");
 
@@ -370,8 +383,8 @@ export async function submitQuizAnswer(attemptQuestionId: string, answerId: stri
     where: { id: attemptQuestionId },
     data: {
       selectedAnswerId: answerId,
-      answeredAt: answerId ? new Date() : null
-    }
+      answeredAt: answerId ? new Date() : null,
+    },
   });
 
   return attemptQuestion;
@@ -384,8 +397,8 @@ export async function finishQuizAttempt(attemptId: string) {
   const attempt = await prisma.quizAttempt.update({
     where: { id: attemptId },
     data: {
-      endedAt: new Date()
-    }
+      endedAt: new Date(),
+    },
   });
 
   revalidatePath(`/[lang]/app/quizzes/${attempt.quizId}`, "page");
@@ -393,7 +406,10 @@ export async function finishQuizAttempt(attemptId: string) {
   return attempt;
 }
 
-export async function saveQuestionInteraction(questionId: string, state: string) {
+export async function saveQuestionInteraction(
+  questionId: string,
+  state: string,
+) {
   const user = await readSession();
   if (!user) throw new Error("Not authenticated");
 
@@ -401,18 +417,20 @@ export async function saveQuestionInteraction(questionId: string, state: string)
     where: {
       userId_questionId: {
         userId: user.id,
-        questionId: questionId
-      }
+        questionId: questionId,
+      },
     },
     create: {
       userId: user.id,
       questionId: questionId,
-      state: state
+      state: state,
     },
     update: {
-      state: state
-    }
+      state: state,
+    },
   });
+
+  updateTag(`question-${questionId}-interaction`);
 
   return interaction;
 }
@@ -425,18 +443,18 @@ export async function getQuizAttempts(quizId: string) {
     where: {
       userId: user.id,
       quizId: quizId,
-      endedAt: { not: null }
+      endedAt: { not: null },
     },
     include: {
       quizAttemptQuestions: {
         include: {
-          selectedAnswer: true
-        }
-      }
+          selectedAnswer: true,
+        },
+      },
     },
     orderBy: {
-      startedAt: "desc"
-    }
+      startedAt: "desc",
+    },
   });
 
   return attempts;
@@ -446,62 +464,40 @@ export async function getHardestQuestions() {
   const user = await readSession();
   if (!user) return [];
 
-  const interactions = await prisma.questionInteraction.findMany({
-    where: { userId: user.id },
-    include: {
-      question: {
-        include: {
-          answers: {
-            orderBy: { order: "asc" }
-          },
-          lesson: {
-            include: {
-              course: true
-            }
-          }
-        }
-      }
-    }
-  });
-
   const attemptQuestions = await prisma.quizAttemptQuestion.findMany({
     where: {
       quizAttempt: {
-        userId: user.id
-      }
+        userId: user.id,
+      },
     },
     include: {
       selectedAnswer: true,
       question: {
         include: {
           answers: {
-            orderBy: { order: "asc" }
+            orderBy: { order: "asc" },
+          },
+          questionInteractions: {
+            where: { userId: user.id },
           },
           lesson: {
             include: {
-              course: true
-            }
-          }
-        }
-      }
-    }
+              course: true,
+            },
+          },
+        },
+      },
+    },
   });
 
-  const questionMap = new Map<string, {
-    question: any;
-    incorrectCount: number;
-    totalAttempts: number;
-    interactionState: string | null;
-  }>();
-
-  for (const inter of interactions) {
-    questionMap.set(inter.questionId, {
-      question: inter.question,
-      incorrectCount: 0,
-      totalAttempts: 0,
-      interactionState: inter.state
-    });
-  }
+  const questionMap = new Map<
+    string,
+    {
+      question: (typeof attemptQuestions)[number]["question"];
+      incorrectCount: number;
+      totalAttempts: number;
+    }
+  >();
 
   for (const aq of attemptQuestions) {
     const qId = aq.questionId;
@@ -510,7 +506,6 @@ export async function getHardestQuestions() {
         question: aq.question,
         incorrectCount: 0,
         totalAttempts: 0,
-        interactionState: null
       });
     }
 
@@ -523,11 +518,11 @@ export async function getHardestQuestions() {
 
   const result = Array.from(questionMap.values()).map((stats) => {
     let score = 0;
-    if (stats.interactionState === "CONFUSED") {
+    if (stats.question.questionInteractions[0]?.state === "CONFUSED") {
       score += 10;
-    } else if (stats.interactionState === "UNSURE") {
+    } else if (stats.question.questionInteractions[0]?.state === "UNSURE") {
       score += 5;
-    } else if (stats.interactionState === "MASTERED") {
+    } else if (stats.question.questionInteractions[0]?.state === "MASTERED") {
       score -= 5;
     }
 
@@ -537,8 +532,7 @@ export async function getHardestQuestions() {
       ...stats.question,
       incorrectCount: stats.incorrectCount,
       totalAttempts: stats.totalAttempts,
-      interactionState: stats.interactionState,
-      difficultyScore: score
+      difficultyScore: score,
     };
   });
 

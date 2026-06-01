@@ -1,24 +1,56 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { toast } from "sonner";
-import { Check, X, AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, Clock, ShieldCheck, HelpCircle, Eye, History } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  finishQuizAttempt,
+  saveQuestionInteraction,
+  startQuizAttempt,
+  submitQuizAnswer,
+} from "@/actions/quizzes";
 import { Button } from "@/components/ui/button";
-import { startQuizAttempt, submitQuizAnswer, finishQuizAttempt, saveQuestionInteraction } from "@/actions/quizzes";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Dictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/locales";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Clock,
+  Eye,
+  HelpCircle,
+  History,
+  RotateCcw,
+  ShieldCheck,
+  X,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { QuestionDetailsDialog } from "./question-details-dialog";
 
 interface QuizSessionProps {
   quizId: string;
   lang: Locale;
+  dict: Dictionary;
   initialAttempt: any;
   pastAttempts?: any[];
   isPremium?: boolean;
 }
 
-export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], isPremium = false }: QuizSessionProps) {
+export function QuizSession({
+  quizId,
+  lang,
+  dict,
+  initialAttempt,
+  pastAttempts = [],
+  isPremium = false,
+}: QuizSessionProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [attempt, setAttempt] = useState<any>(initialAttempt);
@@ -26,9 +58,12 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [interactions, setInteractions] = useState<{ [qId: string]: string }>({});
-  const [showDescriptions, setShowDescriptions] = useState<{ [qId: string]: boolean }>({});
-  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
+  const [showDescriptions, setShowDescriptions] = useState<{
+    [qId: string]: boolean;
+  }>({});
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
+    number | null
+  >(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Synchronize state with props when switching attempts via URL
@@ -39,41 +74,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   }, [initialAttempt]);
 
   const isFa = lang === "fa";
-  const t = {
-    startQuiz: isFa ? "شروع آزمون" : "Start Quiz",
-    resumeQuiz: isFa ? "ادامه آزمون" : "Resume Quiz",
-    timer: isFa ? "زمان باقی‌مانده" : "Time Remaining",
-    question: isFa ? "سوال" : "Question",
-    next: isFa ? "بعدی" : "Next",
-    previous: isFa ? "قبلی" : "Previous",
-    submit: isFa ? "ثبت نهایی" : "Submit Quiz",
-    result: isFa ? "نتیجه آزمون" : "Quiz Result",
-    score: isFa ? "نمره" : "Score",
-    correctAnswers: isFa ? "پاسخ‌های صحیح" : "Correct Answers",
-    incorrectAnswers: isFa ? "پاسخ‌های نادرست" : "Incorrect Answers",
-    unanswered: isFa ? "بدون پاسخ" : "Unanswered",
-    backToQuizzes: isFa ? "بازگشت به آزمون‌ها" : "Back to Quizzes",
-    mastered: isFa ? "تسلط کامل" : "Mastered",
-    unsure: isFa ? "شک دارم" : "Unsure",
-    confused: isFa ? "نیاز به بررسی" : "Confused",
-    yourAnswer: isFa ? "پاسخ شما" : "Your Answer",
-    correctAnswer: isFa ? "پاسخ صحیح" : "Correct Answer",
-    startNewAttempt: isFa ? "شرکت مجدد در آزمون" : "Start New Attempt",
-    duration: isFa ? "مدت زمان" : "Duration",
-    minutes: isFa ? "دقیقه" : "minutes",
-    totalQuestions: isFa ? "تعداد کل سوالات" : "Total Questions",
-    unansweredWarning: isFa ? "برخی از سوالات بی‌پاسخ هستند. آیا مطمئنید؟" : "Some questions are unanswered. Are you sure?",
-    saving: isFa ? "در حال ثبت..." : "Saving...",
-    quizCompleted: isFa ? "آزمون به پایان رسید" : "Quiz finished",
-    history: isFa ? "تاریخچه تلاش‌ها" : "Attempt History",
-    date: isFa ? "تاریخ" : "Date",
-    viewResult: isFa ? "مشاهده نتیجه" : "View Result",
-    showDescription: isFa ? "مشاهده توضیح" : "Show Description",
-    premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
-    of: isFa ? "از" : "of",
-    incorrect: isFa ? "نادرست" : "Incorrect",
-    totalAttempts: isFa ? "کل تلاش‌ها" : "Total Attempts",
-  };
+  const t = dict.app.admin.quizzes.session;
 
   // Start countdown if attempt is active
   useEffect(() => {
@@ -99,18 +100,6 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
         clearInterval(timerRef.current);
       }
       setRemainingTime(null);
-    }
-
-    // Load initial interactions if we are viewing results
-    if (attempt && attempt.endedAt) {
-      const initialInteractions: { [qId: string]: string } = {};
-      attempt.quizAttemptQuestions?.forEach((aq: any) => {
-        const userInter = aq.question.questionInteractions?.[0];
-        if (userInter) {
-          initialInteractions[aq.questionId] = userInter.state;
-        }
-      });
-      setInteractions(initialInteractions);
     }
 
     return () => {
@@ -168,9 +157,11 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   const handleSubmit = async () => {
     if (!attempt) return;
 
-    const unansweredCount = attempt.quizAttemptQuestions.filter((aq: any) => !aq.selectedAnswerId).length;
+    const unansweredCount = attempt.quizAttemptQuestions.filter(
+      (aq: any) => !aq.selectedAnswerId,
+    ).length;
     if (unansweredCount > 0) {
-      if (!confirm(t.unansweredWarning)) {
+      if (!confirm(t.unanswered_warning)) {
         return;
       }
     }
@@ -178,7 +169,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
     setIsSubmitting(true);
     try {
       await finishQuizAttempt(attempt.id);
-      toast.success(t.quizCompleted);
+      toast.success(t.quiz_completed);
       router.push(`${pathname}?attemptId=${attempt.id}`);
       router.refresh();
     } catch (err) {
@@ -190,22 +181,23 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   };
 
   const handleSaveInteraction = async (questionId: string, state: string) => {
-    setInteractions((prev) => ({ ...prev, [questionId]: state }));
     try {
       await saveQuestionInteraction(questionId, state);
       toast.success(isFa ? "ذخیره شد" : "Saved");
     } catch (err) {
       console.error(err);
-      toast.error(isFa ? "خطا در ذخیره وضعیت" : "Failed to save interaction state");
+      toast.error(
+        isFa ? "خطا در ذخیره وضعیت" : "Failed to save interaction state",
+      );
     }
   };
 
   const toggleDescription = (qId: string) => {
     if (!isPremium) {
-      toast.info(t.premiumOnly);
+      toast.info(t.premium_only);
       return;
     }
-    setShowDescriptions(prev => ({ ...prev, [qId]: !prev[qId] }));
+    setShowDescriptions((prev) => ({ ...prev, [qId]: !prev[qId] }));
   };
 
   const formatTime = (ms: number) => {
@@ -226,24 +218,46 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
         </h3>
         <div className="grid gap-3">
           {pastAttempts.map((pa) => {
-            const paCorrect = pa.quizAttemptQuestions.filter((aq: any) => aq.selectedAnswer?.isCorrect).length;
+            const paCorrect = pa.quizAttemptQuestions.filter(
+              (aq: any) => aq.selectedAnswer?.isCorrect,
+            ).length;
             const paTotal = pa.quizAttemptQuestions.length;
             const paScore = Math.round((paCorrect / paTotal) * 100);
             return (
-              <Card key={pa.id} className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => router.push(`${pathname}?attemptId=${pa.id}`)}>
+              <Card
+                key={pa.id}
+                className="hover:border-primary/50 transition-colors cursor-pointer group"
+                onClick={() => router.push(`${pathname}?attemptId=${pa.id}`)}
+              >
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex flex-col">
-                    <span className="text-sm font-semibold">{new Date(pa.startedAt).toLocaleString(isFa ? "fa-IR" : "en-US")}</span>
-                    <span className="text-xs text-muted-foreground">{paTotal} {isFa ? "سوال" : "questions"}</span>
+                    <span className="text-sm font-semibold">
+                      {new Date(pa.startedAt).toLocaleString(
+                        isFa ? "fa-IR" : "en-US",
+                      )}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {paTotal} {isFa ? "سوال" : "questions"}
+                    </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex flex-col items-end">
-                      <span className={`text-sm font-bold ${paScore >= 70 ? "text-green-600" : paScore >= 40 ? "text-yellow-600" : "text-red-600"}`}>{paScore}%</span>
-                      <span className="text-[10px] text-muted-foreground uppercase">{t.score}</span>
+                      <span
+                        className={`text-sm font-bold ${paScore >= 70 ? "text-green-600" : paScore >= 40 ? "text-yellow-600" : "text-red-600"}`}
+                      >
+                        {paScore}%
+                      </span>
+                      <span className="text-[10px] text-muted-foreground uppercase">
+                        {t.score}
+                      </span>
                     </div>
-                    <Button variant="ghost" size="sm" className="gap-1.5 text-xs group-hover:bg-primary/10 transition-colors">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1.5 text-xs group-hover:bg-primary/10 transition-colors"
+                    >
                       <Eye className="w-3.5 h-3.5" />
-                      {t.viewResult}
+                      {t.view_result}
                     </Button>
                   </div>
                 </CardContent>
@@ -268,14 +282,18 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
             <div className="flex justify-center gap-8 py-4">
               <div className="flex flex-col items-center bg-muted/40 p-4 rounded-xl border border-border/20 min-w-32">
                 <Clock className="w-8 h-8 text-blue-500 mb-2" />
-                <span className="text-xs text-muted-foreground">{t.duration}</span>
+                <span className="text-xs text-muted-foreground">
+                  {t.duration}
+                </span>
                 <span className="text-lg font-bold mt-1">
                   {initialAttempt?.quiz?.duration} {t.minutes}
                 </span>
               </div>
               <div className="flex flex-col items-center bg-muted/40 p-4 rounded-xl border border-border/20 min-w-32">
                 <HelpCircle className="w-8 h-8 text-indigo-500 mb-2" />
-                <span className="text-xs text-muted-foreground">{t.totalQuestions}</span>
+                <span className="text-xs text-muted-foreground">
+                  {t.total_questions}
+                </span>
                 <span className="text-lg font-bold mt-1">
                   {initialAttempt?.quiz?.questionCount}
                 </span>
@@ -294,7 +312,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
               onClick={handleStart}
               disabled={isStarting}
             >
-              {isStarting ? t.saving : t.startQuiz}
+              {isStarting ? t.saving : t.start_quiz}
             </Button>
           </CardFooter>
         </Card>
@@ -312,7 +330,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
 
     if (!currentAq) return <div>No questions loaded.</div>;
 
-    const answeredCount = aqList.filter((aq: any) => aq.selectedAnswerId).length;
+    const answeredCount = aqList.filter(
+      (aq: any) => aq.selectedAnswerId,
+    ).length;
     const progressPercent = (answeredCount / totalQuestions) * 100;
 
     return (
@@ -322,7 +342,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           <div className="flex items-center gap-3 bg-card p-3 rounded-xl border border-border/40 shadow-sm">
             <Clock className="w-5 h-5 text-red-500 animate-pulse" />
             <div>
-              <div className="text-[10px] text-muted-foreground font-semibold uppercase">{t.timer}</div>
+              <div className="text-[10px] text-muted-foreground font-semibold uppercase">
+                {t.timer}
+              </div>
               <div className="text-xl font-mono font-bold text-red-500">
                 {remainingTime !== null ? formatTime(remainingTime) : "--:--"}
               </div>
@@ -332,10 +354,15 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           <div className="md:col-span-2 bg-card p-3 rounded-xl border border-border/40 shadow-sm">
             <div className="flex justify-between items-center mb-1 text-xs font-semibold text-muted-foreground">
               <span>{isFa ? "پیشرفت پاسخ‌دهی" : "Answer Progress"}</span>
-              <span>{answeredCount} / {totalQuestions}</span>
+              <span>
+                {answeredCount} / {totalQuestions}
+              </span>
             </div>
             <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-              <div className="bg-blue-600 h-full transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+              <div
+                className="bg-blue-600 h-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           </div>
         </div>
@@ -356,22 +383,25 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                 className="text-xs text-muted-foreground gap-1"
               >
                 <Eye className="w-3.5 h-3.5" />
-                {t.showDescription}
+                {t.show_description}
               </Button>
             )}
           </CardHeader>
           <CardContent className="pt-6 space-y-6">
-            <div 
+            <div
               className="text-xl font-semibold leading-relaxed text-foreground select-none"
               dangerouslySetInnerHTML={{ __html: currentAq.question.title }}
             />
 
-            {showDescriptions[currentAq.questionId] && currentAq.question.description && (
-              <div 
-                className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
-                dangerouslySetInnerHTML={{ __html: currentAq.question.description }}
-              />
-            )}
+            {showDescriptions[currentAq.questionId] &&
+              currentAq.question.description && (
+                <div
+                  className="p-4 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-sm text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
+                  dangerouslySetInnerHTML={{
+                    __html: currentAq.question.description,
+                  }}
+                />
+              )}
 
             <div className="grid gap-3 pt-2">
               {currentAq.question.answers.map((answer: any) => {
@@ -386,12 +416,21 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                         : "border-border/60 hover:border-border hover:bg-muted/30 text-foreground"
                     }`}
                   >
-                    <span className={`w-5 h-5 rounded-full border flex items-center justify-center me-3 mt-0.5 shrink-0 ${
-                      isSelected ? "border-blue-600 bg-blue-600 text-white" : "border-muted-foreground/40"
-                    }`}>
-                      {isSelected && <span className="w-2 h-2 bg-white rounded-full" />}
+                    <span
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center me-3 mt-0.5 shrink-0 ${
+                        isSelected
+                          ? "border-blue-600 bg-blue-600 text-white"
+                          : "border-muted-foreground/40"
+                      }`}
+                    >
+                      {isSelected && (
+                        <span className="w-2 h-2 bg-white rounded-full" />
+                      )}
                     </span>
-                    <span className="font-medium" dangerouslySetInnerHTML={{ __html: answer.title }} />
+                    <span
+                      className="font-medium"
+                      dangerouslySetInnerHTML={{ __html: answer.title }}
+                    />
                   </button>
                 );
               })}
@@ -402,19 +441,33 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                onClick={() => setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))}
+                onClick={() =>
+                  setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))
+                }
                 disabled={currentQuestionIndex === 0}
               >
-                {isFa ? <ArrowRight className="w-4 h-4 me-2" /> : <ArrowLeft className="w-4 h-4 me-2" />}
+                {isFa ? (
+                  <ArrowRight className="w-4 h-4 me-2" />
+                ) : (
+                  <ArrowLeft className="w-4 h-4 me-2" />
+                )}
                 {t.previous}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setCurrentQuestionIndex((prev) => Math.min(totalQuestions - 1, prev + 1))}
+                onClick={() =>
+                  setCurrentQuestionIndex((prev) =>
+                    Math.min(totalQuestions - 1, prev + 1),
+                  )
+                }
                 disabled={currentQuestionIndex === totalQuestions - 1}
               >
                 {t.next}
-                {isFa ? <ArrowLeft className="w-4 h-4 ms-2" /> : <ArrowRight className="w-4 h-4 ms-2" />}
+                {isFa ? (
+                  <ArrowLeft className="w-4 h-4 ms-2" />
+                ) : (
+                  <ArrowRight className="w-4 h-4 ms-2" />
+                )}
               </Button>
             </div>
 
@@ -456,8 +509,8 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                     isSelected
                       ? "bg-blue-600 text-white shadow-md scale-110 ring-2 ring-blue-400"
                       : isAnswered
-                      ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border/40"
+                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900/60"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80 border border-border/40"
                   }`}
                 >
                   {idx + 1}
@@ -473,10 +526,17 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   // Quiz Result & Review Screen
   const aqList = attempt.quizAttemptQuestions;
   const totalCount = aqList.length;
-  const correctCount = aqList.filter((aq: any) => aq.selectedAnswer && aq.selectedAnswer.isCorrect).length;
-  const incorrectCount = aqList.filter((aq: any) => aq.selectedAnswer && !aq.selectedAnswer.isCorrect).length;
-  const unansweredCount = aqList.filter((aq: any) => !aq.selectedAnswerId).length;
-  const scorePercent = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+  const correctCount = aqList.filter(
+    (aq: any) => aq.selectedAnswer && aq.selectedAnswer.isCorrect,
+  ).length;
+  const incorrectCount = aqList.filter(
+    (aq: any) => aq.selectedAnswer && !aq.selectedAnswer.isCorrect,
+  ).length;
+  const unansweredCount = aqList.filter(
+    (aq: any) => !aq.selectedAnswerId,
+  ).length;
+  const scorePercent =
+    totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 space-y-6">
@@ -490,7 +550,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
               className="bg-white/10 hover:bg-white/20 text-white border-0"
             >
               <ArrowLeft className="w-4 h-4 me-2" />
-              {t.backToQuizzes}
+              {t.back_to_quizzes}
             </Button>
           </div>
 
@@ -499,8 +559,12 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
 
           <div className="pt-4 flex justify-center items-center">
             <div className="w-32 h-32 rounded-full border-4 border-white/30 flex flex-col items-center justify-center bg-white/10 shadow-inner">
-              <span className="text-4xl font-bold font-mono">{scorePercent}%</span>
-              <span className="text-[10px] text-blue-100 font-semibold tracking-wider uppercase mt-1">{t.score}</span>
+              <span className="text-4xl font-bold font-mono">
+                {scorePercent}%
+              </span>
+              <span className="text-[10px] text-blue-100 font-semibold tracking-wider uppercase mt-1">
+                {t.score}
+              </span>
             </div>
           </div>
         </div>
@@ -509,14 +573,14 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-1.5 text-green-600 dark:text-green-400 font-semibold">
               <Check className="w-4 h-4" />
-              <span>{t.correctAnswers}</span>
+              <span>{t.correct_answers}</span>
             </div>
             <div className="text-2xl font-bold font-mono">{correctCount}</div>
           </div>
           <div className="space-y-1">
             <div className="flex items-center justify-center gap-1.5 text-red-600 dark:text-red-400 font-semibold">
               <X className="w-4 h-4" />
-              <span>{t.incorrectAnswers}</span>
+              <span>{t.incorrect_answers}</span>
             </div>
             <div className="text-2xl font-bold font-mono">{incorrectCount}</div>
           </div>
@@ -525,7 +589,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
               <AlertTriangle className="w-4 h-4" />
               <span>{t.unanswered}</span>
             </div>
-            <div className="text-2xl font-bold font-mono">{unansweredCount}</div>
+            <div className="text-2xl font-bold font-mono">
+              {unansweredCount}
+            </div>
           </div>
         </CardContent>
 
@@ -536,7 +602,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-sm"
           >
             <RotateCcw className="w-4 h-4 me-2" />
-            {t.startNewAttempt}
+            {t.start_new_attempt}
           </Button>
           <Button
             variant="outline"
@@ -558,10 +624,13 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {aqList.map((aq: any, idx: number) => {
-            const state = interactions[aq.questionId] || null;
+            const state = aq.question.questionInteractions[0]?.state || null;
 
             return (
-              <Card key={aq.id} className="border border-border/40 shadow-sm bg-card hover:border-border transition-all flex flex-col">
+              <Card
+                key={aq.id}
+                className="border border-border/40 shadow-sm bg-card hover:border-border transition-all flex flex-col"
+              >
                 <CardHeader className="py-4 border-b border-border/10 flex flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
                     <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-lg text-xs font-semibold font-mono">
@@ -571,7 +640,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
 
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => handleSaveInteraction(aq.questionId, "MASTERED")}
+                      onClick={() =>
+                        handleSaveInteraction(aq.questionId, "MASTERED")
+                      }
                       className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
                         state === "MASTERED"
                           ? "bg-green-600 border-green-600 text-white shadow-sm"
@@ -582,7 +653,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                       <ShieldCheck className="w-3.5 h-3.5" />
                     </button>
                     <button
-                      onClick={() => handleSaveInteraction(aq.questionId, "UNSURE")}
+                      onClick={() =>
+                        handleSaveInteraction(aq.questionId, "UNSURE")
+                      }
                       className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
                         state === "UNSURE"
                           ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
@@ -593,7 +666,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                       <AlertTriangle className="w-3.5 h-3.5" />
                     </button>
                     <button
-                      onClick={() => handleSaveInteraction(aq.questionId, "CONFUSED")}
+                      onClick={() =>
+                        handleSaveInteraction(aq.questionId, "CONFUSED")
+                      }
                       className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
                         state === "CONFUSED"
                           ? "bg-red-600 border-red-600 text-white shadow-sm"
@@ -607,7 +682,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                 </CardHeader>
 
                 <CardContent className="pt-4 flex-1 flex flex-col justify-between space-y-4">
-                  <div 
+                  <div
                     className="font-semibold text-base leading-relaxed text-foreground select-none line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: aq.question.title }}
                   />
@@ -620,7 +695,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                       onClick={() => setSelectedQuestionIndex(idx)}
                     >
                       <Eye className="w-3.5 h-3.5" />
-                      {t.viewResult}
+                      {t.view_result}
                     </Button>
                   </div>
                 </CardContent>
@@ -638,19 +713,36 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           }
         }}
         lang={lang}
-        t={{
-          ...t,
-          questionDetails: isFa ? "جزئیات سوال و پاسخ" : "Question Details & Answer",
-        }}
-        currentQuestion={selectedQuestionIndex !== null ? aqList[selectedQuestionIndex].question : null}
+        dict={dict}
+        currentQuestion={
+          selectedQuestionIndex !== null
+            ? aqList[selectedQuestionIndex].question
+            : null
+        }
         currentIndex={selectedQuestionIndex ?? 0}
         totalCount={aqList.length}
-        onNext={() => selectedQuestionIndex !== null && selectedQuestionIndex < aqList.length - 1 && setSelectedQuestionIndex(selectedQuestionIndex + 1)}
-        onPrev={() => selectedQuestionIndex !== null && selectedQuestionIndex > 0 && setSelectedQuestionIndex(selectedQuestionIndex - 1)}
+        onNext={() =>
+          selectedQuestionIndex !== null &&
+          selectedQuestionIndex < aqList.length - 1 &&
+          setSelectedQuestionIndex(selectedQuestionIndex + 1)
+        }
+        onPrev={() =>
+          selectedQuestionIndex !== null &&
+          selectedQuestionIndex > 0 &&
+          setSelectedQuestionIndex(selectedQuestionIndex - 1)
+        }
         onSaveInteraction={handleSaveInteraction}
-        showDescription={selectedQuestionIndex !== null ? showDescriptions[aqList[selectedQuestionIndex].questionId] : false}
+        showDescription={
+          selectedQuestionIndex !== null
+            ? showDescriptions[aqList[selectedQuestionIndex].questionId]
+            : false
+        }
         onToggleDescription={(qId) => toggleDescription(qId)}
-        selectedAnswerId={selectedQuestionIndex !== null ? aqList[selectedQuestionIndex].selectedAnswerId : null}
+        selectedAnswerId={
+          selectedQuestionIndex !== null
+            ? aqList[selectedQuestionIndex].selectedAnswerId
+            : null
+        }
       />
 
       {renderHistory()}

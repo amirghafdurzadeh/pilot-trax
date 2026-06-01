@@ -1,40 +1,36 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { toast } from "sonner";
 import {
-  ShieldCheck,
-  Check,
-  X,
-  AlertTriangle,
-  Eye,
-  FilterIcon,
-  XIcon,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { saveQuestionInteraction } from "@/actions/quizzes";
-import { Locale } from "@/lib/locales";
+  getHardestQuestions,
+  saveQuestionInteraction,
+} from "@/actions/quizzes";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { AppSearch } from "@/components/core/app-search";
 import { CourseCombobox } from "@/components/core/course-combobox";
 import { LessonCombobox } from "@/components/core/lesson-combobox";
 import { StatusCombobox } from "@/components/core/status-combobox";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Dictionary } from "@/lib/dictionaries";
+import { Locale } from "@/lib/locales";
+import {
+  AlertTriangle,
+  Eye,
+  FilterIcon,
+  ShieldCheck,
+  X,
+  XIcon,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { QuestionDetailsDialog } from "./question-details-dialog";
 
 interface ClientWeaknessesProps {
   lang: Locale;
-  dict: any;
-  initialQuestions: any[];
+  dict: Dictionary;
+  initialQuestions: Awaited<ReturnType<typeof getHardestQuestions>>;
   isPremium: boolean;
 }
 
@@ -44,7 +40,6 @@ export function ClientWeaknesses({
   initialQuestions,
   isPremium,
 }: ClientWeaknessesProps) {
-  const [questions, setQuestions] = useState(initialQuestions);
   const [search, setSearch] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
@@ -52,41 +47,12 @@ export function ClientWeaknesses({
   const [showDescriptions, setShowDescriptions] = useState<{
     [qId: string]: boolean;
   }>({});
-  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<
+    number | null
+  >(null);
 
   const questionsDict = dict.app.admin.questions;
-  const isFa = lang === "fa";
-
-  const t = {
-    showDescription: isFa ? "مشاهده توضیح" : "Show Description",
-    premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
-    viewDetails: isFa ? "مشاهده جزئیات" : "View Details",
-    incorrect: isFa ? "نادرست: " : "Incorrect: ",
-    totalAttempts: isFa ? "کل پاسخ‌ها: " : "Total Attempts: ",
-    mastered: isFa ? "تسلط کامل" : "Mastered",
-    unsure: isFa ? "شک دارم" : "Unsure",
-    confused: isFa ? "نیاز به بررسی" : "Confused",
-    searchPlaceholder: isFa ? "جستجو در سوالات..." : "Search questions...",
-    allCourses: isFa ? "همه دوره‌ها" : "All Courses",
-    allLessons: isFa ? "همه دروس" : "All Lessons",
-    statusFilter: isFa ? "فیلتر وضعیت" : "Status Filter",
-    allStatuses: isFa ? "همه وضعیت‌ها" : "All Statuses",
-    noQuestionsFound: isFa
-      ? "هیچ سوالی با این مشخصات یافت نشد."
-      : "No questions found matching your filters.",
-    questionDetails: isFa ? "جزئیات سوال" : "Question Details",
-    saved: isFa ? "ذخیره شد" : "Saved",
-    failedToSave: isFa ? "خطا در ذخیره وضعیت" : "Failed to save state",
-    clearFiltersTooltip: isFa ? "پاک کردن فیلترها" : "Clear Filters",
-    title: isFa ? "نقاط ضعف و سوالات دشوار" : "Weaknesses & Hard Questions",
-    description: isFa ? "مرور سوالاتی که در آن‌ها چالش داشتید" : "Review questions you've struggled with",
-    noStatusFound: isFa ? "وضعیتی یافت نشد." : "No status found.",
-    searchStatusPlaceholder: isFa ? "جستجوی وضعیت..." : "Search status...",
-    next: isFa ? "بعدی" : "Next",
-    previous: isFa ? "قبلی" : "Previous",
-    of: isFa ? "از" : "of",
-    question: isFa ? "سوال" : "Question",
-  };
+  const t = dict.app.admin.weaknesses;
 
   const coursesData = useMemo(() => {
     const courseMap = new Map<string, { id: string; title: string }>();
@@ -123,29 +89,32 @@ export function ClientWeaknesses({
     return lessonsData.filter((lesson) => lesson.courseId === selectedCourseId);
   }, [selectedCourseId, lessonsData]);
 
-  const statusesData = useMemo(() => [
-    {
-      id: "MASTERED",
-      title: t.mastered,
-      icon: <ShieldCheck className="w-4 h-4 text-green-600" />,
-      className: "text-green-600 dark:text-green-400"
-    },
-    {
-      id: "UNSURE",
-      title: t.unsure,
-      icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />,
-      className: "text-yellow-600 dark:text-yellow-400"
-    },
-    {
-      id: "CONFUSED",
-      title: t.confused,
-      icon: <X className="w-4 h-4 text-red-600" />,
-      className: "text-red-600 dark:text-red-400"
-    },
-  ], [t.mastered, t.unsure, t.confused]);
+  const statusesData = useMemo(
+    () => [
+      {
+        id: "MASTERED",
+        title: t.mastered,
+        icon: <ShieldCheck className="w-4 h-4 text-green-600" />,
+        className: "text-green-600 dark:text-green-400",
+      },
+      {
+        id: "UNSURE",
+        title: t.unsure,
+        icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />,
+        className: "text-yellow-600 dark:text-yellow-400",
+      },
+      {
+        id: "CONFUSED",
+        title: t.confused,
+        icon: <X className="w-4 h-4 text-red-600" />,
+        className: "text-red-600 dark:text-red-400",
+      },
+    ],
+    [t.mastered, t.unsure, t.confused],
+  );
 
   const filteredQuestions = useMemo(() => {
-    return questions.filter((q) => {
+    return initialQuestions.filter((q) => {
       const matchesSearch = q.title
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -154,29 +123,30 @@ export function ClientWeaknesses({
       const matchesLesson =
         !selectedLessonId || q.lesson?.id === selectedLessonId;
       const matchesHardness =
-        hardnessFilter === "all" || q.interactionState === hardnessFilter;
+        hardnessFilter === "all" || q.questionInteractions[0]?.state === hardnessFilter;
       return matchesSearch && matchesCourse && matchesLesson && matchesHardness;
     });
-  }, [questions, search, selectedCourseId, selectedLessonId, hardnessFilter]);
+  }, [
+    initialQuestions,
+    search,
+    selectedCourseId,
+    selectedLessonId,
+    hardnessFilter,
+  ]);
 
   const handleSaveInteraction = async (questionId: string, state: string) => {
-    setQuestions((prev) =>
-      prev.map((q) =>
-        q.id === questionId ? { ...q, interactionState: state } : q,
-      ),
-    );
     try {
       await saveQuestionInteraction(questionId, state);
       toast.success(t.saved);
     } catch (err) {
       console.error(err);
-      toast.error(t.failedToSave);
+      toast.error(t.failed_to_save);
     }
   };
 
   const toggleDescription = (qId: string) => {
     if (!isPremium) {
-      toast.info(t.premiumOnly);
+      toast.info(t.premium_only);
       return;
     }
     setShowDescriptions((prev) => ({ ...prev, [qId]: !prev[qId] }));
@@ -190,7 +160,10 @@ export function ClientWeaknesses({
   };
 
   const handleNext = () => {
-    if (selectedQuestionIndex !== null && selectedQuestionIndex < filteredQuestions.length - 1) {
+    if (
+      selectedQuestionIndex !== null &&
+      selectedQuestionIndex < filteredQuestions.length - 1
+    ) {
       setSelectedQuestionIndex(selectedQuestionIndex + 1);
     }
   };
@@ -201,17 +174,23 @@ export function ClientWeaknesses({
     }
   };
 
-  const currentQuestion = selectedQuestionIndex !== null ? filteredQuestions[selectedQuestionIndex] : null;
+  const currentQuestion =
+    selectedQuestionIndex !== null
+      ? filteredQuestions[selectedQuestionIndex]
+      : null;
 
   const hasActiveFilters =
-    search !== "" || selectedCourseId !== "" || selectedLessonId !== "" || hardnessFilter !== "all";
+    search !== "" ||
+    selectedCourseId !== "" ||
+    selectedLessonId !== "" ||
+    hardnessFilter !== "all";
 
   return (
     <>
       <AppHeader lang={lang} dict={dict.app}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
-            placeholder={t.searchPlaceholder}
+            placeholder={t.search_placeholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -219,12 +198,8 @@ export function ClientWeaknesses({
       </AppHeader>
       <AppContent>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {t.title}
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            {t.description}
-          </p>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">{t.title}</h1>
+          <p className="text-muted-foreground text-lg">{t.description}</p>
         </div>
 
         <div className="w-full flex flex-col xl:flex-row gap-2 items-center justify-between mb-6">
@@ -254,9 +229,9 @@ export function ClientWeaknesses({
               value={hardnessFilter}
               onValueChange={setHardnessFilter}
               dict={{
-                select_status_placeholder: t.allStatuses,
-                search_placeholder: t.searchStatusPlaceholder,
-                no_status_found_message: t.noStatusFound,
+                select_status_placeholder: t.all_statuses,
+                search_placeholder: t.search_status_placeholder,
+                no_status_found_message: t.no_status_found,
               }}
               icon={<FilterIcon className="w-4 h-4 text-muted-foreground" />}
               triggerClassName="w-full md:w-fit md:min-w-[150px]"
@@ -266,7 +241,7 @@ export function ClientWeaknesses({
                 variant="ghost"
                 size="icon"
                 onClick={clearFilters}
-                title={t.clearFiltersTooltip}
+                title={t.clear_filters_tooltip}
               >
                 <XIcon className="w-4 h-4" />
               </Button>
@@ -276,7 +251,7 @@ export function ClientWeaknesses({
 
         {filteredQuestions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-muted-foreground border-2 border-dashed rounded-xl">
-            <p className="text-lg">{t.noQuestionsFound}</p>
+            <p className="text-lg">{t.no_questions_found}</p>
             {hasActiveFilters && (
               <Button variant="link" onClick={clearFilters}>
                 {questionsDict.clear_filters_button}
@@ -286,7 +261,7 @@ export function ClientWeaknesses({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredQuestions.map((q, index) => {
-              const state = q.interactionState || null;
+              const state = q.questionInteractions[0]?.state || null;
               return (
                 <Card
                   key={q.id}
@@ -301,30 +276,33 @@ export function ClientWeaknesses({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleSaveInteraction(q.id, "MASTERED")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "MASTERED"
-                          ? "bg-green-600 border-green-600 text-white shadow-sm"
-                          : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
-                          }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                          state === "MASTERED"
+                            ? "bg-green-600 border-green-600 text-white shadow-sm"
+                            : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                        }`}
                         title={t.mastered}
                       >
                         <ShieldCheck className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleSaveInteraction(q.id, "UNSURE")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "UNSURE"
-                          ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                          : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
-                          }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                          state === "UNSURE"
+                            ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                            : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                        }`}
                         title={t.unsure}
                       >
                         <AlertTriangle className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleSaveInteraction(q.id, "CONFUSED")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "CONFUSED"
-                          ? "bg-red-600 border-red-600 text-white shadow-sm"
-                          : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
-                          }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                          state === "CONFUSED"
+                            ? "bg-red-600 border-red-600 text-white shadow-sm"
+                            : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                        }`}
                         title={t.confused}
                       >
                         <X className="w-3.5 h-3.5" />
@@ -346,7 +324,7 @@ export function ClientWeaknesses({
                           </strong>
                         </span>
                         <span>
-                          {t.totalAttempts}
+                          {t.total_attempts}
                           <strong className="font-mono">
                             {q.totalAttempts}
                           </strong>
@@ -360,7 +338,7 @@ export function ClientWeaknesses({
                         onClick={() => setSelectedQuestionIndex(index)}
                       >
                         <Eye className="w-3.5 h-3.5" />
-                        {t.viewDetails}
+                        {t.view_details}
                       </Button>
                     </div>
                   </CardContent>
@@ -379,14 +357,18 @@ export function ClientWeaknesses({
             }
           }}
           lang={lang}
-          t={t}
+          dict={dict}
           currentQuestion={currentQuestion}
           currentIndex={selectedQuestionIndex ?? 0}
           totalCount={filteredQuestions.length}
           onNext={handleNext}
           onPrev={handlePrev}
           onSaveInteraction={handleSaveInteraction}
-          showDescription={selectedQuestionIndex !== null ? showDescriptions[currentQuestion?.id ?? ""] : false}
+          showDescription={
+            selectedQuestionIndex !== null
+              ? showDescriptions[currentQuestion?.id ?? ""]
+              : false
+          }
           onToggleDescription={toggleDescription}
         />
       </AppContent>
