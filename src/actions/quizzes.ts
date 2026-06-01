@@ -388,6 +388,8 @@ export async function finishQuizAttempt(attemptId: string) {
     }
   });
 
+  revalidatePath(`/[lang]/app/quizzes/${attempt.quizId}`, "page");
+
   return attempt;
 }
 

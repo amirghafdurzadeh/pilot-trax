@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { Check, X, AlertTriangle, ArrowLeft, ArrowRight, RotateCcw, Clock, ShieldCheck, HelpCircle, Eye, History } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { startQuizAttempt, submitQuizAnswer, finishQuizAttempt, saveQuestionInteraction } from "@/actions/quizzes";
 import { Locale } from "@/lib/locales";
+import { QuestionDetailsDialog } from "./question-details-dialog";
 
 interface QuizSessionProps {
   quizId: string;
@@ -19,6 +20,7 @@ interface QuizSessionProps {
 
 export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], isPremium = false }: QuizSessionProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [attempt, setAttempt] = useState<any>(initialAttempt);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
@@ -26,7 +28,15 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
   const [isStarting, setIsStarting] = useState(false);
   const [interactions, setInteractions] = useState<{ [qId: string]: string }>({});
   const [showDescriptions, setShowDescriptions] = useState<{ [qId: string]: boolean }>({});
+  const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Synchronize state with props when switching attempts via URL
+  useEffect(() => {
+    setAttempt(initialAttempt);
+    // Reset viewing index when switching attempts
+    setCurrentQuestionIndex(0);
+  }, [initialAttempt]);
 
   const isFa = lang === "fa";
   const t = {
@@ -60,6 +70,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
     viewResult: isFa ? "مشاهده نتیجه" : "View Result",
     showDescription: isFa ? "مشاهده توضیح" : "Show Description",
     premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
+    of: isFa ? "از" : "of",
+    incorrect: isFa ? "نادرست" : "Incorrect",
+    totalAttempts: isFa ? "کل تلاش‌ها" : "Total Attempts",
   };
 
   // Start countdown if attempt is active
@@ -143,7 +156,8 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
     setIsSubmitting(true);
     try {
       await finishQuizAttempt(attempt.id);
-      window.location.reload();
+      router.push(`${pathname}?attemptId=${attempt.id}`);
+      router.refresh();
     } catch (err) {
       console.error(err);
     } finally {
@@ -165,8 +179,8 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
     try {
       await finishQuizAttempt(attempt.id);
       toast.success(t.quizCompleted);
+      router.push(`${pathname}?attemptId=${attempt.id}`);
       router.refresh();
-      window.location.reload();
     } catch (err) {
       console.error(err);
       toast.error(isFa ? "خطا در ثبت آزمون" : "Failed to submit quiz");
@@ -216,7 +230,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
             const paTotal = pa.quizAttemptQuestions.length;
             const paScore = Math.round((paCorrect / paTotal) * 100);
             return (
-              <Card key={pa.id} className="hover:border-primary/50 transition-colors cursor-pointer" onClick={() => router.push(`?attemptId=${pa.id}`)}>
+              <Card key={pa.id} className="hover:border-primary/50 transition-colors cursor-pointer group" onClick={() => router.push(`${pathname}?attemptId=${pa.id}`)}>
                 <CardContent className="p-4 flex items-center justify-between">
                   <div className="flex flex-col">
                     <span className="text-sm font-semibold">{new Date(pa.startedAt).toLocaleString(isFa ? "fa-IR" : "en-US")}</span>
@@ -227,8 +241,9 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
                       <span className={`text-sm font-bold ${paScore >= 70 ? "text-green-600" : paScore >= 40 ? "text-yellow-600" : "text-red-600"}`}>{paScore}%</span>
                       <span className="text-[10px] text-muted-foreground uppercase">{t.score}</span>
                     </div>
-                    <Button variant="ghost" size="sm">
-                      <Eye className="w-4 h-4" />
+                    <Button variant="ghost" size="sm" className="gap-1.5 text-xs group-hover:bg-primary/10 transition-colors">
+                      <Eye className="w-3.5 h-3.5" />
+                      {t.viewResult}
                     </Button>
                   </div>
                 </CardContent>
@@ -526,7 +541,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           <Button
             variant="outline"
             onClick={() => {
-              router.push(`/${lang}/app/quizzes/${quizId}`);
+              router.push(`${pathname}`);
               setAttempt(null);
             }}
           >
@@ -541,121 +556,102 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           {isFa ? "مرور سوالات و وضعیت تسلط" : "Questions Review & Mastery"}
         </h3>
 
-        {aqList.map((aq: any, idx: number) => {
-          const state = interactions[aq.questionId] || null;
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {aqList.map((aq: any, idx: number) => {
+            const state = interactions[aq.questionId] || null;
 
-          return (
-            <Card key={aq.id} className="border border-border/40 shadow-sm bg-card hover:border-border transition-all">
-              <CardHeader className="py-4 border-b border-border/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-lg text-sm font-semibold font-mono">
-                    {t.question} {idx + 1}
-                  </span>
-                  {aq.question.description && (
+            return (
+              <Card key={aq.id} className="border border-border/40 shadow-sm bg-card hover:border-border transition-all flex flex-col">
+                <CardHeader className="py-4 border-b border-border/10 flex flex-row items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-muted text-muted-foreground px-2.5 py-1 rounded-lg text-xs font-semibold font-mono">
+                      {t.question} {idx + 1}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleSaveInteraction(aq.questionId, "MASTERED")}
+                      className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        state === "MASTERED"
+                          ? "bg-green-600 border-green-600 text-white shadow-sm"
+                          : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                      }`}
+                      title={t.mastered}
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleSaveInteraction(aq.questionId, "UNSURE")}
+                      className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        state === "UNSURE"
+                          ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                          : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                      }`}
+                      title={t.unsure}
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleSaveInteraction(aq.questionId, "CONFUSED")}
+                      className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
+                        state === "CONFUSED"
+                          ? "bg-red-600 border-red-600 text-white shadow-sm"
+                          : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-green-100"
+                      }`}
+                      title={t.confused}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="pt-4 flex-1 flex flex-col justify-between space-y-4">
+                  <div 
+                    className="font-semibold text-base leading-relaxed text-foreground select-none line-clamp-3"
+                    dangerouslySetInnerHTML={{ __html: aq.question.title }}
+                  />
+
+                  <div className="flex justify-end">
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => toggleDescription(aq.questionId)}
-                      className="text-xs text-muted-foreground gap-1"
+                      className="gap-1.5 h-8 text-xs"
+                      onClick={() => setSelectedQuestionIndex(idx)}
                     >
                       <Eye className="w-3.5 h-3.5" />
-                      {t.showDescription}
+                      {t.viewResult}
                     </Button>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleSaveInteraction(aq.questionId, "MASTERED")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 transition-all ${
-                      state === "MASTERED"
-                        ? "bg-green-600 border-green-600 text-white shadow-sm"
-                        : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
-                    }`}
-                  >
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    {t.mastered}
-                  </button>
-                  <button
-                    onClick={() => handleSaveInteraction(aq.questionId, "UNSURE")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 transition-all ${
-                      state === "UNSURE"
-                        ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                        : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
-                    }`}
-                  >
-                    <AlertTriangle className="w-3.5 h-3.5" />
-                    {t.unsure}
-                  </button>
-                  <button
-                    onClick={() => handleSaveInteraction(aq.questionId, "CONFUSED")}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border flex items-center gap-1 transition-all ${
-                      state === "CONFUSED"
-                        ? "bg-red-600 border-red-600 text-white shadow-sm"
-                        : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
-                    }`}
-                  >
-                    <X className="w-3.5 h-3.5" />
-                    {t.confused}
-                  </button>
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-4 space-y-4">
-                <div 
-                  className="font-semibold text-lg leading-relaxed text-foreground select-none"
-                  dangerouslySetInnerHTML={{ __html: aq.question.title }}
-                />
-
-                {showDescriptions[aq.questionId] && aq.question.description && (
-                  <div 
-                    className="p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg text-xs text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
-                    dangerouslySetInnerHTML={{ __html: aq.question.description }}
-                  />
-                )}
-
-                <div className="grid gap-2.5">
-                  {aq.question.answers.map((answer: any) => {
-                    const isSelected = aq.selectedAnswerId === answer.id;
-                    const isCorrect = answer.isCorrect;
-
-                    let bgBorderClass = "border-border/60 text-foreground";
-                    let badge = null;
-
-                    if (isCorrect) {
-                      bgBorderClass = "border-green-600 bg-green-50/20 text-green-900 dark:text-green-100 ring-1 ring-green-500/30";
-                      badge = (
-                        <span className="ms-auto flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-semibold font-sans bg-green-100 dark:bg-green-950 px-2 py-0.5 rounded-full border border-green-200 dark:border-green-900">
-                          <Check className="w-3 h-3" />
-                          {t.correctAnswer}
-                        </span>
-                      );
-                    } else if (isSelected) {
-                      bgBorderClass = "border-red-600 bg-red-50/20 text-red-900 dark:text-red-100 ring-1 ring-red-500/30";
-                      badge = (
-                        <span className="ms-auto flex items-center gap-1 text-xs text-red-600 dark:text-red-400 font-semibold font-sans bg-red-100 dark:bg-red-950 px-2 py-0.5 rounded-full border border-red-200 dark:border-red-900">
-                          <X className="w-3 h-3" />
-                          {t.yourAnswer}
-                        </span>
-                      );
-                    }
-
-                    return (
-                      <div
-                        key={answer.id}
-                        className={`flex items-center p-3 rounded-lg border text-sm font-medium ${bgBorderClass}`}
-                      >
-                        <span className="me-2 text-foreground font-sans" dangerouslySetInnerHTML={{ __html: answer.title }} />
-                        {badge}
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
+
+      <QuestionDetailsDialog
+        open={selectedQuestionIndex !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedQuestionIndex(null);
+          }
+        }}
+        lang={lang}
+        t={{
+          ...t,
+          questionDetails: isFa ? "جزئیات سوال و پاسخ" : "Question Details & Answer",
+        }}
+        currentQuestion={selectedQuestionIndex !== null ? aqList[selectedQuestionIndex].question : null}
+        currentIndex={selectedQuestionIndex ?? 0}
+        totalCount={aqList.length}
+        onNext={() => selectedQuestionIndex !== null && selectedQuestionIndex < aqList.length - 1 && setSelectedQuestionIndex(selectedQuestionIndex + 1)}
+        onPrev={() => selectedQuestionIndex !== null && selectedQuestionIndex > 0 && setSelectedQuestionIndex(selectedQuestionIndex - 1)}
+        onSaveInteraction={handleSaveInteraction}
+        showDescription={selectedQuestionIndex !== null ? showDescriptions[aqList[selectedQuestionIndex].questionId] : false}
+        onToggleDescription={(qId) => toggleDescription(qId)}
+        selectedAnswerId={selectedQuestionIndex !== null ? aqList[selectedQuestionIndex].selectedAnswerId : null}
+      />
 
       {renderHistory()}
     </div>
