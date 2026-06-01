@@ -466,7 +466,8 @@
           "search_placeholder": "Search for a lesson..."
         },
         "quiz_public_label": "Public Quiz",
-        "quiz_public_description": "Display the quiz in the public list."
+        "quiz_public_description": "Display the quiz in the public list.",
+        "title_required_toast": "Quiz title is required"
       },
       "users": {
         "title": "User Management",

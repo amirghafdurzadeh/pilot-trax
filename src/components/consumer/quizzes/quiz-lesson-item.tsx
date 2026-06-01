@@ -44,7 +44,11 @@ export function QuizLessonItem({
 
   return (
     <div className="flex items-center gap-2 bg-muted ps-4 p-2 rounded-md">
-      <div className="flex-1 font-medium">{lesson.lessonTitle}</div>
+      <div className="flex-1 font-medium">
+        {lesson.totalQuestionsCount !== undefined &&
+          `(${lesson.totalQuestionsCount}) `}
+        {lesson.lessonTitle}
+      </div>
 
       {isShuffled && (
         <div className="flex items-center gap-2">

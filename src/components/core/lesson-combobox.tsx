@@ -33,6 +33,7 @@ export type LessonOption = {
   depth: number;
   order?: number;
   parentId?: string | null;
+  questionsCount?: number;
 };
 
 interface LessonComboboxProps {
@@ -114,6 +115,7 @@ export function LessonCombobox({
           depth,
           order: n.order,
           parentId: n.parentId ?? null,
+          questionsCount: n.questionsCount,
         });
         (n.children || []).forEach((c: any) => dfs(c, depth + 1));
       };
@@ -179,6 +181,8 @@ export function LessonCombobox({
                         style={{ paddingRight: `${lesson.depth * 12}px` }}
                         className="truncate"
                       >
+                        {lesson.questionsCount !== undefined &&
+                          `(${lesson.questionsCount}) `}
                         {lesson.title}
                       </span>
                     </CommandItem>

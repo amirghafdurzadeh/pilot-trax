@@ -43,6 +43,7 @@ export type LessonOption = {
   depth: number;
   order?: number;
   parentId?: string | null;
+  questionsCount?: number;
 };
 
 export async function getLessonsForFilter(): Promise<LessonOption[]> {
@@ -51,6 +52,9 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
       include: {
         course: {
           select: { title: true },
+        },
+        _count: {
+          select: { questions: true },
         },
       },
       // order by course title then lesson.order then lesson title
@@ -80,6 +84,7 @@ export async function getLessonsForFilter(): Promise<LessonOption[]> {
       depth: getDepth(lesson.id),
       order: lesson.order,
       parentId: lesson.parentId ?? null,
+      questionsCount: lesson._count.questions,
     }));
   } catch (error) {
     console.error("Failed to get lessons for filter", error);

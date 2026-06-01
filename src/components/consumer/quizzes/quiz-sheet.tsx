@@ -2,6 +2,7 @@
 
 import { PlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import { type CourseOption } from "@/actions/courses";
 import { type LessonOption } from "@/actions/questions";
@@ -95,6 +96,10 @@ export function QuizSheet({
 
   const handleSave = () => {
     if (editingQuiz) {
+      if (!editingQuiz.title.trim()) {
+        toast.error(quizzesDict.title_required_toast);
+        return;
+      }
       onSave(editingQuiz);
     }
   };
@@ -109,6 +114,7 @@ export function QuizSheet({
       lessonId: lesson.id,
       lessonTitle: lesson.title,
       order: lesson.order,
+      totalQuestionsCount: lesson.questionsCount,
     };
     setEditingQuiz({
       ...editingQuiz,
@@ -130,6 +136,7 @@ export function QuizSheet({
       lessonId: lesson.id,
       lessonTitle: lesson.title,
       order: lesson.order,
+      totalQuestionsCount: lesson.questionsCount,
     }));
 
     setEditingQuiz({
@@ -176,6 +183,7 @@ export function QuizSheet({
                 <div className="space-y-2">
                   <Label>{quizzesDict.quiz_title_label}</Label>
                   <Input
+                    required
                     value={editingQuiz.title}
                     onChange={(e) =>
                       setEditingQuiz({ ...editingQuiz, title: e.target.value })

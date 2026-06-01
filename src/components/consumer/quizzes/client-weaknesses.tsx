@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import {
   ShieldCheck,
@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { saveQuestionInteraction } from "@/actions/quizzes";
@@ -55,7 +54,7 @@ export function ClientWeaknesses({
 
   const questionsDict = dict.app.admin.questions;
   const isFa = lang === "fa";
-  
+
   const t = {
     showDescription: isFa ? "مشاهده توضیح" : "Show Description",
     premiumOnly: isFa ? "مخصوص کاربران ویژه" : "Premium Only",
@@ -123,21 +122,21 @@ export function ClientWeaknesses({
   }, [selectedCourseId, lessonsData]);
 
   const statusesData = useMemo(() => [
-    { 
-      id: "MASTERED", 
-      title: t.mastered, 
+    {
+      id: "MASTERED",
+      title: t.mastered,
       icon: <ShieldCheck className="w-4 h-4 text-green-600" />,
       className: "text-green-600 dark:text-green-400"
     },
-    { 
-      id: "UNSURE", 
-      title: t.unsure, 
+    {
+      id: "UNSURE",
+      title: t.unsure,
       icon: <AlertTriangle className="w-4 h-4 text-yellow-500" />,
       className: "text-yellow-600 dark:text-yellow-400"
     },
-    { 
-      id: "CONFUSED", 
-      title: t.confused, 
+    {
+      id: "CONFUSED",
+      title: t.confused,
       icon: <X className="w-4 h-4 text-red-600" />,
       className: "text-red-600 dark:text-red-400"
     },
@@ -210,9 +209,9 @@ export function ClientWeaknesses({
       <AppHeader lang={lang} dict={dict.app}>
         <div className="flex items-center gap-2 flex-1">
           <AppSearch
-              placeholder={t.searchPlaceholder}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+            placeholder={t.searchPlaceholder}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </AppHeader>
@@ -300,33 +299,30 @@ export function ClientWeaknesses({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleSaveInteraction(q.id, "MASTERED")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                          state === "MASTERED"
-                            ? "bg-green-600 border-green-600 text-white shadow-sm"
-                            : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
-                        }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "MASTERED"
+                          ? "bg-green-600 border-green-600 text-white shadow-sm"
+                          : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                          }`}
                         title={t.mastered}
                       >
                         <ShieldCheck className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleSaveInteraction(q.id, "UNSURE")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                          state === "UNSURE"
-                            ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                            : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
-                        }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "UNSURE"
+                          ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                          : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                          }`}
                         title={t.unsure}
                       >
                         <AlertTriangle className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleSaveInteraction(q.id, "CONFUSED")}
-                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                          state === "CONFUSED"
-                            ? "bg-red-600 border-red-600 text-white shadow-sm"
-                            : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
-                        }`}
+                        className={`p-1.5 rounded-lg text-xs font-semibold border flex items-center transition-all ${state === "CONFUSED"
+                          ? "bg-red-600 border-red-600 text-white shadow-sm"
+                          : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                          }`}
                         title={t.confused}
                       >
                         <X className="w-3.5 h-3.5" />
@@ -334,7 +330,7 @@ export function ClientWeaknesses({
                     </div>
                   </CardHeader>
                   <CardContent className="pt-4 flex-1 space-y-4">
-                    <div 
+                    <div
                       className="font-semibold text-base leading-relaxed text-foreground select-none"
                       dangerouslySetInnerHTML={{ __html: q.title }}
                     />
@@ -382,7 +378,7 @@ export function ClientWeaknesses({
           }}
         >
           <DialogContent
-            className="max-w-none w-screen h-screen flex flex-col p-0 gap-0 border-none rounded-none outline-none"
+            className="max-w-none! w-screen h-screen flex flex-col p-0 gap-0 border-none rounded-none outline-none"
             dir={isFa ? "rtl" : "ltr"}
             showCloseButton={false}
           >
@@ -410,33 +406,30 @@ export function ClientWeaknesses({
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleSaveInteraction(currentQuestion.id, "MASTERED")}
-                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                        currentQuestion.interactionState === "MASTERED"
-                          ? "bg-green-600 border-green-600 text-white shadow-sm"
-                          : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
-                      }`}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${currentQuestion.interactionState === "MASTERED"
+                        ? "bg-green-600 border-green-600 text-white shadow-sm"
+                        : "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-100"
+                        }`}
                       title={t.mastered}
                     >
                       <ShieldCheck className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleSaveInteraction(currentQuestion.id, "UNSURE")}
-                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                        currentQuestion.interactionState === "UNSURE"
-                          ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
-                          : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
-                      }`}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${currentQuestion.interactionState === "UNSURE"
+                        ? "bg-yellow-500 border-yellow-500 text-white shadow-sm"
+                        : "bg-yellow-50 dark:bg-yellow-950/20 border-green-200 dark:border-green-900/30 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100"
+                        }`}
                       title={t.unsure}
                     >
                       <AlertTriangle className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleSaveInteraction(currentQuestion.id, "CONFUSED")}
-                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${
-                        currentQuestion.interactionState === "CONFUSED"
-                          ? "bg-red-600 border-red-600 text-white shadow-sm"
-                          : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
-                      }`}
+                      className={`p-2 rounded-lg text-xs font-semibold border flex items-center transition-all ${currentQuestion.interactionState === "CONFUSED"
+                        ? "bg-red-600 border-red-600 text-white shadow-sm"
+                        : "bg-red-50 dark:bg-red-950/20 border-green-200 dark:border-green-900/30 text-red-700 dark:text-red-400 hover:bg-red-100"
+                        }`}
                       title={t.confused}
                     >
                       <X className="w-4 h-4" />
@@ -464,13 +457,13 @@ export function ClientWeaknesses({
                     <div className="text-[10px] uppercase font-bold text-primary/70 tracking-wider">
                       {currentQuestion.lesson?.course?.title} / {currentQuestion.lesson?.title}
                     </div>
-                    <h3 
+                    <h3
                       className="text-2xl md:text-3xl font-bold leading-tight"
                       dangerouslySetInnerHTML={{ __html: currentQuestion.title }}
                     />
 
                     {showDescriptions[currentQuestion.id] && currentQuestion.description && (
-                      <div 
+                      <div
                         className="p-6 bg-blue-50/50 dark:bg-blue-900/10 rounded-xl text-base text-blue-900 dark:text-blue-100 border border-blue-100 dark:border-blue-900/30 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300"
                         dangerouslySetInnerHTML={{ __html: currentQuestion.description }}
                       />
@@ -481,11 +474,10 @@ export function ClientWeaknesses({
                     {currentQuestion.answers.map((answer: any) => (
                       <div
                         key={answer.id}
-                        className={`flex items-center p-4 rounded-xl border-2 text-lg font-medium transition-all ${
-                          answer.isCorrect
-                            ? "border-green-600 bg-green-50/20 text-green-900 dark:text-green-100 ring-4 ring-green-500/10"
-                            : "border-border/60 bg-card"
-                        }`}
+                        className={`flex items-center p-4 rounded-xl border-2 text-lg font-medium transition-all ${answer.isCorrect
+                          ? "border-green-600 bg-green-50/20 text-green-900 dark:text-green-100 ring-4 ring-green-500/10"
+                          : "border-border/60 bg-card"
+                          }`}
                       >
                         <span className="flex-1" dangerouslySetInnerHTML={{ __html: answer.title }} />
                         {answer.isCorrect && (

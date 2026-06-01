@@ -11,6 +11,7 @@ export type QuizLessonInput = {
   lessonId: string;
   lessonTitle: string;
   questionsCount?: number;
+  totalQuestionsCount?: number;
   order?: number;
   startIndex?: number;
   endIndex?: number;
