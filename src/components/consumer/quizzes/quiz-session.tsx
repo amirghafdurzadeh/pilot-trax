@@ -260,7 +260,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
       <div className="max-w-4xl mx-auto py-8 px-4 space-y-8">
         <Card className="border border-border/40 shadow-xl bg-card/60 backdrop-blur-md">
           <CardHeader className="text-center pb-2">
-            <CardTitle className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
+            <CardTitle className="text-3xl font-extrabold tracking-tight bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-400">
               {initialAttempt?.quiz?.title || "Quiz"}
             </CardTitle>
           </CardHeader>
@@ -290,7 +290,7 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
           <CardFooter className="flex justify-center pb-8">
             <Button
               size="lg"
-              className="px-12 py-6 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md transition-all hover:scale-105"
+              className="px-12 py-6 text-lg font-semibold bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md transition-all hover:scale-105"
               onClick={handleStart}
               disabled={isStarting}
             >
@@ -480,8 +480,8 @@ export function QuizSession({ quizId, lang, initialAttempt, pastAttempts = [], i
 
   return (
     <div className="max-w-4xl mx-auto py-6 px-4 space-y-6">
-      <Card className="border border-border/40 shadow-2xl bg-card overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 p-8 text-white text-center space-y-3 relative">
+      <Card className="border border-border/40 shadow-2xl bg-card overflow-hidden py-0">
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700 p-8 text-white text-center space-y-3 relative">
           <div className="absolute top-4 left-4">
             <Button
               variant="secondary"
