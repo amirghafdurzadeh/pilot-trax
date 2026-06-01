@@ -31,17 +31,20 @@ import { ThemeSwitcher } from "./theme-switcher";
 
 type Dict = Awaited<ReturnType<typeof getDictionary>>;
 
-const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "system_user" | "admin" | "premium" | null) => {
-  const items = [
-    {
-      title: dict.dashboard,
-      href: `/${lang}/app`,
-      icon: HomeIcon,
-    },
-  ];
+const getSidebarItems = (
+  lang: string,
+  dict: Dict["app"]["sidebar"],
+  role: "system_user" | "admin" | "premium" | null,
+) => {
+  const items = [];
 
   if (role === "admin" || role === "system_user") {
     items.push(
+      {
+        title: dict.dashboard,
+        href: `/${lang}/app`,
+        icon: HomeIcon,
+      },
       {
         title: dict.courses,
         href: `/${lang}/app/courses`,
@@ -51,7 +54,7 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "syst
         title: dict.questions,
         href: `/${lang}/app/questions`,
         icon: HelpCircleIcon,
-      }
+      },
     );
   }
 
@@ -78,7 +81,6 @@ const getSidebarItems = (lang: string, dict: Dict["app"]["sidebar"], role: "syst
   return items;
 };
 
-
 export function AppSidebar({
   lang,
   dict,
@@ -94,7 +96,6 @@ export function AppSidebar({
   const pathname = usePathname();
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
   const sidebarItems = getSidebarItems(lang, dict.app.sidebar, role);
-
 
   const handleClick = useCallback(
     (href: string) => {

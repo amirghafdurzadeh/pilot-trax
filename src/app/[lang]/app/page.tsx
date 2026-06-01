@@ -1,11 +1,22 @@
+import { authentication } from "@/actions/auth";
 import { SellingChart } from "@/components/admin/charts/selling-chart";
 import { UserChart } from "@/components/admin/charts/user-chart";
 import { AppContent } from "@/components/core/app-content";
 import { AppHeader } from "@/components/core/app-header";
 import { getDictionary } from "@/lib/dictionaries";
+import { getUserRole } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function Page(props: PageProps<"/[lang]/app">) {
   const lang = (await props.params).lang;
+
+  const session = await authentication(lang);
+  const role = await getUserRole(session.id);
+
+  if (role !== "admin" && role !== "system_user") {
+    redirect(`/${lang}/app/quizzes`);
+  }
+
   const dict = await getDictionary(lang);
   return (
     <>
